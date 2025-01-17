@@ -40,7 +40,7 @@ multideconv performs and integrates results of cell type deconvolution using XX 
 To process our deconvolution features, multideconv applied a combination of unsupervised filtering techniques and iterative linear based correlations to form subgroups across all our cell types. The algorithm is presented in Figure # and as output it returns a simplified deconvolution matrix composed with subgroups of methods-signatures whose expression is similar across samples. Additionally, it returns two matrices of cell-types with high proportion of zeros across samples and a matrix composed of discarded cell types not present in the categories mentioned above. Finally, it also gives to the user the list of subgroups for each type of correlation and a list of high-correlated features after pairwise analysis. 
 
 <p align="center">
- <img src="man/Deconvolution Pipeline.png?raw=true" />
+ <img src="man/Deconvolution_pipeline.png?raw=true" />
 </p>
 
 <p align="center"><i>
