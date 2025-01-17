@@ -35,6 +35,14 @@ For more information about how `renv` works, visit https://rstudio.github.io/ren
 
 multideconv performs and integrates results of cell type deconvolution using XX methods including first and second generation algorithms combined with different signatures based on gene expression, methylation data and single cell (Figure 1). 
 
+<p align="center">
+ <img src="man/Cell_deconvolution.png?raw=true" />
+</p>
+
+<p align="center"><i>
+   Figure 1. Cell type deconvolution.
+</i></p>
+
 ## Deconvolution processing
 
 To process our deconvolution features, multideconv applied a combination of unsupervised filtering techniques and iterative linear based correlations to form subgroups across all our cell types. The algorithm is presented in Figure # and as output it returns a simplified deconvolution matrix composed with subgroups of methods-signatures whose expression is similar across samples. Additionally, it returns two matrices of cell-types with high proportion of zeros across samples and a matrix composed of discarded cell types not present in the categories mentioned above. Finally, it also gives to the user the list of subgroups for each type of correlation and a list of high-correlated features after pairwise analysis. 
@@ -44,7 +52,7 @@ To process our deconvolution features, multideconv applied a combination of unsu
 </p>
 
 <p align="center"><i>
-  Figure 2. Immune cell type deconvolution combinations using 6 methods and 12 signatures.
+  Figure 2. Deconvolution processing algorithm.
 </i></p>
 
 ## Nomenclature handling
@@ -56,7 +64,7 @@ In order to be able to process all deconvolution features as a result of using d
 </p>
 
 <p align="center"><i>
-   Figure 3. Cell types nomenclature used in CellTFusion.
+   Figure 3. Cell types nomenclature.
 </i></p>
 
 ## How to add cell types other than the ones present in the nomenclature?
