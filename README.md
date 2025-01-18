@@ -143,6 +143,9 @@ Because most of the times scRNAseq data can be big and sparse matrices, we appli
    Figure 4. Single cell RNAseq metacells construction
 </i></p>
 
+## Additional notes
+multideconv is fully implemented and adapted as part of [CellTFusion](https://github.com/VeraPancaldiLab/CellTFusion) R package, an integration tool for cell deconvolution couple with transcription factor activities to deconvolve cell states of the tumor microenvironment. If you would like to use it in this context we invite you to visit our github repository.
+
 ## Citing multideconv
 
 If you use multideconv in a scientific publication, we would appreciate citation to the :
