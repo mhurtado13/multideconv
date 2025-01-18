@@ -106,7 +106,15 @@ And that's it, just make sure the name you are putting in cells_extra is exactly
 
 multideconv includes second generation methods that allows users to input single cell data and use it for constructing signatures 'on-the-fly' and deconvolve the bulk RNAseq data.
 
-Because of scRNAseq can have big and sparse matrix, we applied 'preprocessing' steps to avoid crashing the computer. For this, multideconv construct metacells from the single cell data in a parallelize manner and the compute deconvolution in the reduced object (Figure 4).
+Because most of the times scRNAseq data can be big and sparse matrices, we applied 'preprocessing' steps to avoid crashing the computer. For this, multideconv construct metacells per cell type and patient from the single cell data using the KNN algorithm. This is done essentially by executing different tasks per cluster in parallel for N workers and once finished, it computes deconvolution using the reduced single cell object (Figure 4).
+
+<p align="center">
+ <img src="man/scRNAseq_deconvolution.png?raw=true" />
+</p>
+
+<p align="center"><i>
+   Figure 4. Single cell RNAseq metacells construction
+</i></p>
 
 ## Citing multideconv
 
