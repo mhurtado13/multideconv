@@ -85,3 +85,37 @@ multideconv includes second generation methods that allows users to input single
 
 Because of scRNAseq can have big and sparse matrix, we applied 'preprocessing' steps to avoid crashing the computer. For this, multideconv construct metacells from the single cell data in a parallelize manner and the compute deconvolution in the reduced object (Figure 4).
 
+## General usage
+
+The function calculates cell abundance based on cell type signatures using different methods and signatures through the function `compute.deconvolution` which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts. See `examples/deconvolve.Rmd` to see a detailed explanation of the parameters inside the function.
+
+```r
+deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", file_name = "Tutorial") 
+deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", methods = c("Quantiseq", "MCP", "XCell", "DWLS"), file_name = "Test") 
+deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", signatures_exclude = "BPRNACan", file_name = "Tutorial")
+deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", sc_deconv = T, sc_matrix = sc.object, cell_annotations = cell_labels, cell_samples = bath_ids, name_sc_signature = "Signature_test", file_name = "Test")
+```
+
+For processing the deconvolution features obtained from `compute.deconvolution`, you can use the `compute.deconvolution.analysis` function.
+
+```r
+processed_deconvolution = compute.deconvolution.analysis(deconvolution, corr = 0.7, seed = 123, return = T)
+```
+
+Users can also compute second-generation deconvolution methods using their single cell data. For this use the function `compute_sc_deconvolution_methods`. Remember that this function is already included in `compute.deconvolution` when setting `sc_deconv = T`.
+
+```r
+deconv_sc = compute_sc_deconvolution_methods(raw.counts, sc_matrix, cell_annotations, cell_samples, name_sc_signature, normalized = T, n_cores = 4, cbsx_name = "XXX", cbsx_token = "XXX")
+```
+
+## Citing multideconv
+
+If you use multideconv in a scientific publication, we would appreciate citation to the :
+
+```
+XXXXX
+```
+
+## Acknowledgements
+
+This repository was created by [Marcelo Hurtado](https://github.com/mhurtado13) in the [Network Biology for Immuno-oncology (NetB(IO)²)](https://www.crct-inserm.fr/en/netbio2_en/) group at the Cancer Research Center of Toulouse in supervision of [Vera Pancaldi](https://github.com/VeraPancaldi).
