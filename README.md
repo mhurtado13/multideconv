@@ -78,6 +78,29 @@ deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "x
 deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", sc_deconv = T, sc_matrix = sc.object, cell_annotations = cell_labels, cell_samples = bath_ids, name_sc_signature = "Signature_test", file_name = "Test")
 ```
 
+**Note**: CIBERSORTx is included in the deconvolution methods, but it's not an open-source program. To run it, please ask for a token in [CibersortX](https://cibersortx.stanford.edu/register.php) and once obtained, provided your username and password on the parameters `credentials.mail` and `credentials.token`. 
+
+Also CIBERSORTx ask to have [docker](https://kinsta.com/blog/install-docker-ubuntu/#installing-docker-desktop-on-ubuntu) install in your computer. Once installed, be sure to concede permission to manage docker as a non-root user. For verify this, go to the terminal and run:
+
+```
+docker ps
+```
+
+If you don't have any error, congrats you are go to go!
+
+If you receive an error of permission, just run: 
+```
+sudo groupadd docker
+sudo usermod -aG docker ${USER}
+```
+
+Then restart your computer and try again
+```
+docker ps
+```
+
+Now, you should be able to run deconvolution without any problems :)
+
 For processing the deconvolution features obtained from `compute.deconvolution`, you can use the `compute.deconvolution.analysis` function.
 
 ```r
@@ -101,6 +124,10 @@ processed_deconvolution = compute.deconvolution.analysis(deconvolution, corr = 0
 ```
 
 And that's it, just make sure the name you are putting in cells_extra is exactly the name of your cells in your deconvolution matrix!
+
+## How to add other signatures?
+
+You can include other signatures into the analysis by adding them as .txt into the folder `signatures`.
 
 ## How does my single cell data is used for deconvolution?
 
