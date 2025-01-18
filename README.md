@@ -67,24 +67,6 @@ In order to be able to process all deconvolution features as a result of using d
    Figure 3. Cell types nomenclature.
 </i></p>
 
-## How to add cell types other than the ones present in the nomenclature?
-
-If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function compute.deconvolution.analysis(). 
-
-Let's say you want to add mesenchymal and basophils cells:
-
-```r
-processed_deconvolution = compute.deconvolution.analysis(deconvolution, corr = 0.7, seed = 123, cells_extra = c("mesenchymal", "basophils")) 
-```
-
-And that's it, just make sure the name you are putting in cells_extra is exactly the name of your cells in your deconvolution matrix!
-
-## How do I use my single cell data for deconvolution?
-
-multideconv includes second generation methods that allows users to input single cell data and use it for constructing signatures 'on-the-fly' and deconvolve the bulk RNAseq data.
-
-Because of scRNAseq can have big and sparse matrix, we applied 'preprocessing' steps to avoid crashing the computer. For this, multideconv construct metacells from the single cell data in a parallelize manner and the compute deconvolution in the reduced object (Figure 4).
-
 ## General usage
 
 The function calculates cell abundance based on cell type signatures using different methods and signatures through the function `compute.deconvolution` which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts. See `examples/deconvolve.Rmd` to see a detailed explanation of the parameters inside the function.
@@ -107,6 +89,24 @@ Users can also compute second-generation deconvolution methods using their singl
 ```r
 deconv_sc = compute_sc_deconvolution_methods(raw.counts, sc_matrix, cell_annotations, cell_samples, name_sc_signature, normalized = T, n_cores = 4, cbsx_name = "XXX", cbsx_token = "XXX")
 ```
+
+## How to add cell types other than the ones present in the nomenclature?
+
+If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function compute.deconvolution.analysis(). 
+
+Let's say you want to add mesenchymal and basophils cells:
+
+```r
+processed_deconvolution = compute.deconvolution.analysis(deconvolution, corr = 0.7, seed = 123, cells_extra = c("mesenchymal", "basophils")) 
+```
+
+And that's it, just make sure the name you are putting in cells_extra is exactly the name of your cells in your deconvolution matrix!
+
+## How does my single cell data is used for deconvolution?
+
+multideconv includes second generation methods that allows users to input single cell data and use it for constructing signatures 'on-the-fly' and deconvolve the bulk RNAseq data.
+
+Because of scRNAseq can have big and sparse matrix, we applied 'preprocessing' steps to avoid crashing the computer. For this, multideconv construct metacells from the single cell data in a parallelize manner and the compute deconvolution in the reduced object (Figure 4).
 
 ## Citing multideconv
 
