@@ -1277,7 +1277,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, methods = 
     }
     cat("\nSignatures\n")
     for (i in 1:length(db)) {
-      name = str_split(basename(db[[i]]), "\\.")[[1]][1]
+      name = stringr::str_split(basename(db[[i]]), "\\.")[[1]][1]
       cat("* ", name, "\n", sep = "")
       if(is.null(exclude)==F && name %in% exclude){
         name_exclude = c(name_exclude, name)
@@ -1419,7 +1419,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, methods = 
 compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS"), signatures_exclude = NULL, normalized = T, doParallel = F, workers = NULL, return = T,
                                   credentials.mail = NULL, credentials.token = NULL, sc_deconv = F, ncores = NULL, sc_matrix = NULL, cell_annotations = NULL, cell_samples = NULL, name_sc_signature = NULL, file_name = NULL){
 
-  path_signatures = 'src/signatures'
+  path_signatures = 'signatures'
   
   if(normalized == T){
     cat("Performing TPM normalization ................................................................................\n\n")
