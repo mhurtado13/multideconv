@@ -1,13 +1,79 @@
-#' Processing of deconvolution features
-#' 
-#' \code{compute.deconvolution.analysis} Deconvolution analysis to reduce data dimensionality by applying iterative correlations techniques  
-#' 
-#' @param deconvolution.mat Deconvolution matrix from GEMDeCan output (samples X features).
-#' @return list of Deconvolution matrix with subgroupped features (samples X features), groups formed by Pearson corr, groups formed by proportionality and subgroups by cell type
-#' 
-#' -------------------------------------------------------------------------------------------------------------
-#' 
-compute.deconvolution.analysis <- function(deconvolution, corr, zero = 0.9, high_corr = 0.9, seed = NULL, cells_extra = NULL, file_name = NULL, low_variance = T, return = T){
+
+##### Functions for running and processing cell-type deconvolution for pipeline multideconv: https://github.com/mhurtado13/multideconv
+
+# author: Marcelo Hurtado
+# email: marcelo.hurtado@inserm.fr
+# organization: INSERM CRCT - Pancaldi team 21
+# place: Toulouse, France
+
+
+libraries_set <- function(){
+  suppressMessages(library("BiocManager"))
+  suppressMessages(library("devtools"))
+  suppressMessages(library("pak"))
+  suppressMessages(library("remotes"))
+  suppressMessages(library("tidyr"))
+  suppressMessages(library("dplyr"))
+  suppressMessages(library("matrixStats"))
+  suppressMessages(library("reshape2"))
+  suppressMessages(library("purrr"))
+  suppressMessages(library("tidygraph"))
+  suppressMessages(library("stringr"))
+  suppressMessages(library("tibble"))
+  suppressMessages(library("gplots"))
+  suppressMessages(library("ggplot2"))
+  suppressMessages(library("AnnotationDbi"))
+  suppressMessages(library("RColorBrewer"))
+  suppressMessages(library("pheatmap"))
+  suppressMessages(library("ggfortify"))
+  suppressMessages(library("Hmisc"))
+  suppressMessages(library("ggpubr"))
+  suppressMessages(library("ggstatsplot"))
+  suppressMessages(library("dendextend"))
+  suppressMessages(library("stats"))
+  suppressMessages(library("rms"))
+  suppressMessages(library("uuid"))
+  suppressMessages(library("parallel"))
+  suppressMessages(library("factoextra"))
+  suppressMessages(library("doParallel"))
+  suppressMessages(library("foreach"))
+  suppressMessages(library("omnideconv"))
+}
+
+libraries_set()
+
+dir.create(file.path(getwd(), "Results"))
+
+#' Compute deconvolution processing
+#'
+#' @param deconvolution A matrix with unprocessed cell deconvolution results
+#' @param corr A numeric value with the minimum correlation allowed to group cell deconvolution features
+#' @param zero A numeric value with the maximum proportion of zeros values allowed the deconvolution features to have. Features with higher number of zeros across samples (>zero) will be discarded. Default is 0.9
+#' @param high_corr A numeric value with the threshold for pairwise correlation. Pair of features correlated with more than this threshold are classify as 'high correlated' and choose randomly one of them. Default is 0.9
+#' @param seed A numeric value to specificy the seed. This ensures reproducibility during the choice step of high correlated features.
+#' @param return Boolean value to whether return and saved the plot and csv files of deconvolution generated during the run inside the Results/ directory.
+#'
+#'
+#'
+#' @return A list containing
+#'
+#' - A matrix with the deconvolution after processing
+#' - The deconvolution subgroups per cell type
+#' - The deconvolution groups discarded caused they are all belonging to the same method
+#' - The discarded features because they contain a high number of zeros across samples (> zero)
+#' - Discarded features due to low variance across samples
+#' - Discarded cell types because they are not supported in the pipeline
+#' - High correlated deconvolution pairs (>high_corr)
+#'
+#' @export
+
+
+#' @examples
+#'
+#' dt = compute.deconvolution.analysis(deconvolution, corr = 0.7, seed = 123, return = T)
+#'
+#'
+compute.deconvolution.analysis <- function(deconvolution, corr, zero = 0.9, high_corr = 0.9, seed = NULL, cells_extra = NULL, file_name = NULL, return = T){
   deconvolution.mat = deconvolution
   
   #####Unsupervised filtering 
@@ -19,15 +85,10 @@ compute.deconvolution.analysis <- function(deconvolution, corr, zero = 0.9, high
   zero_features <- deconvolution[, diff_colnames]
   
   #Remove low_variance features
-  if(low_variance == T){
-    variance = remove_low_variance(deconvolution.mat, plot = return)
-    deconvolution.mat = variance[[1]]
-    low_variance_features = variance[[2]]    
-  }else{
-    low_variance_features = NULL
-  }
-
-
+  variance = remove_low_variance(deconvolution.mat, plot = return)
+  deconvolution.mat = variance[[1]]
+  low_variance_features = variance[[2]]
+  
   # #Scale deconvolution features by columns for making them comparable between cell types (0-1). 
   # cat("Scaling deconvolution features for comparison between cell types...............................................................\n\n")
   # for (i in 1:ncol(deconvolution.mat)) {
@@ -144,28 +205,28 @@ compute.deconvolution.analysis <- function(deconvolution, corr, zero = 0.9, high
     data.output = data.groups
     write.csv(dt, 'Results/Deconvolution_after_subgrouping.csv')
     write.csv(data.output, 'Results/Cell_subgroups.csv', row.names = F) 
-    
-    dend_column = as.dendrogram(hclust(dist(dt), method = "ward.D2"))
-    
-    ht1 = Heatmap(t(scale(dt)), border = T, cluster_columns = dend_column, 
-                  column_gap = unit(8, "mm"), name = "Deconvolution scores",
-                  clustering_method_rows = "ward.D2", 
-                  column_dend_height = unit(2, "cm"), row_dend_width = unit(2, "cm"), 
-                  column_dend_reorder = T, row_dend_reorder = F,
-                  show_row_names = T, 
-                  show_heatmap_legend = T, 
-                  row_names_gp = gpar(fontsize = 10), 
-                  column_names_gp = gpar(fontsize =10), 
-                  width = unit(40, "cm"), height = unit(40, "cm"),
-                  heatmap_legend_param = list(labels_gp = gpar(fontsize = 12), legend_width = unit(12, "cm"), 
-                                              legend_heigh = unit(12, "cm"), title_gp = gpar(fontsize = 12)))
-    
-    pdf(paste0("Results/Heatmap_deconvolution_after_groupping_", file_name), height = 20, width = 25)
-    draw(ht1, show_heatmap_legend = T, heatmap_legend_side = "left", annotation_legend_side = 'left')
-    dev.off()
   }
   
   message("Deconvolution features subgroupped")
+  
+  dend_column = as.dendrogram(hclust(dist(dt), method = "ward.D2"))
+  
+  ht1 = Heatmap(t(scale(dt)), border = T, cluster_columns = dend_column, 
+                column_gap = unit(8, "mm"), name = "Deconvolution scores",
+                clustering_method_rows = "ward.D2", 
+                column_dend_height = unit(2, "cm"), row_dend_width = unit(2, "cm"), 
+                column_dend_reorder = T, row_dend_reorder = F,
+                show_row_names = T, 
+                show_heatmap_legend = T, 
+                row_names_gp = gpar(fontsize = 10), 
+                column_names_gp = gpar(fontsize =10), 
+                width = unit(40, "cm"), height = unit(40, "cm"),
+                heatmap_legend_param = list(labels_gp = gpar(fontsize = 12), legend_width = unit(12, "cm"), 
+                                            legend_heigh = unit(12, "cm"), title_gp = gpar(fontsize = 12)))
+  
+  pdf(paste0("Results/Heatmap_deconvolution_after_groupping_", file_name), height = 20, width = 25)
+  draw(ht1, show_heatmap_legend = T, heatmap_legend_side = "left", annotation_legend_side = 'left')
+  dev.off()
   
   results = list(dt, res, groups, groups_discard, zero_features, low_variance_features, cells_discarded, features_high_corr)
   names(results) = c("Deconvolution matrix", "Deconvolution groups scores per cell types", "Deconvolution groups - Linear-based correlation",
@@ -694,7 +755,7 @@ compute.cell.types = function(data, cells_extra = NULL){
       extra[[i]] = data[, extra[[i]], drop = FALSE] 
       names(extra)[i] = cells_extra[[i]]
     }
-    extra_df = do.call(cbind, unname(extra))
+    extra_df = do.call(cbind, extra)
     
     cell_types = c(cell_types, extra)
     cell_types_matrix = cbind(cell_types_matrix, extra_df)
@@ -1225,7 +1286,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, methods = 
     }
     cat("\nSignatures\n")
     for (i in 1:length(db)) {
-      name = str_split(basename(db[[i]]), "\\.")[[1]][1]
+      name = stringr::str_split(basename(db[[i]]), "\\.")[[1]][1]
       cat("* ", name, "\n", sep = "")
       if(is.null(exclude)==F && name %in% exclude){
         name_exclude = c(name_exclude, name)
@@ -1267,7 +1328,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, methods = 
           deconrnaseq <- computeDeconRNASeq(TPM_matrix, signature, signature_name)}
         if("Epidish"%in%methods){
           cat("\nRunning Epidish...............................................................\n\n")
-          epidish_res <- computeEpiDISH(TPM_matrix, signature, signature_name)}
+          epidish <- computeEpiDISH(TPM_matrix, signature, signature_name)}
         if("DWLS"%in%methods){
           if(doParallel == F){
             cat("\nRunning DWLS...............................................................\n\n")
@@ -1280,11 +1341,11 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, methods = 
         if (exists("deconrnaseq")) {
           combined_data <- deconrnaseq
         }
-        if (exists("epidish_res")) {
+        if (exists("epidish")) {
           if (is.null(combined_data)) {
-            combined_data <- epidish_res
+            combined_data <- epidish
           } else {
-            combined_data <- cbind(combined_data, epidish_res)
+            combined_data <- cbind(combined_data, epidish)
           }
         }
         if (exists("cbsx")) {
@@ -1328,11 +1389,46 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, methods = 
   
 }
 
+#' Compute deconvolution
+#'
+#'The function calculates cell abundance based on cell type signatures using different methods and signatures. Methods available are Quantiseq, MCP, XCell, CibersortX, EpiDISH, DWLS and DeconRNASeq. Provided signatures included signatures based on bulk and methylation data (7 methods and 10 signature in total). Signatures are present in the src/signatures directory, user can add its own signatures by adding the .txt files in this same folder. Second generation methods to perform deconvolution based on single cell data are also available if scRNAseq object is provided.
+#'
+#' @param raw.counts A matrix with the raw counts (samples as columns and genes symbols as rows)
+#' @param methods A character vector with the deconvolution methods to run. Default are "Quantiseq", "MCP", "xCell", "CBSX", "Epidish", "DeconRNASeq", "DWLS"
+#' @param signatures_exclude A character vector with the signatures to exclude from the src/signatures folder.
+#' @param normalized If raw.counts are not available, user can input its normalized counts. In that case this argument need to be set to False.
+#' @param doParallel Whether to do or not parallelization. Only CBSX and DWLS methods will run in parallel.
+#' @param workers Number of processes available to run on parallel. If no number is set, this will correspond to detectCores() - 1
+#' @param return Whether to save or not the csv file with the deconvolution features
+#' @param credentials.mail (Optional) Credential email for running CibersortX. If not provided, cibersortX method will not be run.
+#' @param credentials.token (Optional) Credential token for running CibersortX. If not provided, cibersortX method will not be run.
+#' @param sc_deconv Whether to run or not deconvolution methods based on single cell.
+#' @param ncores If sc_deconv = T, number of cores to use for running the second-generation methods.
+#' @param sc_matrix If sc_deconv = T, the matrix of counts across cells from the scRNAseq object is provided.
+#' @param cell_annotations If sc_deconv = T, a character vector indicating the cell labels (same order as the count matrix)
+#' @param cell_samples If sc_deconv = T, a character vector indicating the cell samples IDs (same order as the count matrix)
+#' @param name_sc_signature If sc_deconv = T, the name you want to give to the signature generated
+#' @param file_name File name for the csv files and plots saved in the Results/ directory
+#'
+#' @return
+#'
+#' A matrix of cell type deconvolution features across samples
+#'
+#' @export
+#'
+#' @examples
+#'
+#' deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", file_name = "Tutorial")
+#' deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", methods = c("Quantiseq", "MCP", "XCell", "DWLS"), file_name = "Test")
+#' deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", signatures_exclude = "BPRNACan", file_name = "Tutorial")
+#' deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", sc_deconv = T, sc_matrix = sc.object, cell_annotations = cell_labels, cell_samples = bath_ids, name_sc_signature = "Signature_test", file_name = "Test")
+#'
+#'
 
 compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS"), signatures_exclude = NULL, normalized = T, doParallel = F, workers = NULL, return = T,
                                   credentials.mail = NULL, credentials.token = NULL, sc_deconv = F, ncores = NULL, sc_matrix = NULL, cell_annotations = NULL, cell_samples = NULL, name_sc_signature = NULL, file_name = NULL){
 
-  path_signatures = 'src/signatures'
+  path_signatures = 'signatures'
   
   if(normalized == T){
     cat("Performing TPM normalization ................................................................................\n\n")
@@ -1526,44 +1622,44 @@ get_all_cells <- function(subgroup_name, cell_subgroups) {
 
 
 # Deconvolution dictionary
-deconvolution_dictionary = function(deconvolution, progeny){
-  
-  #Remove column with zero counts
-  idx = which(colSums(deconvolution) == 0)
-  if(length(idx)!=0){
-    deconvolution = deconvolution[,-idx]
-  }
-  
-  #Compute module correlation between deconvolution features and PROGENy pathways
-  x = compute.modules.relationship(deconvolution, progeny, return = T, plot = T, file_name = "Deconvolution_Pathways")
-  
-  #Create distance matrix and hierarchical clustering for the PROGENy pathways
-  d <- dist(t(x[[1]]))
-  dendrogram <- hclust(d)
-  
-  pdf("Results/Pathways_clusters")
-  plot(dendrogram)
-  dev.off()
-  
-  #Identify the two pathway clusters
-  clusters <- cutree(dendrogram, k = 2)
-  clusters <- split(names(clusters), clusters) 
-  names(clusters) = c("Cluster_1", "Cluster_2")
-  
-  #Calculate mean correlation for each cluster
-  corr_matrix = data.frame(x[[1]])
-  corr_matrix$Cluster1_Score <- rowMeans(corr_matrix[, clusters[[1]]], na.rm = TRUE)
-  corr_matrix$Cluster2_Score <- rowMeans(corr_matrix[, clusters[[2]]], na.rm = TRUE)
-  
-  #Classify features based on the higher cluster score
-  corr_matrix$Classification <- ifelse(
-    corr_matrix$Cluster1_Score > corr_matrix$Cluster2_Score,
-    "Cluster1", "Cluster2"
-  )
-  
-  #Rename deconvolution features with cluster information
-  deconv_names = paste0(rownames(corr_matrix), "_", corr_matrix$Classification)
-  colnames(deconvolution) = deconv_names
-  
-  return(list(Deconvolution = deconvolution, Clusters = clusters))
-}
+# deconvolution_dictionary = function(deconvolution, progeny){
+#   
+#   #Remove column with zero counts
+#   idx = which(colSums(deconvolution) == 0)
+#   if(length(idx)!=0){
+#     deconvolution = deconvolution[,-idx]
+#   }
+#   
+#   #Compute module correlation between deconvolution features and PROGENy pathways
+#   x = compute.modules.relationship(deconvolution, progeny, return = T, plot = T, file_name = "Deconvolution_Pathways")
+#   
+#   #Create distance matrix and hierarchical clustering for the PROGENy pathways
+#   d <- dist(t(x[[1]]))
+#   dendrogram <- hclust(d)
+#   
+#   pdf("Results/Pathways_clusters")
+#   plot(dendrogram)
+#   dev.off()
+#   
+#   #Identify the two pathway clusters
+#   clusters <- cutree(dendrogram, k = 2)
+#   clusters <- split(names(clusters), clusters) 
+#   names(clusters) = c("Cluster_1", "Cluster_2")
+#   
+#   #Calculate mean correlation for each cluster
+#   corr_matrix = data.frame(x[[1]])
+#   corr_matrix$Cluster1_Score <- rowMeans(corr_matrix[, clusters[[1]]], na.rm = TRUE)
+#   corr_matrix$Cluster2_Score <- rowMeans(corr_matrix[, clusters[[2]]], na.rm = TRUE)
+#   
+#   #Classify features based on the higher cluster score
+#   corr_matrix$Classification <- ifelse(
+#     corr_matrix$Cluster1_Score > corr_matrix$Cluster2_Score,
+#     "Cluster1", "Cluster2"
+#   )
+#   
+#   #Rename deconvolution features with cluster information
+#   deconv_names = paste0(rownames(corr_matrix), "_", corr_matrix$Classification)
+#   colnames(deconvolution) = deconv_names
+#   
+#   return(list(Deconvolution = deconvolution, Clusters = clusters))
+# }
