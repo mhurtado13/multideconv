@@ -14,47 +14,30 @@ set.seed(123) #For reproducibility
 
 Load input
 ```{r}
-single.cell.data <- Seurat::ReadMtx(mtx = 'count_matrix_sparse.mtx', cells = 'count_matrix_barcodes.tsv', features = 'count_matrix_genes.tsv', feature.column = 1)
-single.cell.metadata <- read.table('metadata.csv', sep = ',', header = TRUE, row.names = 1)
-single.cell.data = CreateSeuratObject(single.cell.data, project='Vanderbilt', assay='RNA', min.cells = 0, min.features = 1, meta.data = single.cell.metadata)
-```
-
-```{r}
-single.cell.data = SeuratDisk::LoadH5Seurat("~/Documents/LungPredict1_paper_complete/RawFiles/scRNAseq_processed_Vanderbilt.h5seurat",  assays = "RNA")
+single.cell.data = SeuratDisk::LoadH5Seurat("~/Downloads/Vanderbilt_scRNA/all_samples.h5seurat",  assays = "RNA")
 ```
 
 Create metacells
 ```{r}
-metacells = create_metacells(single.cell.data, "annotated_ct_higher", "sample", exclude_cells = NULL, min_cells = 50, k = 25, max_shared = 15, n_workers = 1)
-rm(single.cell.data)
-gc()
+metacells = create_metacells(single.cell.data, "annotated_ct_higher", "sample", exclude_cells = NULL, min_cells = 50, k = 25, max_shared = 15, n_workers = 4)
 ```
 
-Create signatures 
+Create pseudobulk
 ```{r}
-idx = sample(colnames(metacells$Counts), 1500)
-metacells$Counts = metacells$Counts[,idx]
-metacells$Metadata = metacells$Metadata[idx,]
-bulk_data = read.csv("data/raw_counts_Mariathasan.csv", row.names = 1)
+bulk_data = create_sc_pseudobulk(single.cell.data, "annotated_ct_higher", "sample", "Pseudobulk_sc")
 ```
 
-Create list of genes for Bseq-sc
+Create list of DE genes for Bseq-sc
 ```{r}
 metacells = Seurat::CreateSeuratObject(metacells$Counts, meta.data = metacells$Metadata)
 
 cell_types <- unique(metacells@meta.data$annotated_ct_higher)
 
 cell_type_hvg <- lapply(cell_types, function(ct) {
-  # Subset Seurat object
   cells <- Seurat::WhichCells(metacells, expression = annotated_ct_higher == ct)
   subset_obj <- subset(metacells, cells = cells)
-  
-  # Run HVG detection
   subset_obj <- Seurat::FindVariableFeatures(subset_obj, selection.method = "vst", nfeatures = 50)
-  
-  # Get HVGs
   hvg <- Seurat::VariableFeatures(subset_obj)
-  
   return(hvg)
 })
 
@@ -63,10 +46,16 @@ names(cell_type_hvg) <- cell_types
 
 Create signatures
 ```{r}
-metacells = list(Counts = metacells@assays$RNA@counts, Metadata = metacells@meta.data)
-signatures = create_sc_signatures(metacells$Counts, metacells$Metadata, "annotated_ct_higher", "sample", credentials.mail = "marcelo.hurtado@inserm.fr", 
+signatures = create_sc_signatures(metacells@assays$RNA@counts, metacells@meta.data, "annotated_ct_higher", "sample", credentials.mail = "marcelo.hurtado@inserm.fr", 
                                   credentials.token = "734212f6ad77fc4eea2bdb502792f294", bulk_rna = bulk_data, cell_markers = cell_type_hvg, 
                                   name_signature = "Vanderbilt", n_workers = 1)
+```
+
+Deconvolution all without signature creation
+```{r}
+deconv = compute.deconvolution(bulk_data, normalized = T, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294",
+                               file_name = "Pseudobulk", create_signature = F,  sc_matrix = metacells@assays$RNA@counts, sc_metadata = metacells@meta.data, sc_deconv = T,
+                               cell_label = "annotated_ct_higher", sample_label = "sample", name_sc_signature = "Vanderbilt", workers = 5)
 ```
 
 Deconvolution only first-generation
@@ -76,8 +65,8 @@ deconv = compute.deconvolution(bulk_data[,1:5], normalized = T, credentials.mail
 
 Deconvolve only second-generation methods
 ```{r}
-deconv = compute_sc_deconvolution_methods(bulk_data, normalized = T, metacells$Counts, metacells$Metadata, "annotated_ct_higher", 
-                                          "sample", "Test", n_cores = 1)
+deconv = compute_sc_deconvolution_methods(bulk_data[,1:5], normalized = T, metacells$Counts, metacells$Metadata, "annotated_ct_higher", 
+                                          "sample", "Test", n_cores = 4, return = T, file_name = "Vanderbilt")
 ```
 
 Deconvolution first generation + create signatures 
@@ -87,7 +76,7 @@ deconv = compute.deconvolution(bulk_data[,1:5], normalized = T, credentials.mail
                                cell_label = "annotated_ct_higher", sample_label = "sample", cell_markers = cell_type_hvg, name_sc_signature = "Vanderbilt", workers = 1)
 ```
 
-Deconvolution all + create signatures
+Deconvolution all + create signatures (No recommended) 
 ```{r}
 deconv = compute.deconvolution(bulk_data[,1:5], normalized = T, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294",
                                file_name = "Tutorial", create_signature = T,  sc_matrix = metacells$Counts, sc_metadata = metacells$Metadata, sc_deconv = T,

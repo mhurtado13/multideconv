@@ -1,0 +1,29 @@
+---
+title: "deconvolution_subgroups"
+author: "Marcelo Hurtado"
+date: "2025-04-23"
+output: html_document
+---
+
+Set up environment
+```{r setup, include=FALSE}
+source("cell_deconvolution.R") #Load functions and packages
+set.seed(123) #For reproducibility
+```
+
+Load input
+```{r}
+raw_counts = read.csv("data/raw_counts_Mariathasan.csv", row.names = 1)
+```
+
+Deconvolution
+```{r}
+deconv = compute.deconvolution(raw_counts, normalized = T, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294", 
+                               file_name = "Mariathasan", doParallel = T, workers = 6)
+```
+
+Deconvolution subgroups
+```{r}
+subgroups = compute.deconvolution.analysis(deconvolution = deconv, corr = 0.7, seed = 123, file_name = "Mariathasan") 
+```
+

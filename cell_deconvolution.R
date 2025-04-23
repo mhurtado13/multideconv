@@ -7,6 +7,11 @@
 #' 
 #' -------------------------------------------------------------------------------------------------------------
 #' 
+#' 
+#' 
+require(dplyr)
+require(tibble)
+require(tidyr)
 compute.deconvolution.analysis <- function(deconvolution, corr, zero = 0.9, high_corr = 0.9, seed = NULL, cells_extra = NULL, file_name = NULL, low_variance = T, return = T){
   deconvolution.mat = deconvolution
   
@@ -1125,10 +1130,10 @@ computeXCell <- function(TPM_matrix) {
 
 computeCBSX_parallel = function(TPM_matrix, signatures, name, password, workers){
   cl = parallel::makeCluster(workers)
-  registerDoParallel(cl)  
+  doParallel::registerDoParallel(cl)  
   
   cbsx = foreach (i=1:length(signatures), .combine=cbind) %dopar% {
-    source("src/environment_set.R")
+    source("cell_deconvolution.R")
     signature <- read.delim(signatures[[i]], row.names=1)
     signature_name = stringr::str_split(basename(signatures[[i]]), "\\.")[[1]][1]
     computeCBSX(TPM_matrix, signature, name, password, signature_name)
@@ -1153,10 +1158,10 @@ computeCBSX = function(TPM_matrix, signature_file, name, password, name_signatur
 
 computeDWLS_parallel = function(TPM_matrix, signatures, workers){
   cl = parallel::makeCluster(workers)
-  registerDoParallel(cl)  
+  doParallel::registerDoParallel(cl)  
   
   dwls = foreach (i=1:length(signatures), .combine=cbind) %dopar% {
-    source("src/environment_set.R")
+    source("cell_deconvolution.R")
     signature <- read.delim(signatures[[i]], row.names=1)
     signature_name = stringr::str_split(basename(signatures[[i]]), "\\.")[[1]][1]
     computeDWLS(TPM_matrix, signature, signature_name)
@@ -1211,10 +1216,10 @@ computeMOMF = function(TPM_matrix, sc_object, signature_file, name_signature){
 
 computeMOMF_parallel = function(TPM_matrix, sc_object, signatures, workers){
   cl = parallel::makeCluster(workers)
-  registerDoParallel(cl)  
+  doParallel::registerDoParallel(cl)  
   
   momf = foreach (i=1:length(signatures), .combine=cbind) %dopar% {
-    source("src/environment_set.R")
+    source("cell_deconvolution.R")
     signature <- read.delim(signatures[[i]], row.names=1)
     signature_name = stringr::str_split(basename(signatures[[i]]), "\\.")[[1]][1]
     computeMOMF(TPM_matrix, sc_object, signature, signature_name)
@@ -1426,7 +1431,7 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
       stop("No single cell object or metadata has been provided for creating signature.")
     }else{
       signatures = create_sc_signatures(sc_matrix, sc_metadata, cell_label, sample_label, credentials.mail = credentials.mail, credentials.token = credentials.token, 
-                                        bulk_rna = raw.counts, cell_markers, name_signature = name_sc_signature, n_workers = workers)
+                                        bulk_rna = raw.counts, cell_markers, name_signature = name_sc_signature)
     }
   }
   
@@ -1478,7 +1483,7 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
   
 }
 
-compute_sc_deconvolution_methods = function(raw_counts, normalized = T, sc_object, sc_metadata, cell_annotations, samples_ids, name_object, n_cores = NULL){
+compute_sc_deconvolution_methods = function(raw_counts, normalized = T, sc_object, sc_metadata, cell_annotations, samples_ids, name_object, n_cores = NULL, return = F, file_name = NULL){
   
   if(normalized){
     bulk_counts = ADImpute::NormalizeTPM(raw_counts) 
@@ -1530,6 +1535,10 @@ compute_sc_deconvolution_methods = function(raw_counts, normalized = T, sc_objec
   })
   
   results = do.call(cbind, results)
+  
+  if(return){
+    write.csv(results, paste0("Results/Deconvolution_sc_", file_name, ".csv"))
+  }
   
   return(results)
   
@@ -1827,7 +1836,9 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, file_name){
   
 }
 
-create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels, credentials.mail = NULL, credentials.token = NULL, bulk_rna = NULL, cell_markers = NULL, name_signature = NULL, n_workers = 4){
+create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels, credentials.mail = NULL, credentials.token = NULL, bulk_rna = NULL, cell_markers = NULL, name_signature = NULL){
+  
+  sc_obj = as.matrix(sc_obj)
   
   cat("\nRunning CibersortX...............................................................\n")
   
@@ -1838,7 +1849,7 @@ create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels
   }
   
   omnideconv::set_cibersortx_credentials(credentials.mail, credentials.token)
-  model_cbsx = omnideconv::build_model(as.matrix(sc_obj), as.character(sc_metadata[,cells_labels]),
+  model_cbsx = omnideconv::build_model(sc_obj, as.character(sc_metadata[,cells_labels]),
                                        batch_ids = as.character(sc_metadata[,sample_labels]), method = "cibersortx") %>% 
     data.frame() %>%
     tibble::rownames_to_column("NAME")
@@ -1847,8 +1858,8 @@ create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels
   
   
   cat("\nRunning DWLS...............................................................\n")
-  model_dwls <- omnideconv::build_model_dwls(as.data.frame(sc_obj), as.character(sc_metadata[,cells_labels]), 
-                                             dwls_method = "mast_optimized", ncores = n_workers) %>% 
+  model_dwls <- omnideconv::build_model_dwls(sc_obj, as.character(sc_metadata[,cells_labels]), 
+                                             dwls_method = "mast_optimized", ncores = 1) %>% 
     data.frame() %>%
     tibble::rownames_to_column("NAME")
 
@@ -1858,7 +1869,7 @@ create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels
   
   if(is.null(bulk_rna) == F){
     cat("\nRunning MOMF...............................................................\n")
-    model_momf <- omnideconv::build_model_momf(as.matrix(sc_obj), as.character(sc_metadata[,cells_labels]), 
+    model_momf <- omnideconv::build_model_momf(sc_obj, as.character(sc_metadata[,cells_labels]), 
                                                bulk_gene_expression = bulk_rna) %>% 
       data.frame() %>%
       tibble::rownames_to_column("NAME")
@@ -1873,7 +1884,7 @@ create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels
 
   if(is.null(cell_markers) == F){
     cat("\nRunning BSeq-sc...............................................................\n")
-    model_bseq <- omnideconv::build_model_bseqsc(as.matrix(sc_obj), as.character(sc_metadata[,cells_labels]), 
+    model_bseq <- omnideconv::build_model_bseqsc(sc_obj, as.character(sc_metadata[,cells_labels]), 
                                                  markers = cell_markers, batch_ids = as.character(sc_metadata[,sample_labels])) %>% 
       data.frame() %>%
       tibble::rownames_to_column("NAME")
