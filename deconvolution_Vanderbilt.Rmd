@@ -1,0 +1,118 @@
+---
+title: "deconvolution_Vanderbilt"
+author: "Marcelo Hurtado"
+date: "2025-04-22"
+output: html_document
+---
+
+Set up environment
+```{r setup, include=FALSE}
+source("cell_deconvolution.R") #Load functions and packages
+library(Seurat)
+set.seed(123) #For reproducibility
+```
+
+Load input
+```{r}
+single.cell.data <- Seurat::ReadMtx(mtx = 'count_matrix_sparse.mtx', cells = 'count_matrix_barcodes.tsv', features = 'count_matrix_genes.tsv', feature.column = 1)
+single.cell.metadata <- read.table('metadata.csv', sep = ',', header = TRUE, row.names = 1)
+single.cell.data = CreateSeuratObject(single.cell.data, project='Vanderbilt', assay='RNA', min.cells = 0, min.features = 1, meta.data = single.cell.metadata)
+```
+
+```{r}
+single.cell.data = SeuratDisk::LoadH5Seurat("~/Documents/LungPredict1_paper_complete/RawFiles/scRNAseq_processed_Vanderbilt.h5seurat",  assays = "RNA")
+```
+
+Create metacells
+```{r}
+metacells = create_metacells(single.cell.data, "annotated_ct_higher", "sample", exclude_cells = NULL, min_cells = 50, k = 25, max_shared = 15, n_workers = 1)
+rm(single.cell.data)
+gc()
+```
+
+Create signatures 
+```{r}
+idx = sample(colnames(metacells$Counts), 1500)
+metacells$Counts = metacells$Counts[,idx]
+metacells$Metadata = metacells$Metadata[idx,]
+bulk_data = read.csv("data/raw_counts_Mariathasan.csv", row.names = 1)
+```
+
+Create list of genes for Bseq-sc
+```{r}
+metacells = Seurat::CreateSeuratObject(metacells$Counts, meta.data = metacells$Metadata)
+
+cell_types <- unique(metacells@meta.data$annotated_ct_higher)
+
+cell_type_hvg <- lapply(cell_types, function(ct) {
+  # Subset Seurat object
+  cells <- Seurat::WhichCells(metacells, expression = annotated_ct_higher == ct)
+  subset_obj <- subset(metacells, cells = cells)
+  
+  # Run HVG detection
+  subset_obj <- Seurat::FindVariableFeatures(subset_obj, selection.method = "vst", nfeatures = 50)
+  
+  # Get HVGs
+  hvg <- Seurat::VariableFeatures(subset_obj)
+  
+  return(hvg)
+})
+
+names(cell_type_hvg) <- cell_types
+```
+
+Create signatures
+```{r}
+metacells = list(Counts = metacells@assays$RNA@counts, Metadata = metacells@meta.data)
+signatures = create_sc_signatures(metacells$Counts, metacells$Metadata, "annotated_ct_higher", "sample", credentials.mail = "marcelo.hurtado@inserm.fr", 
+                                  credentials.token = "734212f6ad77fc4eea2bdb502792f294", bulk_rna = bulk_data, cell_markers = cell_type_hvg, 
+                                  name_signature = "Vanderbilt", n_workers = 1)
+```
+
+Deconvolution only first-generation
+```{r}
+deconv = compute.deconvolution(bulk_data[,1:5], normalized = T, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294", file_name = "Tutorial")
+```
+
+Deconvolve only second-generation methods
+```{r}
+deconv = compute_sc_deconvolution_methods(bulk_data, normalized = T, metacells$Counts, metacells$Metadata, "annotated_ct_higher", 
+                                          "sample", "Test", n_cores = 1)
+```
+
+Deconvolution first generation + create signatures 
+```{r}
+deconv = compute.deconvolution(bulk_data[,1:5], normalized = T, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294",
+                               file_name = "Tutorial", create_signature = T,  sc_matrix = metacells$Counts, sc_metadata = metacells$Metadata, 
+                               cell_label = "annotated_ct_higher", sample_label = "sample", cell_markers = cell_type_hvg, name_sc_signature = "Vanderbilt", workers = 1)
+```
+
+Deconvolution all + create signatures
+```{r}
+deconv = compute.deconvolution(bulk_data[,1:5], normalized = T, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294",
+                               file_name = "Tutorial", create_signature = T,  sc_matrix = metacells$Counts, sc_metadata = metacells$Metadata, sc_deconv = T,
+                               cell_label = "annotated_ct_higher", sample_label = "sample", cell_markers = cell_type_hvg, name_sc_signature = "Vanderbilt", workers = 1)
+```
+
+Benchmarking deconvolution
+
+Groundtruth
+```{r}
+tab <- table(metacells$Metadata$sample, metacells$Metadata$annotated_ct_higher)
+cells_groundtruth <- as.data.frame.matrix(prop.table(tab, margin = 1))
+
+cells_groundtruth <- cells_groundtruth %>%
+  dplyr::rename("B.cells" = "B cells",
+                "Cancer" = "Cancer cells",
+                "Endothelial" = "Endothelial cells", 
+                "Mural.cells" = "Mural cells",
+                "Myeloid.cells" = "Myeloid cells",
+                "T.cells" = "T cells")
+```
+
+Benchmark 
+```{r}
+corr_matrix = benchmarking_deconvolution(deconv_raw, cells_groundtruth, cells_extra = c("Mural.cells", "Myeloid.cells", "T.cells"),
+                                         corr_type = "pearson", scatter = F, pval = 0.05, file_name = "Test", height = 12, width = 8)
+```
+
