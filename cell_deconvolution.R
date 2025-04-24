@@ -12,6 +12,12 @@
 require(dplyr)
 require(tibble)
 require(tidyr)
+require(purrr)
+require(matrixStats)
+require(ComplexHeatmap)
+dir.create(file.path(getwd(), "Results"))
+
+
 compute.deconvolution.analysis <- function(deconvolution, corr, zero = 0.9, high_corr = 0.9, seed = NULL, cells_extra = NULL, file_name = NULL, low_variance = T, return = T){
   deconvolution.mat = deconvolution
   
@@ -1836,6 +1842,7 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, file_name){
   
 }
 
+
 create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels, credentials.mail = NULL, credentials.token = NULL, bulk_rna = NULL, cell_markers = NULL, name_signature = NULL){
   
   sc_obj = as.matrix(sc_obj)
@@ -1921,6 +1928,73 @@ get_all_cells <- function(subgroup_name, cell_subgroups) {
   }
 }
 
+extract_cells = function(groups, cells_extra = NULL){
+  names_cells = c("B.cells", "B.naive", "B.memory", "Macrophages.cells", "Macrophages.M0", "Macrophages.M1", "Macrophages.M2", "Monocytes", "Neutrophils", "NK.cells", "NK.activated",
+                  "NK.resting", "NKT.cells", "CD4.cells", "CD4.memory.activated", "CD4.memory.resting", "CD4.naive", "CD8.cells", "T.cells.regulatory", "T.cells.non.regulatory","T.cells.helper",
+                  "T.cells.gamma.delta", "Dendritic.cells", "Dendritic.activated", "Dendritic.resting", "Cancer", "Endothelial", "Eosinophils", "Plasma.cells", "Myocytes", "Fibroblasts",
+                  "Mast.cells", "Mast.activated", "Mast.resting", "CAF")
+  
+  
+  if(is.null(cells_extra) == F){
+    names_cells = c(names_cells, cells_extra)
+  }
+  # Create a regex pattern to match the full cell type and cluster
+  #regex_pattern <- paste0("(", paste(names_cells, collapse = "|"), ")_Cluster[0-9]+")
+  regex_pattern <- paste(names_cells, collapse = "|")
+  
+  # Extract matches
+  extracted_names <- sapply(groups, function(x) {
+    match <- regexpr(regex_pattern, x)
+    if (match != -1) {
+      return(regmatches(x, match))
+    } else {
+      return(NA)
+    }
+  })
+  
+  extracted_names <- unname(extracted_names)
+  extracted_names <- unique(na.omit(extracted_names))
+  return(extracted_names)
+}
+
+find.maximum.iteration = function(cells.groups){
+  max_iteration = c()
+  for (i in 1:length(cells.groups)){
+    if(is.null(names(cells.groups[[i]]))==F){
+      iterations <- sapply(names(cells.groups[[i]]), function(x) {
+        as.numeric(sub(".*\\.Iteration\\.(\\d+)", "\\1", x))
+      })
+      local_max = max(unlist(iterations))
+      max_iteration = c(max_iteration, local_max)
+    }
+  }
+  
+  return(max(max_iteration))
+}
+
+extract_base_composition <- function(composition, subgroups) {
+  
+  idx <- grep("Subgroup", composition)
+  
+  if (length(idx) == 0) return(composition)
+  
+  features = composition[idx] #Extract subgroup name
+  
+  # Iterate over all subgroups
+  for (feature in features) {
+    new_elements <- subgroups[[i]][[feature]]
+    composition <- c(composition, new_elements)
+    composition <- composition[composition != feature]  # Remove subgroup already decompose
+  }
+  
+  # Recursive
+  extract_base_composition(composition, subgroups)
+}
+
+compute_silhouette <- function(clusters, distance_matrix) {
+  silhouette_scores <- cluster::silhouette(clusters, dist(distance_matrix))
+  mean(silhouette_scores[, 3])  # Return average silhouette width
+}
 
 # Deconvolution dictionary
 deconvolution_dictionary = function(deconvolution, progeny){
