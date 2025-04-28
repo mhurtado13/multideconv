@@ -1,0 +1,33 @@
+---
+title: "Test"
+author: "Marcelo Hurtado"
+date: "2025-04-28"
+output: html_document
+---
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+# Example data: mtcars dataset
+data(mtcars)
+
+# Create a long format of the data with all pairwise combinations of variables
+vars <- names(mtcars)
+pairs <- expand.grid(x = vars, y = vars)
+
+# Remove combinations where x and y are the same
+pairs <- pairs[pairs$x != pairs$y, ]
+
+# Create scatter plots for each combination of variables and store them in a list
+plots1 <- scatter_plots(deconv, ground, method = "pearson")
+plots2 <- scatter_plots(deconv, ground, method = "pearson")
+
+# Combine all the scatter plots into a single matrix layout
+library(gridExtra)
+pdf(paste0("Scatter_plot_", file_name), width = 2, height = 20)
+grid.arrange(grobs = c(plots1, plots2), ncol = 2, nrow = ncol(deconv))
+dev.off()
+```

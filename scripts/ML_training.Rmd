@@ -1,0 +1,53 @@
+---
+title: "ML_training"
+author: "Marcelo Hurtado"
+date: "2025-04-24"
+output: html_document
+---
+
+Set up environment
+```{r setup, include=FALSE}
+setwd("~/Documents/multideconv/")
+source("cell_deconvolution.R") #Load functions and packages
+set.seed(123) #For reproducibility
+```
+
+Load input
+```{r}
+counts = read.delim("data/Gide_log2TPM.txt", row.names = 1)
+coldata = read.delim("data/colData_melanoma.txt", sep = " ") %>%
+  dplyr::filter(Cohort == "Gide") %>%
+  tibble::remove_rownames() %>%
+  tibble::column_to_rownames("rna_id")
+```
+
+Deconvolution
+```{r}
+deconv = compute.deconvolution(counts, normalized = F, credentials.mail = "marcelo.hurtado@inserm.fr", doParallel = T, workers = 3,
+                               credentials.token = "734212f6ad77fc4eea2bdb502792f294", file_name = "Gide")
+deconv = read.csv("Results/Deconvolution_Gide.csv", row.names = 1)
+rownames(deconv) = stringr::str_replace(rownames(deconv), "X", "")
+
+subgroups = compute.deconvolution.analysis(deconvolution = deconv, corr = 0.7, seed = 123, file_name = "Gide") 
+```
+
+Remove zero features
+```{r}
+deconv = deconv[, colSums(deconv == 0, na.rm=TRUE) < round(0.9*nrow(deconv)) , drop=FALSE]
+deconv = remove_low_variance(deconv, plot = F)[[1]]
+```
+
+ML training
+```{r}
+source("~/Documents/CellTFusion_paper/user_projects/src/environment_set.R")
+source("~/Documents/CellTFusion_paper/user_projects/src/machine_learning.R")
+res_subgroups = compute.features.training.ML(subgroups[[1]], coldata, "Response", "R", metric = "AUROC", stack = F, k_folds = 5, n_rep = 20, 
+                                          feature.selection = F, seed = 123, file_name = "Gide_subgroups", return = T)
+save(res_subgroups, file = "ML_model_subgroups_Gide.RData")
+```
+
+Compute variable importance
+```{r}
+importance = compute.variable.importance(res_subgroups, stacking = F, n_cores = 2)
+plot_shap_values(importance, "RF", "Gide_subgroups", width = 10, height = 10)
+```

@@ -15,6 +15,7 @@ require(tidyr)
 require(purrr)
 require(matrixStats)
 require(ComplexHeatmap)
+require(require)
 dir.create(file.path(getwd(), "Results"))
 
 
@@ -309,8 +310,9 @@ compute.deconvolution.preprocessing = function(deconv){
    
   if(ncol(CD4)>0){
     deconv = deconv[,-which(colnames(deconv)%in%colnames(CD4)), drop = F]
-    colnames(CD4) = stringr::str_replace(colnames(CD4), "CD4", "CD4.cells")
-    colnames(CD4) = stringr::str_replace(colnames(CD4), "T.cells.CD4.cells", "CD4.cells")
+    colnames(CD4) = stringr::str_replace(colnames(CD4), "T.cells.CD4(?!\\.cells)", "CD4.cells")
+    colnames(deconv) <- stringr::str_replace(colnames(deconv), "_CD4$", "_CD4.cells")
+    colnames(CD4) = stringr::str_replace(colnames(CD4), "^CD4(?!\\.cells)", "CD4.cells")
   }
 
   if(ncol(CD4.memory.activated)>0){
@@ -458,8 +460,9 @@ compute.deconvolution.preprocessing = function(deconv){
 
   if(ncol(Plasma)>0){
     deconv = deconv[,-which(colnames(deconv)%in%colnames(Plasma)), drop = F]
-    colnames(Plasma) = stringr::str_replace(colnames(Plasma), "plasma(?!.)", "Plasma.cells")
-    colnames(Plasma) = stringr::str_replace(colnames(Plasma), "Plasma_cells", "Plasma.cells")
+    colnames(Plasma) = stringr::str_replace(colnames(Plasma), "plasma(?!.)", "Plasma")
+    colnames(Plasma) = stringr::str_replace(colnames(Plasma), "Plasma_cells", "Plasma")
+    colnames(Plasma) = stringr::str_replace(colnames(Plasma), "Plasma.cells", "Plasma")
   }
 
   ##### Myocytes cells
@@ -694,7 +697,7 @@ compute.cell.types = function(data, cells_extra = NULL){
   
   names(cell_types) = c("B.cells", "B.naive", "B.memory", "Macrophages.cells", "Macrophages.M0", "Macrophages.M1", "Macrophages.M2", "Monocytes", "Neutrophils", "NK.cells", "NK.activated", "NK.resting", "NKT.cells", "CD4.cells", "CD4.memory.activated",
                         "CD4.memory.resting", "CD4.naive", "CD8.cells", "T.cells.regulatory", "T.cells.non.regulatory","T.cells.helper", "T.cells.gamma.delta", "Dendritic.cells", "Dendritic.activated", "Dendritic.resting", "Cancer", "Endothelial",
-                        "Eosinophils", "Plasma.cells", "Myocytes", "Fibroblasts", "Mast.cells", "Mast.activated", "Mast.resting", "CAF")
+                        "Eosinophils", "Plasma", "Myocytes", "Fibroblasts", "Mast.cells", "Mast.activated", "Mast.resting", "CAF")
   
   cell_types_matrix = cbind(B, B.naive, B.memory, Macrophages, M0, M1, M2, Monocytes, Neutrophils, NK, NK.activated, NK.resting, NKT, CD4, CD4.memory.activated, CD4.memory.resting, CD4.naive,
                       CD8, Tregs, T.non.regs, Thelper, Tgamma, Dendritic, Dendritic.activated, Dendritic.resting, Cancer, Endothelial, Eosinophils, Plasma, Myocytes, Fibroblasts, Mast, Mast.activated,
@@ -1135,6 +1138,7 @@ computeXCell <- function(TPM_matrix) {
 }
 
 computeCBSX_parallel = function(TPM_matrix, signatures, name, password, workers){
+  require(foreach)
   cl = parallel::makeCluster(workers)
   doParallel::registerDoParallel(cl)  
   
@@ -1569,7 +1573,7 @@ compute_sc_deconvolution_methods = function(raw_counts, normalized = T, sc_objec
 }
 
 
-create_metacells = function(sc_object, labels_column, samples_column, exclude_cells = NULL, min_cells = 50, k = 15, max_shared = 15, n_workers = 4){
+create_metacells = function(sc_object, labels_column, samples_column, exclude_cells = NULL, min_cells = 50, k = 15, max_shared = 15, n_workers = 4, min_meta = 10){
   require(hdWGCNA)
   
   message("\nCreating metacells...............................................................\n") 
@@ -1624,6 +1628,18 @@ create_metacells = function(sc_object, labels_column, samples_column, exclude_ce
   rm(results)
   gc()
   
+  n_cells = table(metadata[,labels_column])
+  low_count_cells <- n_cells[n_cells < min_meta]
+  
+  cat("\nNumber of metacells per cell type\n")
+  print(n_cells)
+  
+  cat("\nRemoving metacells with less than", min_meta, "...............................................................\n") 
+  print(names(low_count_cells))
+  
+  metadata = metadata %>%
+    dplyr::filter(!.data[[labels_column]] %in% names(low_count_cells))
+  counts_sc = counts_sc[,colnames(counts_sc) %in% rownames(metadata)]
   
   return(list(Counts = counts_sc, Metadata = metadata))
   
@@ -1661,16 +1677,18 @@ process_group <- function(data, min_cells = 50, k = 15, max_shared = 15, labels_
   
 }
 
-benchmarking_deconvolution = function(deconvolution, groundtruth, cells_extra = NULL, corr_type = "spearman", scatter = T, pval = 0.05, file_name, width = 16, height = 8){
+compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, corr_type = "spearman", scatter = T, pval = 0.05, file_name, width = 16, height = 8){
   require(reshape2)
   require(ggpubr)
   require(dplyr)
   require(purrr)
   require(tibble)
 
+  groundtruth = groundtruth[rownames(deconvolution),] #Order samples to match both features
+  
   cell_types = c("B.cells", "B.naive.cells", "B.memory.cells", "Macrophages.cells", "Macrophages.M0", "Macrophages.M1", "Macrophages.M2", "Monocytes", "Neutrophils", "NK.cells", "NK.activated", "NK.resting", "NKT.cells", "CD4.cells", "CD4.memory.activated",
                   "CD4.memory.resting", "CD4.naive", "CD8.cells", "T.cells.regulatory", "T.cells.non.regulatory","T.cells.helper", "T.cells.gamma.delta", "Dendritic.cells", "Dendritic.activated.cells", "Dendritic.resting.cells", "Cancer", "Endothelial",
-                  "Eosinophils", "Plasma.cells", "Myocytes", "Fibroblasts", "Mast.cells", "Mast.activated.cells", "Mast.resting.cells", "CAF")
+                  "Eosinophils", "Plasma", "Myocytes", "Fibroblasts", "Mast.cells", "Mast.activated.cells", "Mast.resting.cells", "CAF")
   
   cell_types = c(cell_types, cells_extra)
   
@@ -1700,26 +1718,39 @@ benchmarking_deconvolution = function(deconvolution, groundtruth, cells_extra = 
   
   #####Scatter plot function
   scatter_plots = function(deconv, ground, method){
+    plots <- list()
     for (i in 1:ncol(deconv)) {
-      data = cbind(deconv[,i], ground)
+      data = cbind(ground, deconv[,i])
       colnames(data) = c("x", "y")
+      cor_test <- cor.test(data$x, data$y)
+      cor_value <- cor_test$estimate  # Correlation coefficient
+      p_value <- cor_test$p.value    # p-value
+      
       p <- ggplot(data, aes(x = x, y = y)) +
-        geom_point(color = "blue", size = 3, alpha = 0.7) +  # Customize the points
+        geom_point(color = "blue", size = 0.1, alpha = 0.7) +  # Customize the points
         geom_smooth(method = "lm", se = T, color = "red") +  # Add regression line
         theme_minimal() +  # Apply a minimal theme
         labs(
+          x = colnames(ground),
           #title = paste0("Linear correlation - ", colnames(ground)),  # Set the title
-          x = colnames(deconv)[i],                 # Set the x-axis label
-          y = colnames(ground)                # Set the y-axis label
+          y = colnames(deconv)[i],                 # Set the x-axis label
         ) +
         theme(
-          plot.title = element_text(size = 20, hjust = 0.5),  # Adjust title font size and position
-          axis.title = element_text(size = 15)                # Adjust axis label font size
+          axis.title.x = element_text(size = 5),
+          axis.text.x = element_text(size = 5),       
+          axis.text.y = element_text(size = 5),
+          axis.title.y = element_text(size = 5)  # Adjust title font size and position
         ) +
-        stat_cor(method = method,label.x = summary(data[,1])[[5]]-0.02, label.y = summary(data[,2])[[5]]+0.005)  # Add correlation coefficient
-      
-      print(p)
+        geom_text(
+          aes(x = mean(data$x), y = max(data$y), label = paste("r =", round(cor_value, 2), ", pval = ", round(p_value, 2))),  # Add the correlation text
+          size = 2,  # Adjust the font size of the correlation coefficient text
+          hjust = 0.5,  # Adjust the horizontal alignment of the text
+          vjust = -1     # Adjust the vertical position of the text
+        )
+
+      plots[[i]] <- p
     }
+    return(plots)
   }
   
   cell_clusters = colnames(groundtruth)
@@ -1732,6 +1763,8 @@ benchmarking_deconvolution = function(deconvolution, groundtruth, cells_extra = 
   rownames(pval_matrix) = cell_clusters
   colnames(pval_matrix) = deconvolution_combinations
   cells_discard = c()
+  plots_all = list()
+  
   ###Correlation computation
   for (i in 1:length(cell_clusters)) {
     idx = grep(paste0("_", cell_clusters[i], "$"), colnames(deconvolution))
@@ -1746,9 +1779,21 @@ benchmarking_deconvolution = function(deconvolution, groundtruth, cells_extra = 
     ###Scatter plots
     if(scatter == T){
       if(ncol(deconv)!=0){
-        pdf(paste0("Scatter_plots_", colnames(ground), "_", file_name))
-        scatter_plots(deconv, ground, corr_type)
-        dev.off()
+        # Edit deconv to match with reference and have the same number of scatter plots per cell type
+        deconv_sub = deconv
+        colnames(deconv_sub) <- gsub(paste0("_", cell_clusters[i], "$"), "", colnames(deconv_sub))
+        colnames(deconv_sub) = gsub("(BPRNACan3DProMet|BPRNACanProMet|BPRNACan)", "\\1_", colnames(deconv_sub))
+        missing_cols <- setdiff(colnames(corr_matrix), colnames(deconv_sub)) #Find which columns are missing from reference
+        
+        # Fill with 0 no-existing columns (missing from reference)
+        for (col in missing_cols) {
+          deconv_sub[[col]] <- 0
+        }
+        deconv_sub <- deconv_sub[, names(corr_matrix)] #reorder columns matching the reference
+        
+        plots = scatter_plots(deconv_sub, ground, corr_type)
+        
+        plots_all[[i]] = plots
       }
     }
     
@@ -1798,15 +1843,15 @@ benchmarking_deconvolution = function(deconvolution, groundtruth, cells_extra = 
   pval_df = melt(pval_matrix[,colnames(corr_matrix)]) #Take the same order as corr_matrix
   
   corr_df = corr_df %>%
-    mutate(Cells = rep(rownames(corr_matrix), ncol(corr_matrix)),
-           pval = pval_df$value)
+    dplyr::mutate(Cells = rep(rownames(corr_matrix), ncol(corr_matrix)),
+                  pval_value = pval_df$value)
   
   g <- corr_df %>%
     ggplot(aes(Cells, variable, fill=value, label=round(value,2))) +
     geom_tile() +
-    labs(x = NULL, y = NULL, fill = paste0(corr_type, "'s\nCorrelation"), title=file_name) +
+    labs(x = NULL, y = NULL, fill = paste0(corr_type, "'s\nCorrelation"), title=file_name, subtitle = paste0("Only showing significant correlations (<", pval, ")")) +
     scale_fill_gradient2(mid="#FBFEF9",low="#0C6291",high="#A63446", limits=c(-1,1)) +
-    geom_text(data = subset(corr_df, pval <= pval)) +
+    geom_text(data = subset(corr_df, pval_value <= pval)) +
     theme_classic() +
     scale_x_discrete(expand=c(0,0)) +
     scale_y_discrete(expand=c(0,0)) +

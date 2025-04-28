@@ -1,0 +1,75 @@
+---
+title: "Deconvolution_sc"
+author: "Marcelo Hurtado"
+date: "2025-04-22"
+output: html_document
+---
+
+Set up environment
+```{r setup, include=FALSE}
+source("cell_deconvolution.R") #Load functions and packages
+set.seed(123) #For reproducibility
+```
+
+Load input
+```{r}
+single.cell.data = SeuratDisk::LoadH5Seurat("~/Documents/LungPredict1_paper_complete/RawFiles/scRNAseq_processed_Vanderbilt.h5seurat",  assays = "RNA")
+single.cell.data@meta.data$sample = paste0("Sample_", single.cell.data@meta.data$sample)
+load("~/Documents/multideconv/data/Metacells_Vanderbilt.RData")
+```
+
+Rename cells to match nomenclature (avoid spaces!)
+```{r}
+single.cell.data@meta.data <- single.cell.data@meta.data %>%
+  mutate(annotated_ct = recode(annotated_ct,
+                               "B cells" = "B.cells",
+                               "CD4+ T cells" = "CD4.cells",
+                               "CD8+ T cells" = "CD8.cells",
+                               "Endothelial cells" = "Endothelial",
+                               "Epithelial/Cancer" = "Cancer",
+                               "Mast cells" = "Mast.cells",
+                               "Mural cells" = "Mural.cells",
+                               "Myeloid cells" = "Myeloid.cells",
+                               "NK cells" = "NK.cells",
+                               "Plasma B cells" = "Plasma",
+                               "T cells proliferative" = "T.cells.proliferative",
+                               "T helper cells" = "T.cells.helper",
+                               "T reg. cells" = "T.cells.regulatory"))
+```
+
+Create pseudobulk from metacells
+```{r}
+bulk_data = create_sc_pseudobulk(single.cell.data, "annotated_ct", "sample", "Pseudobulk_sc")
+#bulk_data = read.csv("data/Pseudobulk_sc.csv", row.names = 1, sep = "\t")
+```
+
+Create signatures from metacells
+```{r}
+signatures = create_sc_signatures(metacells@assays$RNA@counts, metacells@meta.data, "annotated_ct", "sample", credentials.mail = "marcelo.hurtado@inserm.fr", 
+                                  credentials.token = "734212f6ad77fc4eea2bdb502792f294", bulk_rna = bulk_data, cell_markers = cell_type_hvg, 
+                                  name_signature = "Vanderbilt")
+```
+
+Deconvolution all without signature creation
+```{r}
+deconv = compute.deconvolution(bulk_data, normalized = F, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294",
+                               file_name = "Pseudobulk", create_signature = F,  sc_matrix = metacells@assays$RNA@counts, sc_metadata = metacells@meta.data, sc_deconv = T,
+                               cell_label = "annotated_ct", sample_label = "sample", name_sc_signature = "Vanderbilt", workers = 6)
+#deconv = read.csv("data/Deconvolution_Pseudobulk.csv", row.names = 1)
+```
+
+Benchmarking deconvolution
+
+Groundtruth
+```{r}
+tab <- table(single.cell.data@meta.data$sample, single.cell.data@meta.data$annotated_ct)
+cells_groundtruth <- as.data.frame.matrix(prop.table(tab, margin = 1))
+#cells_groundtruth = read.csv("data/Cells_groundtruth_Vanderbilt.csv", row.names = 1)
+```
+
+Benchmark 
+```{r}
+deconv = deconv[,-grep("Quantiseq_uncharacterized_cell", colnames(deconv))]
+corr_matrix = compute.benchmark(deconv, cells_groundtruth, cells_extra = c("Mural.cells", "Myeloid.cells", "T.cells.proliferative"),
+                                corr_type = "pearson", scatter = F, pval = 0.05, file_name = "Vanderbilt", height = 12, width = 12)
+```

@@ -57,3 +57,29 @@ dt = compute.deconvolution.analysis(deconvolution = deconv, corr = 0.7, seed = 1
 #seed: A numeric value to specificy the seed. This ensures reproducibility during the choice step of high correlated features.
 #return: Boolean value to whether return and saved the plot and csv files of deconvolution generated during the run inside the Results/ directory.
 ```
+
+
+Deconvolution only first-generation
+```{r}
+deconv = compute.deconvolution(bulk_data, normalized = F, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294", file_name = "Pseudobulk", doParallel = T, workers = 4)
+```
+
+Deconvolve only second-generation methods
+```{r}
+deconv = compute_sc_deconvolution_methods(bulk_data, normalized = F, metacells@assays$RNA@counts, metacells@meta.data, "annotated_ct", 
+                                          "sample", name_object = "Vanderbilt", n_cores = 6, return = T, file_name = "Vanderbilt")
+```
+
+Deconvolution first generation + create signatures 
+```{r}
+deconv = compute.deconvolution(bulk_data[,1:5], normalized = F, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294",
+                               file_name = "Tutorial", create_signature = T,  sc_matrix = metacells$Counts, sc_metadata = metacells$Metadata, 
+                               cell_label = "annotated_ct", sample_label = "sample", cell_markers = cell_type_hvg, name_sc_signature = "Vanderbilt", workers = 1)
+```
+
+Deconvolution all + create signatures (No recommended) 
+```{r}
+deconv = compute.deconvolution(bulk_data[,1:5], normalized = F, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294",
+                               file_name = "Tutorial", create_signature = T,  sc_matrix = metacells$Counts, sc_metadata = metacells$Metadata, sc_deconv = T,
+                               cell_label = "annotated_ct", sample_label = "sample", cell_markers = cell_type_hvg, name_sc_signature = "Vanderbilt", workers = 1)
+```

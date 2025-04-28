@@ -1,0 +1,77 @@
+---
+title: "Metacells"
+author: "Marcelo Hurtado"
+date: "2025-04-28"
+output: html_document
+---
+
+Set up environment
+```{r setup, include=FALSE}
+library(Seurat)
+set.seed(123) #For reproducibility
+```
+
+Load input
+```{r}
+single.cell.data = SeuratDisk::LoadH5Seurat("~/Downloads/Vanderbilt_scRNA/all_samples.h5seurat",  assays = "RNA")
+single.cell.data@meta.data$sample = paste0("Sample_", single.cell.data@meta.data$sample)
+```
+
+Create metacells
+```{r}
+metacells = create_metacells(single.cell.data, "annotated_ct", "sample", exclude_cells = NULL, min_cells = 100, k = 30, max_shared = 15, n_workers = 4)
+```
+
+Rename cells to match nomenclature (avoid spaces!)
+```{r}
+metacells$Metadata <- metacells$Metadata %>%
+  mutate(annotated_ct = recode(annotated_ct,
+                               "B cells" = "B.cells",
+                               "CD4+ T cells" = "CD4.cells",
+                               "CD8+ T cells" = "CD8.cells",
+                               "Endothelial cells" = "Endothelial",
+                               "Epithelial/Cancer" = "Cancer",
+                               "Mast cells" = "Mast.cells",
+                               "Mural cells" = "Mural.cells",
+                               "Myeloid cells" = "Myeloid.cells",
+                               "NK cells" = "NK.cells",
+                               "Plasma B cells" = "Plasma",
+                               "T cells proliferative" = "T.cells.proliferative",
+                               "T helper cells" = "T.cells.helper",
+                               "T reg. cells" = "T.cells.regulatory"))
+```
+
+Analize metacells
+```{r}
+metacells = Seurat::CreateSeuratObject(metacells$Counts, meta.data = metacells$Metadata)
+metacells <- FindVariableFeatures(object = metacells)
+metacells <- ScaleData(metacells)
+metacells <- RunPCA(metacells, features = VariableFeatures(object = metacells))
+ElbowPlot(metacells) #determine dimensionality of data
+metacells = FindNeighbors(metacells, dims = 1:20)
+metacells = FindClusters(metacells, resolution = 1)
+metacells <- RunUMAP(metacells, dims = 1:10)
+
+DimPlot(metacells, reduction="umap", label = T, group.by = "annotated_ct")
+```
+
+Create list of DE genes for Bseq-sc
+```{r}
+cell_types <- unique(metacells@meta.data$annotated_ct)
+
+cell_type_hvg <- lapply(cell_types, function(ct) {
+  cells <- Seurat::WhichCells(metacells, expression = annotated_ct == ct)
+  subset_obj <- subset(metacells, cells = cells)
+  subset_obj <- Seurat::FindVariableFeatures(subset_obj, selection.method = "vst", nfeatures = 50)
+  hvg <- Seurat::VariableFeatures(subset_obj)
+  return(hvg)
+})
+
+names(cell_type_hvg) <- cell_types
+```
+
+Save metacells 
+```{r}
+save(metacells, cell_type_hvg, file = "Metacells_Vanderbilt.RData")
+```
+

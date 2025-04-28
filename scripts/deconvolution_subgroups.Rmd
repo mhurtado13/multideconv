@@ -1,0 +1,159 @@
+---
+title: "deconvolution_subgroups"
+author: "Marcelo Hurtado"
+date: "2025-04-23"
+output: html_document
+---
+
+Set up environment
+```{r setup, include=FALSE}
+source("cell_deconvolution.R") #Load functions and packages
+set.seed(123) #For reproducibility
+```
+
+Load input
+```{r}
+raw_counts = read.csv("data/raw_counts_Mariathasan.csv", row.names = 1)
+```
+
+Deconvolution
+```{r}
+deconv = compute.deconvolution(raw_counts, normalized = T, credentials.mail = "marcelo.hurtado@inserm.fr", credentials.token = "734212f6ad77fc4eea2bdb502792f294", 
+                               file_name = "Mariathasan", doParallel = T, workers = 6)
+deconv = read.csv("../CellTFusion_paper/analysis/Data/Mariathasan/Raw_files/Deconvolution_Mariathasan.csv", row.names = 1)
+```
+
+Cell processing
+```{r}
+subgroups = compute.deconvolution.analysis(deconvolution = deconv, corr = 0.7, seed = 123, file_name = "Mariathasan") 
+```
+
+Assign clusters per subgroups
+```{r}
+cells_types = compute.cell.types(deconv)[[1]] #Extract original deconvolution per cell type
+cells_types_subgroups = subgroups[["Deconvolution groups scores per cell types"]] #Extract cell subgroups matrices
+deconv_subgroups = subgroups[["Deconvolution groups - Linear-based correlation"]] #Extract cell subgroups composition
+  
+cell_clusters = list()
+all_cells = c()
+cont_clust = 1
+
+for(i in 1:length(cells_types)){
+  if(ncol(cells_types[[i]]) != 0){
+    data = t(cells_types[[i]]) %>%
+      data.frame() %>%
+      dplyr::mutate(Clusters = 0)
+    
+    cell_subgroups = colnames(cells_types_subgroups[[i]])
+
+    for(feature in cell_subgroups){
+      #Extract cell composition in recursive way
+      composition = extract_base_composition(feature, deconv_subgroups)
+      all_cells = c(all_cells, composition)
+      #Assign clusters
+      data = data %>%
+        dplyr::mutate(Clusters = if_else(rownames(.) %in% composition, cont_clust, Clusters))
+      cont_clust = cont_clust + 1 #Number of clusters equals length(cell_subgroups)
+    }
+    
+    cell_clusters[[i]] = data %>%
+      dplyr::filter(Clusters != 0) %>%
+      dplyr::pull("Clusters")
+    
+    names(cell_clusters)[i] = names(cells_types)[i]
+  }else{
+    cell_clusters[[i]] = NULL
+  }
+}
+```
+
+Analysis silohuette scores
+```{r}
+for (i in 1:length(cell_clusters)){
+  if(length(cell_clusters[[i]])>10){
+    cells = names(cell_clusters)[i]
+    
+    #Baseline quality
+    mat = deconv[,grep(cells, colnames(deconv))] #Extract matrix per cell type from original matrix
+    dist_mat <- as.dist(1 - cor(mat)) #Distance matrix
+    hc <- hclust(dist_mat)
+    k_stats = factoextra::fviz_nbclust(t(mat), FUN = hcut, method = "gap_stat", k.max = ncol(mat) - 1, diss = dist_mat) #Find optimal clusters
+    k_cluster = as.numeric(k_stats$data$clusters[which.max(k_stats$data$gap)]) #Extract optimal k
+    best_labels <- cutree(hc, k = k_cluster) #Extract clusters labels
+    sil_hc <- compute_silhouette(best_labels, dist_mat) #Compute silhouette score
+    
+    #Test quality
+    mat_sub = deconv[,colnames(deconv) %in% all_cells] #Filter for only features used for subgroupping
+    mat_sub = mat_sub[,grep(cells, colnames(mat_sub))] #Distance matrix
+    dist_sub <- dist(1 - cor(mat_sub)) #Distance matrix
+    sil_your <- compute_silhouette(cell_clusters[[cells]], dist_sub) #Compute silhouette score
+    
+    cat("Silhouette comparison", cells, ":\n")
+    cat(" - Subgrouping: ", round(sil_your, 3), "\n")
+    cat(" - Raw features:  ", round(sil_hc, 3), "\n")
+  }
+}
+```
+
+PCA analysis comparison
+```{r}
+library(ggplot2)
+
+raw_mat = deconv
+raw_mat = raw_mat[, colSums(raw_mat == 0, na.rm=TRUE) < round(0.9*nrow(raw_mat)) , drop=FALSE]
+raw_mat = remove_low_variance(raw_mat, plot = F)[[1]]
+
+# --- PCA on raw features ---
+pca_raw <- prcomp(raw_mat, center = TRUE, scale. = TRUE)
+pca_raw_df <- data.frame(PC1 = pca_raw$x[,1], PC2 = pca_raw$x[,2])
+pca_raw_df$Sample <- rownames(raw_mat)
+pca_raw_df$Type <- "Raw"
+
+sub_mat = subgroups$`Deconvolution matrix`
+
+# --- PCA on subgrouped features ---
+pca_sub <- prcomp(sub_mat, center = TRUE, scale. = TRUE)
+pca_sub_df <- data.frame(PC1 = pca_sub$x[,1], PC2 = pca_sub$x[,2])
+pca_sub_df$Sample <- rownames(sub_mat)
+pca_sub_df$Type <- "Subgroups"
+
+# --- Combine PCA results ---
+pca_all <- rbind(pca_raw_df, pca_sub_df)
+
+# --- Plot comparison ---
+ggplot(pca_all, aes(x = PC1, y = PC2, color = Type)) +
+  geom_point(size = 2, alpha = 0.7) +
+  theme_minimal(base_size = 14) +
+  labs(title = "PCA Comparison: raw vs subgrouped features",
+       x = "PC1", y = "PC2") +
+  scale_color_manual(values = c("Raw" = "#1f77b4", "Subgroups" = "#ff7f0e"))
+```
+Variance explained
+```{r}
+cat("Raw Features - PC1 & PC2 variance explained:\n")
+print(round(summary(pca_raw)$importance[2, 1:2], 3))
+
+cat("\nSubgrouped Features - PC1 & PC2 variance explained:\n")
+print(round(summary(pca_sub)$importance[2, 1:2], 3))
+```
+
+Compare clustering compactness
+```{r}
+# Reduce to top 10 PCs
+pca_raw_10 <- pca_raw$x[, 1:10]
+pca_sub_10 <- pca_sub$x[, 1:10]
+
+# Use k-means with same k (e.g., 3) on both
+set.seed(123)
+k_raw <- kmeans(pca_raw_10, centers = 3)
+k_sub <- kmeans(pca_sub_10, centers = 3)
+
+# Silhouette comparison
+library(cluster)
+sil_raw <- compute_silhouette(k_raw$cluster, dist(pca_raw_10))
+sil_sub <- compute_silhouette(k_sub$cluster, dist(pca_sub_10))
+
+cat("Average silhouette (raw):", sil_raw, "\n")
+cat("Average silhouette (subgroups):", sil_sub, "\n")
+```
+
