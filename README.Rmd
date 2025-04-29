@@ -1,9 +1,9 @@
-
 # multideconv
 
 Integrative pipeline for cell type deconvolution from bulk RNAseq using first and second generation methods
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 ## Installation
@@ -25,56 +25,57 @@ library(multideconv)
 
 The function calculates cell abundance based on cell type signatures using different methods and signatures through the function `compute.deconvolution` which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts. See `examples/deconvolve.Rmd` to see a detailed explanation of the parameters inside the function.
 
-```r
+``` r
 deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", file_name = "Tutorial") 
 deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", methods = c("Quantiseq", "MCP", "XCell", "DWLS"), file_name = "Test") 
 deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", signatures_exclude = "BPRNACan", file_name = "Tutorial")
 deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", sc_deconv = T, sc_matrix = sc.object, cell_annotations = cell_labels, cell_samples = bath_ids, name_sc_signature = "Signature_test", file_name = "Test")
 ```
 
-**Note**: CIBERSORTx is included in the deconvolution methods, but it's not an open-source program. To run it, please ask for a token in [CibersortX](https://cibersortx.stanford.edu/register.php) and once obtained, provided your username and password on the parameters `credentials.mail` and `credentials.token`. 
+**Note**: CIBERSORTx is included in the deconvolution methods, but it's not an open-source program. To run it, please ask for a token in [CibersortX](https://cibersortx.stanford.edu/register.php) and once obtained, provided your username and password on the parameters `credentials.mail` and `credentials.token`.
 
 Also CIBERSORTx ask to have [docker](https://kinsta.com/blog/install-docker-ubuntu/#installing-docker-desktop-on-ubuntu) install in your computer. Once installed, be sure to concede permission to manage docker as a non-root user. For verify this, go to the terminal and run:
 
-```
+```         
 docker ps
 ```
 
 If you don't have any error, congrats you are go to go!
 
-If you receive an error of permission, just run: 
-```
+If you receive an error of permission, just run:
+
+```         
 sudo groupadd docker
 sudo usermod -aG docker ${USER}
 ```
 
 Then restart your computer and try again
-```
+
+```         
 docker ps
 ```
 
 Now, you should be able to run deconvolution using CBSX without any problems :)
 
-
 For processing the deconvolution features obtained from `compute.deconvolution`, you can use the `compute.deconvolution.analysis` function.
 
-```r
+``` r
 processed_deconvolution = compute.deconvolution.analysis(deconvolution, corr = 0.7, seed = 123, return = T)
 ```
 
 Users can also compute second-generation deconvolution methods using their single cell data. For this use the function `compute_sc_deconvolution_methods`. Remember that this function is already included in `compute.deconvolution` when setting `sc_deconv = T`.
 
-```r
+``` r
 deconv_sc = compute_sc_deconvolution_methods(raw.counts, sc_matrix, cell_annotations, cell_samples, name_sc_signature, normalized = T, n_cores = 4, cbsx_name = "XXX", cbsx_token = "XXX")
 ```
 
 ## How to add cell types other than the ones present in the nomenclature?
 
-If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function compute.deconvolution.analysis(). 
+If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function compute.deconvolution.analysis().
 
 Let's say you want to add mesenchymal and basophils cells:
 
-```r
+``` r
 processed_deconvolution = compute.deconvolution.analysis(deconvolution, corr = 0.7, seed = 123, cells_extra = c("mesenchymal", "basophils")) 
 ```
 
@@ -91,20 +92,25 @@ multideconv includes second generation methods that allows users to input single
 Because most of the times scRNAseq data can be big and sparse matrices, we applied 'preprocessing' steps to avoid crashing the computer. For this, multideconv construct metacells per cell type and patient from the single cell data using the KNN algorithm. This is done essentially by executing different tasks per cluster in parallel for N workers and once finished, it computes deconvolution using the reduced single cell object (Figure 4).
 
 <p align="center">
- <img src="man/figures/scRNAseq_deconvolution.png?raw=true" />
+
+<img src="man/figures/scRNAseq_deconvolution.png?raw=true"/>
+
 </p>
 
-<p align="center"><i>
-   Figure 4. Single cell RNAseq metacells construction
-</i></p>
+<p align="center">
+
+<i> Figure 4. Single cell RNAseq metacells construction </i>
+
+</p>
 
 ## Additional notes
+
 multideconv is fully implemented and adapted as part of [CellTFusion](https://github.com/VeraPancaldiLab/CellTFusion) R package, an integration tool for cell deconvolution couple with transcription factor activities to deconvolve cell states of the tumor microenvironment. If you would like to use it in this context we invite you to visit our github repository.
 
 ## Citing multideconv
 
 If you use multideconv in a scientific publication, we would appreciate citation to the :
 
-```
+```         
 XXXXX
 ```

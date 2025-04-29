@@ -1,0 +1,59 @@
+Package: multideconv
+Title: Integrative pipeline for cell type deconvolution from bulk RNAseq using first and second generation methods
+Version: 0.0.0.9000
+Authors@R: 
+    person("Marcelo", "Hurtado", , "marcelo.hurtado@inserm.fr", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0004-6712-0864"))
+Description: R package that reduces dimensionality and eliminates redundancy through unsupervised filtering and iterative correlation analyses. Built on top of existing frameworks like immunedeconv (Sturm et al. 2019) and omnideconv (Dietrich et al. 2024), multideconv harmonizes outputs across methods to identify robust cell subgroups and mitigate signature-driven heterogeneity.
+License: GPL (>= 3) + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    ADImpute,
+    DeconRNASeq,
+    doParallel,
+    dplyr,
+    EpiDISH,
+    foreach,
+    ggplot2,
+    graphics,
+    reshape2,
+    ComplexHeatmap,
+    grDevices,
+    ggpubr,
+    Hmisc,
+    immunedeconv (>= 2.1.0),
+    matrixStats,
+    MCPcounter (>= 1.2.0),
+    omnideconv (>= 0.1.0),
+    parallel,
+    Seurat (>= 4.4.0),
+    glmGamPoi,
+    future.apply,
+    ggtext,
+    future,
+    purrr (>= 1.0.2),
+    hdWGCNA (>= 0.4.0),
+    stats,
+    stringr,
+    tibble,
+    tidyr,
+    utils,
+    grid
+Remotes: 
+    omnideconv/immunedeconv,
+    omnideconv/omnideconv,
+    omnideconv/DWLS,
+    smorabit/hdWGCNA,
+    grst/MCPcounter,
+Suggests: 
+    testthat (>= 3.0.0),
+    WGCNA,
+    UCell,
+    GenomicRanges,
+    GeneOverlap,
+    DWLS (>= 0.4)
+Depends: 
+    R (>= 2.10)
+LazyData: true
