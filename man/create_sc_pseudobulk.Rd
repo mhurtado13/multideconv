@@ -13,7 +13,7 @@ create_sc_pseudobulk(
 )
 }
 \arguments{
-\item{sc_obj}{Single cell object (seurat object)}
+\item{sc_obj}{A Seurat single cell object}
 
 \item{cells_labels}{A character vector with the cell labels (need to be of the same order as in the sc_obj)}
 
@@ -28,14 +28,4 @@ A gene count matrix (genes as rows and samples as columns)
 }
 \description{
 Create pseudo bulk from single cell object
-}
-\examples{
-
-data("metacells_data")
-data("sample_labels")
-data("cell_labels")
-
-pseudobulk = create_sc_pseudobulk(metacells, cell_labels, sample_labels,
-                                  normalized = TRUE, file_name = "Test")
-
 }

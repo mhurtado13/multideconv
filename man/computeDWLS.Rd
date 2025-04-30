@@ -19,12 +19,3 @@ A matrix with cell abundance deconvolve with DWLS
 \description{
 Computes DWLS
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-dwls <- computeDWLS(TPM_matrix, signature, signature_name)
-
-}

@@ -19,12 +19,3 @@ A matrix with cell abundance deconvolve with DWLS
 \description{
 Compute DWLS in parallel across multiple signatures
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-dwls <- computeDWLS_parallel(TPM_matrix, 'src/signatures', workers)
-
-}

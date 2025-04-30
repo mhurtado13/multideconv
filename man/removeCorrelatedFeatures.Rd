@@ -26,10 +26,3 @@ A list containing
 \description{
 If two deconvolution features within a specific cell type are found to be highly correlated, one feature is kept randomly for further analysis.
 }
-\examples{
-
-data("deconvolution")
-
-data = removeCorrelatedFeatures(deconvolution, high_corr, "B_cells", seed = 123)
-
-}

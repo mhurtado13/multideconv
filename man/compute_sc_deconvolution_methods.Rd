@@ -44,12 +44,10 @@ A matrix of deconvolution features across samples from your bulk counts based on
 \description{
 Compute second-generation deconvolution methods
 }
-\examples{
+\references{
+Sturm, G., Finotello, F., Petitprez, F., Zhang, J. D., Baumbach, J., Fridman, W. H., ..., List, M., Aneichyk, T. (2019). Comprehensive evaluation of transcriptome-based cell-type quantification methods for immuno-oncology.
+Bioinformatics, 35(14), i436-i445. https://doi.org/10.1093/bioinformatics/btz363
 
-data("raw_counts")
-
-deconv_sc = compute_sc_deconvolution_methods(raw_counts, normalized = TRUE, sc_matrix,
-                                             cell_annotations, cell_samples,
-                                             name_sc_signature, n_cores = 4)
-
+Benchmarking second-generation methods for cell-type deconvolution of transcriptomic data. Dietrich, Alexander and Merotto, Lorenzo and Pelz, Konstantin and Eder, Bernhard and Zackl, Constantin and Reinisch, Katharina and
+Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 }

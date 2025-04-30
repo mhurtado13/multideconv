@@ -10,7 +10,7 @@ compute.deconvolution.analysis(
   seed = NULL,
   cells_extra = NULL,
   file_name = NULL,
-  return = TRUE
+  return = FALSE
 )
 }
 \arguments{

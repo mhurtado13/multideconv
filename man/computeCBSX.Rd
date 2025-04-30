@@ -23,12 +23,3 @@ A matrix with cell abundance deconvolve with CBSX
 \description{
 Computes CibersortX (CBSX) using one signature
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-cbsx <- computeCBSX(TPM_matrix, signature, cbsx.name, cbsx.token, signature_name)
-
-}

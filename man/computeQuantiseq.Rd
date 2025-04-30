@@ -15,11 +15,3 @@ A matrix with cell abundance deconvolve with QuanTIseq
 \description{
 Computes QuanTIseq
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-quantiseq = computeQuantiseq(TPM_matrix)
-
-}

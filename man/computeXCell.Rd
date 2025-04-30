@@ -15,12 +15,3 @@ A matrix with cell enrichment scores from XCell.
 \description{
 Computes XCell
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-xcell = computeXCell(TPM_matrix)
-
-}

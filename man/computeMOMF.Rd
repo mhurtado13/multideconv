@@ -21,12 +21,3 @@ A matrix with cell abundance deconvolve with MOMF
 \description{
 Computes MOMF
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-momf <- computeMOMF(TPM_matrix, sc_object, signature, signature_name)
-
-}

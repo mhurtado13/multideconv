@@ -7,7 +7,7 @@
 compute_methods_variable_signature(
   TPM_matrix,
   signatures,
-  algos = c("CBSX", "Epidish", "DeconRNASeq", "DWLS"),
+  algos = c("CBSX", "Epidish", "DeconRNASeq", "DWLS", "MOMF"),
   exclude = NULL,
   cbsx.name,
   cbsx.token,
@@ -41,13 +41,10 @@ A matrix with the deconvolution features corresponding to all combinations of me
 \description{
 Compute deconvolution methods with variable signatures
 }
-\examples{
+\references{
+Sturm, G., Finotello, F., Petitprez, F., Zhang, J. D., Baumbach, J., Fridman, W. H., ..., List, M., Aneichyk, T. (2019). Comprehensive evaluation of transcriptome-based cell-type quantification methods for immuno-oncology.
+Bioinformatics, 35(14), i436-i445. https://doi.org/10.1093/bioinformatics/btz363
 
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-deconvolution = compute_methods_variable_signature(TPM_matrix, algos = c("CBSX", "Epidish"),
-                                                   cbsx.name = "XXX", cbsx.token = "XXX")
-
+Benchmarking second-generation methods for cell-type deconvolution of transcriptomic data. Dietrich, Alexander and Merotto, Lorenzo and Pelz, Konstantin and Eder, Bernhard and Zackl, Constantin and Reinisch, Katharina and
+Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 }

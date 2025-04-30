@@ -33,7 +33,7 @@
 
 #' Deconvolution matrix
 #'
-#' A matrix with the cell type deconvolution features obtained from compute.deconvolution()
+#' A matrix with the cell type deconvolution features obtained from compute.deconvolution() from the pseudobulk matrix
 #'
 #' @format Matrix with samples as rows and deconvolution features as columns
 #'
@@ -41,6 +41,18 @@
 #' data(deconvolution)
 #' head(deconvolution)
 "deconvolution"
+
+#' Bulk deconvolution matrix
+#'
+#' A matrix with the cell type deconvolution features obtained from compute.deconvolution() from the bulk RNAseq of Mariathasan et al. (2018)
+#'
+#' @format Matrix with samples as rows and deconvolution features as columns
+#'
+#' @examples
+#' data(deconv_bulk)
+#' head(deconv_bulk)
+"deconv_bulk"
+
 
 #' Metacells data
 #'

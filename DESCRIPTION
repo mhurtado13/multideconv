@@ -45,6 +45,8 @@ Remotes:
     omnideconv/immunedeconv,
     omnideconv/omnideconv,
     omnideconv/DWLS,
+    omnideconv/BayesPrism,
+    sqsun/MOMF,
     smorabit/hdWGCNA,
     grst/MCPcounter,
 Suggests: 
@@ -53,7 +55,11 @@ Suggests:
     UCell,
     GenomicRanges,
     GeneOverlap,
-    DWLS (>= 0.4)
+    DWLS (>= 0.4),
+    MOMF (>= 0.2),
+    BayesPrism (>= 0.2)
 Depends: 
     R (>= 2.10)
 LazyData: true
+LazyDataCompression: bzip2
+Config/testthat/edition: 3

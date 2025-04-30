@@ -15,10 +15,3 @@ List of position of groups which have features of same method.
 \description{
 Remove subgroups that have the same method across different signatures
 }
-\examples{
-
-data("subgroups")
-
-lis = remove_subgroups(subgroups)
-
-}

@@ -10,6 +10,7 @@ compute.benchmark(
   cells_extra = NULL,
   corr_type = "spearman",
   scatter = TRUE,
+  plot = FALSE,
   pval = 0.05,
   file_name = NULL,
   width = 16,
@@ -26,6 +27,8 @@ compute.benchmark(
 \item{corr_type}{Secifies the type of correlations to compute ('spearman' or 'pearson').}
 
 \item{scatter}{Boolean value to specify if scatter plots should be returned.}
+
+\item{plot}{Boolean value to whether save or not the plot of the benchmark in the Results/ directory.}
 
 \item{pval}{A numeric value with the pvalue to use for selecting significant features.}
 

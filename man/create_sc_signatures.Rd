@@ -41,15 +41,10 @@ A list containing the cell signatures per method. Signatures are directly saved 
 \description{
 Create cell type signatures from scRNAseq
 }
-\examples{
+\references{
+Sturm, G., Finotello, F., Petitprez, F., Zhang, J. D., Baumbach, J., Fridman, W. H., ..., List, M., Aneichyk, T. (2019). Comprehensive evaluation of transcriptome-based cell-type quantification methods for immuno-oncology.
+Bioinformatics, 35(14), i436-i445. https://doi.org/10.1093/bioinformatics/btz363
 
-data("metacells_data")
-data("metacells_metadata")
-data("sample_labels")
-data("cell_labels")
-
-signatures = create_sc_signatures(metacells_data, metacells_metadata, cell_labels, sample_labels,
-                                  credentials.mail = "XXX", credentials.token = "XXX",
-                                  bulk_rna, name_signature = "Test")
-
+Benchmarking second-generation methods for cell-type deconvolution of transcriptomic data. Dietrich, Alexander and Merotto, Lorenzo and Pelz, Konstantin and Eder, Bernhard and Zackl, Constantin and Reinisch, Katharina and
+Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 }

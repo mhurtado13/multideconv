@@ -11,7 +11,7 @@ Matrix with samples as rows and deconvolution features as columns
 deconvolution
 }
 \description{
-A matrix with the cell type deconvolution features obtained from compute.deconvolution()
+A matrix with the cell type deconvolution features obtained from compute.deconvolution() from the pseudobulk matrix
 }
 \examples{
 data(deconvolution)

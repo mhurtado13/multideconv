@@ -4,7 +4,7 @@
 \alias{remove_low_variance}
 \title{Remove low variance deconvolution features}
 \usage{
-remove_low_variance(data, plot = TRUE)
+remove_low_variance(data, plot = FALSE)
 }
 \arguments{
 \item{data}{Deconvolution features}
@@ -20,11 +20,4 @@ A list containing
 }
 \description{
 Remove low variance deconvolution features
-}
-\examples{
-
-data("deconvolution")
-
-variance = remove_low_variance(deconvolution, plot = return)
-
 }

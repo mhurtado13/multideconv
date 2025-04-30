@@ -15,10 +15,3 @@ Dataframe containing all significant correlations (pvalue < 0.05)
 \description{
 Perform pairwise correlation across all features
 }
-\examples{
-
-data("deconvolution")
-
-df = correlation(deconvolution)
-
-}

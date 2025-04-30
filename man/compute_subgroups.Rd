@@ -25,11 +25,3 @@ A list containing
 \description{
 Compute deconvolution subgroups
 }
-\examples{
-
-data("deconvolution")
-B_cells = deconvolution[,grep("B.cells", colnames(deconvolution))]
-
-x = compute_subgroups(B_cells, file_name = "B.cells", thres_corr = 0.7)
-
-}

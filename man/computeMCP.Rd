@@ -17,12 +17,3 @@ A matrix with cell enrichment scores from MCP
 \description{
 Computes MCPcounter
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-mcp = computeMCP(TPM_matrix, path_signatures = "signatures/")
-
-}

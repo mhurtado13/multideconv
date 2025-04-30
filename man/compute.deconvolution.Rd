@@ -6,7 +6,7 @@
 \usage{
 compute.deconvolution(
   raw.counts,
-  methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS"),
+  methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS", "MOMF"),
   signatures_exclude = NULL,
   normalized = TRUE,
   doParallel = FALSE,
@@ -71,19 +71,23 @@ The function calculates cell abundance based on cell type signatures using diffe
 \examples{
 
 data("raw_counts")
+data("cell_labels")
+data("sample_labels")
+data("metacells_data")
+data("metacells_metadata")
+data("pseudobulk")
 
-deconv = compute.deconvolution(raw_counts, normalized = TRUE, credentials.mail = "xxx",
-                               credentials.token = "xxx", file_name = "Tutorial")
-deconv = compute.deconvolution(raw_counts, normalized = TRUE, credentials.mail = "xxxx",
-                               credentials.token = "xxx", methods = "Quantiseq",
-                               file_name = "Test")
-deconv = compute.deconvolution(raw_counts, normalized = TRUE, credentials.mail = "xxxx",
-                               credentials.token = "xxxxxx", signatures_exclude = "BPRNACan",
-                               file_name = "Tutorial")
-deconv = compute.deconvolution(raw_counts, normalized = TRUE, credentials.mail = "xxxx",
-                               credentials.token = "xxxxxx", sc_deconv = T, sc_matrix = sc.object,
-                               cell_annotations = cell_labels, cell_samples = bath_ids,
-                               name_sc_signature = "Signature_test", file_name = "Test")
+deconv = compute.deconvolution(raw_counts, normalized = TRUE,
+                               methods = "DWLS", return = FALSE)
 
+deconv = compute.deconvolution(raw_counts, normalized = TRUE, methods = "DWLS",
+                               signatures_exclude = "BPRNACan", return = FALSE)
 
+}
+\references{
+Sturm, G., Finotello, F., Petitprez, F., Zhang, J. D., Baumbach, J., Fridman, W. H., ..., List, M., Aneichyk, T. (2019). Comprehensive evaluation of transcriptome-based cell-type quantification methods for immuno-oncology.
+Bioinformatics, 35(14), i436-i445. https://doi.org/10.1093/bioinformatics/btz363
+
+Benchmarking second-generation methods for cell-type deconvolution of transcriptomic data. Dietrich, Alexander and Merotto, Lorenzo and Pelz, Konstantin and Eder, Bernhard and Zackl, Constantin and Reinisch, Katharina and
+Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 }

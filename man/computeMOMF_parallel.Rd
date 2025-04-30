@@ -21,12 +21,3 @@ A matrix with cell abundance deconvolve with MOMF
 \description{
 Compute MOMF in parallel across multiple signatures
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-momf <- computeMOMF_parallel(TPM_matrix, sc_object, 'src/signatures', workers = 4)
-
-}

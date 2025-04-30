@@ -45,14 +45,8 @@ A list with two elements:
 \description{
 Create meta-cells from a single cell object
 }
-\examples{
+\references{
+Langfelder, P., Horvath, S. WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics 9, 559 (2008). https://doi.org/10.1186/1471-2105-9-559
 
-data("metacells_data")
-data("sample_labels")
-data("cell_labels")
-
-
-metacells = create_metacells(metacells, cell_labels, sample_labels, exclude_cells = NULL,
-                             min_cells = 100, k = 30, max_shared = 15, n_workers = 4)
-
+Morabito, S., Reese, F., Rahimzadeh, N., Miyoshi, E., & Swarup, V. (2023). hdWGCNA identifies co-expression networks in high-dimensional transcriptomics data. Cell Reports Methods, 3(6), 100498. https://doi.org/10.1016/j.crmeth.2023.100498
 }

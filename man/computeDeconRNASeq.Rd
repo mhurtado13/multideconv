@@ -19,12 +19,3 @@ A matrix with cell abundance deconvolve with DeconRNASeq
 \description{
 Computes DeconRNASeq
 }
-\examples{
-
-data("raw_counts")
-
-TPM_matrix = ADImpute::NormalizeTPM(raw_counts)
-
-deconrnaseq <- computeDeconRNASeq(TPM_matrix, signature, signature_name)
-
-}
