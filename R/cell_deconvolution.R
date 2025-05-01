@@ -888,7 +888,7 @@ compute_subgroups = function(deconvolution, thres_corr, file_name){
 correlation <- function(data) {
 
   M <- Hmisc::rcorr(as.matrix(data), type = "pearson")
-  Mdf <- purrr::map(M, ~data.frame(.x))
+  Mdf <- purrr::map(M[c("r", "P", "n")], ~data.frame(.x))
 
   corr_df = Mdf %>%
     purrr::map(~tibble::rownames_to_column(.x, var="measure1")) %>%
@@ -1939,21 +1939,26 @@ compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, cor
   deconvolution_combinations = gsub("(BPRNACan3DProMet|BPRNACanProMet|BPRNACan)", "\\1_", deconvolution_combinations)
 
   ###Correlation function
-  corr_bench <- function(data, corr, pval) {
+  corr_bench <- function(data, corr = "pearson", pval = 0.05) {
     M <- Hmisc::rcorr(as.matrix(data), type = corr)
-    Mdf <- purrr::map(M, ~data.frame(.x))
 
-    corr_df = Mdf %>%
-      purrr::map(~tibble::rownames_to_column(.x, var="measure1")) %>%
+    # Only keep the three matrix elements: r, P, n
+    Mdf <- purrr::map(M[c("r", "P", "n")], ~data.frame(.x))
+
+    corr_df <- Mdf %>%
+      purrr::map(~tibble::rownames_to_column(.x, var = "measure1")) %>%
       purrr::map(~tidyr::pivot_longer(.x, -measure1, names_to = "measure2")) %>%
       dplyr::bind_rows(.id = "id") %>%
       tidyr::pivot_wider(names_from = id, values_from = value) %>%
-      dplyr::mutate(sig_p = ifelse(P < pval, T, F),
-                    p_if_sig = ifelse(sig_p, P, NA),
-                    r_if_sig = ifelse(sig_p, r, NA))
+      dplyr::mutate(
+        r = as.numeric(r),
+        P = as.numeric(P),
+        sig_p = ifelse(P < pval, TRUE, FALSE),
+        p_if_sig = ifelse(sig_p, P, NA),
+        r_if_sig = ifelse(sig_p, r, NA)
+      )
 
     return(corr_df)
-
   }
 
   #####Scatter plot function
