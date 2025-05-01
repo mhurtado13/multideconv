@@ -8,6 +8,13 @@
 \description{
 R package that reduces dimensionality and eliminates redundancy through unsupervised filtering and iterative correlation analyses. Built on top of existing frameworks like immunedeconv (Sturm et al. 2019) and omnideconv (Dietrich et al. 2024), multideconv harmonizes outputs across methods to identify robust cell subgroups and mitigate signature-driven heterogeneity.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://mhurtado13.github.io/multideconv/}
+}
+
+}
 \author{
 \strong{Maintainer}: Marcelo Hurtado \email{marcelo.hurtado@inserm.fr} (\href{https://orcid.org/0009-0004-6712-0864}{ORCID})
 
