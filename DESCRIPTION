@@ -24,7 +24,7 @@ Imports:
     ComplexHeatmap,
     grDevices,
     ggpubr,
-    Hmisc (>= 5.1-3),
+    Hmisc (== 5.1-3),
     immunedeconv (>= 2.1.0),
     matrixStats,
     omnideconv (>= 0.1.0),
@@ -39,7 +39,6 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    rgl,
     pcaMethods (>= 1.94),
     utils,
     grid

@@ -900,7 +900,7 @@ correlation <- function(data) {
                   p_if_sig = ifelse(sig_p, p, NA),
                   r_if_sig = ifelse(sig_p, r, NA))
 
-  corr_df = stats::na.omit(corr_df)  #remove the ones that are the same TFs (pval = NA)
+  corr_df = stats::na.omit(corr_df)  #remove the ones that are the same Tfeatures (pval = NA)
   corr_df <- corr_df[which(corr_df$sig_p==T),]  #remove not significant
   corr_df <- corr_df[order(corr_df$r, decreasing = T),]
   corr_df$AbsR =  abs(corr_df$r)
@@ -1939,7 +1939,7 @@ compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, cor
   deconvolution_combinations = gsub("(BPRNACan3DProMet|BPRNACanProMet|BPRNACan)", "\\1_", deconvolution_combinations)
 
   ###Correlation function
-  correlation <- function(data, corr, pval) {
+  corr_bench <- function(data, corr, pval) {
     M <- Hmisc::rcorr(as.matrix(data), type = corr)
     Mdf <- purrr::map(M, ~data.frame(.x))
 
@@ -2037,7 +2037,7 @@ compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, cor
       }
     }
 
-    x = correlation(cbind(deconv, ground), corr_type, pval)
+    x = corr_bench(cbind(deconv, ground), corr_type, pval)
     x = x[which(x$measure1==colnames(ground)),] #only taking corr against ground truth
 
     for (j in 1:ncol(corr_matrix)) {
