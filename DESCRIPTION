@@ -39,6 +39,7 @@ Imports:
     stringr,
     tibble,
     tidyr,
+    rgl,
     pcaMethods (>= 1.94),
     utils,
     grid
@@ -63,7 +64,6 @@ Suggests:
     MCPcounter (>= 1.2.0),
     knitr,
     matlib,
-    rgl,
     rmarkdown
 LazyData: true
 LazyDataCompression: bzip2
