@@ -8,6 +8,7 @@ if (!dir.exists(signature_dir)) {
   dir.create(signature_dir, recursive = TRUE)
 }
 
+library(pcaMethods) #Explicitly loading pcaMethods to access functions like prep(), which are not imported via @import. Problem with DeconRNASeq that uses not imported functions from pcaMethods
 utils::globalVariables(c("mcp", "xcell" ,"i", ".", "samples_ids", "multisession", ".data", "Patient", "var", "id", "value", "P", "sig_p", "r", "y", "p", "average", "Cells", "variable", "value", "pval_value"))
 
 #' Compute deconvolution preprocessing
@@ -1110,8 +1111,8 @@ compute.deconvolution.analysis <- function(deconvolution, corr = 0.7, seed = NUL
   #Save data to export
   if(return){
     data.output = data.groups
-    write.csv(dt, paste0('Results/Deconvolution_after_subgrouping_', file_name,'.csv'))
-    write.csv(data.output, paste0('Results/Cell_subgroups_', file_name,'.csv'), row.names = F)
+    utils::write.csv(dt, paste0('Results/Deconvolution_after_subgrouping_', file_name,'.csv'))
+    utils::write.csv(data.output, paste0('Results/Cell_subgroups_', file_name,'.csv'), row.names = F)
 
     dend_column = stats::as.dendrogram(stats::hclust(stats::dist(dt), method = "ward.D2"))
 
@@ -1218,7 +1219,7 @@ computeCBSX_parallel = function(TPM_matrix, signatures, name, password, workers)
   doParallel::registerDoParallel(cl)
 
   cbsx = foreach::foreach (i=1:length(signatures), .combine=cbind) %dopar% {
-    source("cell_deconvolution.R")
+    library(multideconv)
     signature <- utils::read.delim(signatures[[i]], row.names=1)
     signature_name = stringr::str_split(basename(signatures[[i]]), "\\.")[[1]][1]
     computeCBSX(TPM_matrix, signature, name, password, signature_name)
@@ -1264,7 +1265,7 @@ computeDWLS_parallel = function(TPM_matrix, signatures, workers){
   doParallel::registerDoParallel(cl)
 
   dwls = foreach::foreach (i=1:length(signatures), .combine=cbind) %dopar% {
-    source("cell_deconvolution.R")
+    library(multideconv)
     signature <- utils::read.delim(signatures[[i]], row.names=1)
     signature_name = stringr::str_split(basename(signatures[[i]]), "\\.")[[1]][1]
     computeDWLS(TPM_matrix, signature, signature_name)
@@ -1347,7 +1348,7 @@ computeMOMF_parallel = function(TPM_matrix, sc_object, signatures, workers){
   doParallel::registerDoParallel(cl)
 
   momf = foreach::foreach (i=1:length(signatures), .combine=cbind) %dopar% {
-    source("cell_deconvolution.R")
+    library(multideconv)
     signature <- utils::read.delim(signatures[[i]], row.names=1)
     signature_name = stringr::str_split(basename(signatures[[i]]), "\\.")[[1]][1]
     computeMOMF(TPM_matrix, sc_object, signature, signature_name)
@@ -1388,7 +1389,6 @@ computeEpiDISH = function(TPM_matrix, signature_file, name_signature){
 #'
 #' @import pcaMethods
 computeDeconRNASeq = function(TPM_matrix, signature_file, name_signature){
-  library(pcaMethods) #Explicitly loading pcaMethods to access functions like prep(), which are not imported via @import. Problem with DeconRNASeq that uses not imported functions from pcaMethods
 
   decon <- DeconRNASeq::DeconRNASeq(TPM_matrix, data.frame(signature_file))
   deconRNAseq = decon$out.all
@@ -1457,7 +1457,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
     if("CBSX" %in% algos){
       if(is.null(cbsx.name)==T || is.null(cbsx.token)==T){
         cat("\nYou select to run CBSX but no credentials were found")
-        cat("\nPlease set your credentials in the function for running CibersortX")
+        cat("\nPlease set your credentials in the function for running CIBERSORTx")
         stop()
       }
     }
@@ -2137,7 +2137,7 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
   }
 
   #Save pseudobulk matrix
-  utils::write.table(pseudo_counts, file = file_name, quote = F, sep = "\t", row.names = F)
+  utils::write.table(pseudo_counts, file = paste0("Results/", file_name, ".csv"), quote = F, sep = "\t", row.names = F)
 
   return(pseudo_counts)
 
@@ -2171,23 +2171,6 @@ create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels
 
   sc_obj = as.matrix(sc_obj)
 
-  cat("\nRunning CibersortX...............................................................\n")
-
-  if(is.null(credentials.mail)==T || is.null(credentials.token)==T){
-    cat("\nYou select to run CBSX but no credentials were found")
-    cat("\nPlease set your credentials in the function for running CibersortX")
-    stop()
-  }
-
-  omnideconv::set_cibersortx_credentials(credentials.mail, credentials.token)
-  model_cbsx = omnideconv::build_model(sc_obj, as.character(sc_metadata[,cells_labels]),
-                                       batch_ids = as.character(sc_metadata[,sample_labels]), method = "cibersortx") %>%
-    data.frame() %>%
-    tibble::rownames_to_column("NAME")
-
-  utils::write.table(model_cbsx, paste0(signature_dir, "CBSX-", name_signature,"-scRNAseq.txt"), row.names = F, quote = F, sep = "\t")
-
-
   cat("\nRunning DWLS...............................................................\n")
   model_dwls <- omnideconv::build_model_dwls(sc_obj, as.character(sc_metadata[,cells_labels]),
                                              dwls_method = "mast_optimized", ncores = 1) %>%
@@ -2196,7 +2179,25 @@ create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels
 
   utils::write.table(model_dwls, paste0(signature_dir, "DWLS-", name_signature,"-scRNAseq.txt"), row.names = F, quote = F, sep = "\t")
 
-  signatures = list(CBSX = model_cbsx, DWLS = model_dwls)
+  signatures = list(DWLS = model_dwls)
+
+  cat("\nRunning CIBERSORTx...............................................................\n")
+
+  if(is.null(credentials.mail)==T || is.null(credentials.token)==T){
+    warning("\nNo credentials were found\n")
+    cat("\nPlease set your credentials in the function for running CIBERSORTx")
+    cat("\nSkipping...............")
+  }else{
+    omnideconv::set_cibersortx_credentials(credentials.mail, credentials.token)
+    model_cbsx = omnideconv::build_model(sc_obj, as.character(sc_metadata[,cells_labels]),
+                                         batch_ids = as.character(sc_metadata[,sample_labels]), method = "cibersortx") %>%
+      data.frame() %>%
+      tibble::rownames_to_column("NAME")
+
+    utils::write.table(model_cbsx, paste0(signature_dir, "CBSX-", name_signature,"-scRNAseq.txt"), row.names = F, quote = F, sep = "\t")
+    signatures[[length(signatures) + 1]] = model_cbsx
+    names(signatures)[length(signatures)] = "CBSX"
+  }
 
   if(is.null(bulk_rna) == F){
     cat("\nRunning MOMF...............................................................\n")
