@@ -8,7 +8,6 @@ if (!dir.exists(signature_dir)) {
   dir.create(signature_dir, recursive = TRUE)
 }
 
-library(pcaMethods) #Explicitly loading pcaMethods to access functions like prep(), which are not imported via @import. Problem with DeconRNASeq that uses not imported functions from pcaMethods
 utils::globalVariables(c("mcp", "xcell" ,"i", ".", "samples_ids", "multisession", ".data", "Patient", "var", "id", "value", "P", "sig_p", "r", "y", "p", "average", "Cells", "variable", "value", "pval_value"))
 
 #' Compute deconvolution preprocessing
@@ -1389,6 +1388,7 @@ computeEpiDISH = function(TPM_matrix, signature_file, name_signature){
 #'
 #' @import pcaMethods
 computeDeconRNASeq = function(TPM_matrix, signature_file, name_signature){
+  library(pcaMethods) #Explicitly loading pcaMethods to access functions like prep(), which are not imported via @import. Problem with DeconRNASeq that uses not imported functions from pcaMethods
 
   decon <- DeconRNASeq::DeconRNASeq(TPM_matrix, data.frame(signature_file))
   deconRNAseq = decon$out.all
@@ -1599,10 +1599,8 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
 #' data("pseudobulk")
 #'
 #' deconv = compute.deconvolution(raw_counts, normalized = TRUE,
-#'                                methods = c("DWLS", "DeconRNASeq"), return = FALSE)
+#'                                methods = c("Epidish", "DeconRNASeq"), return = FALSE)
 #'
-#' deconv = compute.deconvolution(raw_counts, normalized = TRUE, methods = "DWLS",
-#'                                signatures_exclude = "BPRNACan", return = FALSE)
 #'
 #' @references
 #'
