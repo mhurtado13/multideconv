@@ -78,7 +78,7 @@ data("metacells_metadata")
 data("pseudobulk")
 
 deconv = compute.deconvolution(raw_counts, normalized = TRUE,
-                               methods = "DWLS", return = FALSE)
+                               methods = c("DWLS", "DeconRNASeq"), return = FALSE)
 
 deconv = compute.deconvolution(raw_counts, normalized = TRUE, methods = "DWLS",
                                signatures_exclude = "BPRNACan", return = FALSE)

@@ -1386,7 +1386,10 @@ computeEpiDISH = function(TPM_matrix, signature_file, name_signature){
 #'
 #' @return A matrix with cell abundance deconvolve with DeconRNASeq
 #'
+#' @import pcaMethods
 computeDeconRNASeq = function(TPM_matrix, signature_file, name_signature){
+  library(pcaMethods) #Explicitly loading pcaMethods to access functions like prep(), which are not imported via @import. Problem with DeconRNASeq that uses not imported functions from pcaMethods
+
   decon <- DeconRNASeq::DeconRNASeq(TPM_matrix, data.frame(signature_file))
   deconRNAseq = decon$out.all
   rownames(deconRNAseq) = colnames(TPM_matrix)
@@ -1596,7 +1599,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
 #' data("pseudobulk")
 #'
 #' deconv = compute.deconvolution(raw_counts, normalized = TRUE,
-#'                                methods = "DWLS", return = FALSE)
+#'                                methods = c("DWLS", "DeconRNASeq"), return = FALSE)
 #'
 #' deconv = compute.deconvolution(raw_counts, normalized = TRUE, methods = "DWLS",
 #'                                signatures_exclude = "BPRNACan", return = FALSE)

@@ -14,6 +14,7 @@
 #' @importFrom grDevices pdf
 #' @importFrom grid gpar
 #' @importFrom grid unit
+#' @importFrom pcaMethods prep
 #' @importFrom stats density
 #' @importFrom stats na.omit
 #' @importFrom utils write.csv

@@ -9,6 +9,8 @@ License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.3)
 Imports: 
     ADImpute,
     DeconRNASeq (>= 1.44.0),
@@ -25,10 +27,8 @@ Imports:
     Hmisc,
     immunedeconv (>= 2.1.0),
     matrixStats,
-    MCPcounter (>= 1.2.0),
     omnideconv (>= 0.1.0),
     parallel,
-    Seurat (>= 4.4.0),
     glmGamPoi,
     future.apply,
     ggtext,
@@ -39,6 +39,7 @@ Imports:
     stringr,
     tibble,
     tidyr,
+    pcaMethods (>= 1.94),
     utils,
     grid
 Remotes: 
@@ -53,14 +54,15 @@ Suggests:
     testthat (>= 3.0.0),
     WGCNA,
     UCell,
+    Seurat (>= 4.4.0),
     GenomicRanges,
     GeneOverlap,
     DWLS (>= 0.4),
     MOMF (>= 0.2),
     BayesPrism (>= 0.2),
+    MCPcounter (>= 1.2.0),
     knitr,
     rmarkdown
-Depends: 
 LazyData: true
 LazyDataCompression: bzip2
 Config/testthat/edition: 3
