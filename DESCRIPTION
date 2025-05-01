@@ -48,7 +48,7 @@ Remotes:
     omnideconv/omnideconv,
     omnideconv/DWLS,
     omnideconv/BayesPrism,
-    sqsun/MOMF,
+    omnideconv/MOMF,
     smorabit/hdWGCNA,
     grst/MCPcounter,
 Suggests: 
