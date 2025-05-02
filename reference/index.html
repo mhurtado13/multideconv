@@ -31,9 +31,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="main">Main<a class="anchor" aria-label="anchor" href="#main"></a></h2>
 
-
+      <div class="section-desc"><p>Compute deconvolution</p></div>
 
 
     </div><div class="section level2">
@@ -42,30 +42,6 @@
 
 
       <dl><dt>
-
-          <code><a href="cell_labels.html">cell_labels</a></code>
-
-        </dt>
-        <dd>Cell labels</dd>
-      </dl><dl><dt>
-
-          <code><a href="cells_groundtruth.html">cells_groundtruth</a></code>
-
-        </dt>
-        <dd>Cell groundtruth</dd>
-      </dl><dl><dt>
-
-          <code><a href="compute.benchmark.html">compute.benchmark()</a></code>
-
-        </dt>
-        <dd>Compute deconvolution benchmark</dd>
-      </dl><dl><dt>
-
-          <code><a href="compute.cell.types.html">compute.cell.types()</a></code>
-
-        </dt>
-        <dd>Cell types split from deconvolution</dd>
-      </dl><dl><dt>
 
           <code><a href="compute.deconvolution.html">compute.deconvolution()</a></code>
 
@@ -84,6 +60,64 @@
         </dt>
         <dd>Compute deconvolution preprocessing</dd>
       </dl><dl><dt>
+
+          <code><a href="compute_methods_variable_signature.html">compute_methods_variable_signature()</a></code>
+
+        </dt>
+        <dd>Compute deconvolution methods with variable signatures</dd>
+      </dl></div><div class="section level2">
+      <h2 id="single-cell-functions">Single cell functions<a class="anchor" aria-label="anchor" href="#single-cell-functions"></a></h2>
+
+      <div class="section-desc"><p>Single cell manipulation for deconvolution</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="create_metacells.html">create_metacells()</a></code>
+
+        </dt>
+        <dd>Create meta-cells from a single cell object</dd>
+      </dl><dl><dt>
+
+          <code><a href="create_sc_pseudobulk.html">create_sc_pseudobulk()</a></code>
+
+        </dt>
+        <dd>Create pseudo bulk from single cell object</dd>
+      </dl><dl><dt>
+
+          <code><a href="create_sc_signatures.html">create_sc_signatures()</a></code>
+
+        </dt>
+        <dd>Create cell type signatures from scRNAseq</dd>
+      </dl><dl><dt>
+
+          <code><a href="compute_sc_deconvolution_methods.html">compute_sc_deconvolution_methods()</a></code>
+
+        </dt>
+        <dd>Compute second-generation deconvolution methods</dd>
+      </dl><dl><dt>
+
+          <code><a href="compute.benchmark.html">compute.benchmark()</a></code>
+
+        </dt>
+        <dd>Compute deconvolution benchmark</dd>
+      </dl></div><div class="section level2">
+      <h2 id="utils">Utils<a class="anchor" aria-label="anchor" href="#utils"></a></h2>
+
+      <div class="section-desc"><p>Internal use (not exported functions)</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="computeCBSX.html">computeCBSX()</a></code>
 
@@ -151,46 +185,57 @@
         <dd>Computes XCell</dd>
       </dl><dl><dt>
 
-          <code><a href="compute_methods_variable_signature.html">compute_methods_variable_signature()</a></code>
-
-        </dt>
-        <dd>Compute deconvolution methods with variable signatures</dd>
-      </dl><dl><dt>
-
-          <code><a href="compute_sc_deconvolution_methods.html">compute_sc_deconvolution_methods()</a></code>
-
-        </dt>
-        <dd>Compute second-generation deconvolution methods</dd>
-      </dl><dl><dt>
-
           <code><a href="compute_subgroups.html">compute_subgroups()</a></code>
 
         </dt>
         <dd>Compute deconvolution subgroups</dd>
       </dl><dl><dt>
 
+          <code><a href="compute.cell.types.html">compute.cell.types()</a></code>
+
+        </dt>
+        <dd>Cell types split from deconvolution</dd>
+      </dl><dl><dt>
+
+          <code><a href="remove_subgroups.html">remove_subgroups()</a></code>
+
+        </dt>
+        <dd>Remove subgroups that have the same method across different signatures</dd>
+      </dl><dl><dt>
+
+          <code><a href="remove_low_variance.html">remove_low_variance()</a></code>
+
+        </dt>
+        <dd>Remove low variance deconvolution features</dd>
+      </dl><dl><dt>
+
+          <code><a href="removeCorrelatedFeatures.html">removeCorrelatedFeatures()</a></code>
+
+        </dt>
+        <dd>Remove high correlated cell deconvolution features</dd>
+      </dl><dl><dt>
+
           <code><a href="correlation.html">correlation()</a></code>
 
         </dt>
         <dd>Perform pairwise correlation across all features</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="package-data">Package Data<a class="anchor" aria-label="anchor" href="#package-data"></a></h2>
 
-          <code><a href="create_metacells.html">create_metacells()</a></code>
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="raw_counts.html">raw_counts</a></code>
 
         </dt>
-        <dd>Create meta-cells from a single cell object</dd>
-      </dl><dl><dt>
-
-          <code><a href="create_sc_pseudobulk.html">create_sc_pseudobulk()</a></code>
-
-        </dt>
-        <dd>Create pseudo bulk from single cell object</dd>
-      </dl><dl><dt>
-
-          <code><a href="create_sc_signatures.html">create_sc_signatures()</a></code>
-
-        </dt>
-        <dd>Create cell type signatures from scRNAseq</dd>
+        <dd>Raw counts</dd>
       </dl><dl><dt>
 
           <code><a href="deconv_bulk.html">deconv_bulk</a></code>
@@ -223,28 +268,16 @@
         <dd>Pseudobulk</dd>
       </dl><dl><dt>
 
-          <code><a href="raw_counts.html">raw_counts</a></code>
+          <code><a href="cells_groundtruth.html">cells_groundtruth</a></code>
 
         </dt>
-        <dd>Raw counts</dd>
+        <dd>Cell groundtruth</dd>
       </dl><dl><dt>
 
-          <code><a href="removeCorrelatedFeatures.html">removeCorrelatedFeatures()</a></code>
+          <code><a href="subgroups.html">subgroups</a></code>
 
         </dt>
-        <dd>Remove high correlated cell deconvolution features</dd>
-      </dl><dl><dt>
-
-          <code><a href="remove_low_variance.html">remove_low_variance()</a></code>
-
-        </dt>
-        <dd>Remove low variance deconvolution features</dd>
-      </dl><dl><dt>
-
-          <code><a href="remove_subgroups.html">remove_subgroups()</a></code>
-
-        </dt>
-        <dd>Remove subgroups that have the same method across different signatures</dd>
+        <dd>Cell subgroups</dd>
       </dl><dl><dt>
 
           <code><a href="sample_labels.html">sample_labels</a></code>
@@ -253,12 +286,13 @@
         <dd>Sample labels</dd>
       </dl><dl><dt>
 
-          <code><a href="subgroups.html">subgroups</a></code>
+          <code><a href="cell_labels.html">cell_labels</a></code>
 
         </dt>
-        <dd>Cell subgroups</dd>
+        <dd>Cell labels</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
