@@ -23,12 +23,12 @@ You can install the development version of `multideconv` from [GitHub](https://g
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("mhurtado13/multideconv")
+devtools::install_github("VeraPancaldiLab/multideconv")
 ```
 
 ## General usage
 
-These are basic examples which shows you how to use `multideconv` for different tasks. For a detailed tutorial, see [Get started](https://mhurtado13.github.io/multideconv/articles/multideconv.html)
+These are basic examples which shows you how to use `multideconv` for different tasks. For a detailed tutorial, see [Get started](https://VeraPancaldiLab.github.io/multideconv/articles/multideconv.html)
 
 ``` r
 library(multideconv)

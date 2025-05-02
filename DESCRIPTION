@@ -68,4 +68,4 @@ LazyData: true
 LazyDataCompression: bzip2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://mhurtado13.github.io/multideconv/
+URL: https://github.com/VeraPancaldiLab/multideconv
