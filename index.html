@@ -39,6 +39,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/VeraPancaldiLab/multideconv/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -63,14 +64,14 @@
 <p>You can install the development version of <code>multideconv</code> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"mhurtado13/multideconv"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"VeraPancaldiLab/multideconv"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="general-usage">General usage<a class="anchor" aria-label="anchor" href="#general-usage"></a>
 </h2>
-<p>These are basic examples which shows you how to use <code>multideconv</code> for different tasks. For a detailed tutorial, see <a href="https://mhurtado13.github.io/multideconv/articles/multideconv.html">Get started</a></p>
+<p>These are basic examples which shows you how to use <code>multideconv</code> for different tasks. For a detailed tutorial, see <a href="https://VeraPancaldiLab.github.io/multideconv/articles/multideconv.html" class="external-link">Get started</a></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mhurtado13.github.io/multideconv/">multideconv</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/VeraPancaldiLab/multideconv" class="external-link">multideconv</a></span><span class="op">)</span></span></code></pre></div>
 <p>The function calculates cell abundance based on cell type signatures using different methods and signatures through the function <code>compute.deconvolution</code> which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span><span class="va">raw.counts</span>, normalized <span class="op">=</span> <span class="cn">T</span>, credentials.mail <span class="op">=</span> <span class="st">"xxxx"</span>, credentials.token <span class="op">=</span> <span class="st">"xxxxxx"</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span> </span>
@@ -136,7 +137,14 @@
 <div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>XXXXX</span></code></pre></div>
 </div>
 </div>
-  </main><aside class="col-md-3"><div class="license">
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/VeraPancaldiLab/multideconv/" class="external-link">Browse source code</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
