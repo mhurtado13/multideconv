@@ -119,13 +119,11 @@ provides, you can do the following:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"signatures/"</span>, package <span class="op">=</span> <span class="st">"multideconv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "BPRNACan.txt"                   "BPRNACan3DProMet.txt"          </span></span>
-<span><span class="co">#&gt;  [3] "BPRNACanProMet.txt"             "BSeqSC-Vanderbilt-scRNAseq.txt"</span></span>
-<span><span class="co">#&gt;  [5] "CBSX-HNSCC-scRNAseq.txt"        "CBSX-Melanoma-scRNAseq.txt"    </span></span>
-<span><span class="co">#&gt;  [7] "CBSX-NSCLC-PBMCs-scRNAseq.txt"  "CBSX-Vanderbilt-scRNAseq.txt"  </span></span>
-<span><span class="co">#&gt;  [9] "CCLE-TIL10.txt"                 "DWLS-Vanderbilt-scRNAseq.txt"  </span></span>
-<span><span class="co">#&gt; [11] "LM22.txt"                       "MCPcounter"                    </span></span>
-<span><span class="co">#&gt; [13] "MOMF-Vanderbilt-scRNAseq.txt"   "TIL10.txt"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "BPRNACan.txt"                  "BPRNACan3DProMet.txt"         </span></span>
+<span><span class="co">#&gt;  [3] "BPRNACanProMet.txt"            "CBSX-HNSCC-scRNAseq.txt"      </span></span>
+<span><span class="co">#&gt;  [5] "CBSX-Melanoma-scRNAseq.txt"    "CBSX-NSCLC-PBMCs-scRNAseq.txt"</span></span>
+<span><span class="co">#&gt;  [7] "CCLE-TIL10.txt"                "LM22.txt"                     </span></span>
+<span><span class="co">#&gt;  [9] "MCPcounter"                    "TIL10.txt"</span></span></code></pre></div>
 <p>To access a specific signature</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">signature</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"CBSX-Melanoma-scRNAseq.txt"</span><span class="op">)</span><span class="op">)</span></span>
