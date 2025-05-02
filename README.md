@@ -1,8 +1,8 @@
 multideconv
 ================
 
-Integrative pipeline for cell type deconvolution from bulk RNAseq using
-first and second generation methods
+An integrative pipeline for combining first and second generation cell
+type deconvolution results
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -11,11 +11,12 @@ first and second generation methods
 <img src="man/figures/overview.png?raw=true"/>
 
 </p>
-<p align="center">
 
-<i> Figure 1. A schematic overview of the `multideconv` pipeline </i>
+<div style="text-align: center;">
 
-</p>
+<em>Figure 1. A schematic overview of the `multideconv` pipeline</em>
+
+</div>
 
 ## Installation
 
@@ -30,8 +31,8 @@ devtools::install_github("mhurtado13/multideconv")
 ## General usage
 
 These are basic examples which shows you how to use `multideconv` for
-different tasks. For a detailed tutorial, see the
-[tutorial](https://mhurtado13.github.io/multideconv/index.html)
+different tasks. For a detailed tutorial, see [Get
+started](https://mhurtado13.github.io/multideconv/articles/multideconv.html)
 
 ``` r
 library(multideconv)
@@ -94,6 +95,25 @@ already included in `compute.deconvolution` when setting
 ``` r
 deconv_sc = compute_sc_deconvolution_methods(raw_counts, sc_object, sc_metadata, cell_annotations, samples_ids, name_object, normalized = T, n_cores = 4, cbsx_name = "XXX", cbsx_token = "XXX")
 ```
+
+## Cell types nomenclature
+
+`multideconv` works based on established cell naming conventions (Figure
+2) to simplify analysis and processing. Thus, if you would like to use
+your own deconvolution results or signatures, please make sure to follow
+these formats.
+
+<p align="center">
+
+<img src="man/figures/cell_types.png?raw=true"/>
+
+</p>
+
+<div style="text-align: center;">
+
+<em>Figure 2. Cell types nomenclature for `multideconv`</em>
+
+</div>
 
 ## How to add cell types other than the ones present in the nomenclature?
 

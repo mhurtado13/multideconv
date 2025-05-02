@@ -1201,12 +1201,12 @@ computeXCell <- function(TPM_matrix) {
   return(xcell)
 }
 
-#' Compute CibersortX (CBSX) in parallel across multiple signatures
+#' Compute CIBERSORTx (CBSX) in parallel across multiple signatures
 #'
 #' @param TPM_matrix A matrix with TPM normalized counts (genes symbols as rows and samples as columns).
 #' @param signatures Path where signatures files are located
-#' @param name Credential email for running CibersortX.
-#' @param password Credential token for running CibersortX.
+#' @param name Credential email for running CIBERSORTx.
+#' @param password Credential token for running CIBERSORTx.
 #' @param workers Number of processes available to run on parallel.
 #'
 #' @return A matrix with cell abundance deconvolve with CBSX
@@ -1228,12 +1228,12 @@ computeCBSX_parallel = function(TPM_matrix, signatures, name, password, workers)
   return(cbsx)
 }
 
-#' Computes CibersortX (CBSX) using one signature
+#' Computes CIBERSORTx (CBSX) using one signature
 #'
 #' @param TPM_matrix A matrix with TPM normalized counts (genes symbols as rows and samples as columns).
 #' @param signature_file The signature file to use.
-#' @param name Credential email for running CibersortX.
-#' @param password Credential token for running CibersortX.
+#' @param name Credential email for running CIBERSORTx.
+#' @param password Credential token for running CIBERSORTx.
 #' @param name_signature Signature name to set for the deconvolution results.
 #'
 #' @return A matrix with cell abundance deconvolve with CBSX
@@ -1405,8 +1405,8 @@ computeDeconRNASeq = function(TPM_matrix, signature_file, name_signature){
 #' @param signatures A path with a directory where signatures are located
 #' @param algos A character vector with the methods to compute (Default methods are CBSX, Epidish, DeconRNASeq and DWLS)
 #' @param exclude (Optional) A character vector with the signature to exclude
-#' @param cbsx.name Cibersortx credential mail if CBSX will be run
-#' @param cbsx.token Cibersortx credential token if CBSX will be run
+#' @param cbsx.name CIBERSORTx credential mail if CBSX will be run
+#' @param cbsx.token CIBERSORTx credential token if CBSX will be run
 #' @param doParallel Boolean value to specify if DWLS and CBSX should run in parallel (default is False)
 #' @param workers Number of worker process to run during parallelization (default is NULL)
 #' @param sc_obj A matrix with the counts from scRNAseq object (genes as rows and cells as columns) to run MOMF method. If NULL, MOMF is ignored.
@@ -1560,7 +1560,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
 
 #' Compute deconvolution
 #'
-#'The function calculates cell abundance based on cell type signatures using different methods and signatures. Methods available are Quantiseq, MCP, XCell, CibersortX, EpiDISH, DWLS and DeconRNASeq. Provided signatures included signatures based on bulk and methylation data (7 methods and 10 signature in total). Signatures are present in the src/signatures directory, user can add its own signatures by adding the .txt files in this same folder. Second generation methods to perform deconvolution based on single cell data are also available if scRNAseq object is provided.
+#'The function calculates cell abundance based on cell type signatures using different methods and signatures. Methods available are Quantiseq, MCP, XCell, CIBERSORTx, EpiDISH, DWLS and DeconRNASeq. Provided signatures included signatures based on bulk and methylation data (7 methods and 10 signature in total). Signatures are present in the src/signatures directory, user can add its own signatures by adding the .txt files in this same folder. Second generation methods to perform deconvolution based on single cell data are also available if scRNAseq object is provided.
 #'
 #' @param raw.counts A matrix with the raw counts (samples as columns and genes symbols as rows)
 #' @param methods A character vector with the deconvolution methods to run. Default are "Quantiseq", "MCP", "xCell", "CBSX", "Epidish", "DeconRNASeq", "DWLS"
@@ -1570,8 +1570,8 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
 #' @param workers Number of processes available to run on parallel. If no number is set, this will correspond to detectCores() - 1
 #' @param return Whether to save or not the csv file with the deconvolution features
 #' @param create_signature Whether to create or not the signatures using the methods MOMF, CBSX, DWLS and BSeq-SC. If TRUE, sc_matrix shuld be provide.
-#' @param credentials.mail (Optional) Credential email for running CibersortX. If not provided, cibersortX method will not be run.
-#' @param credentials.token (Optional) Credential token for running CibersortX. If not provided, cibersortX method will not be run.
+#' @param credentials.mail (Optional) Credential email for running CIBERSORTx. If not provided, CIBERSORTx method will not be run.
+#' @param credentials.token (Optional) Credential token for running CIBERSORTx. If not provided, CIBERSORTx method will not be run.
 #' @param sc_deconv Whether to run or not deconvolution methods based on single cell.
 #' @param sc_matrix If sc_deconv = T, the matrix of counts across cells from the scRNAseq object is provided.
 #' @param sc_metadata Dataframe with metadata from the single cell object. The matrix should include the columns cell_label and sample_label.
@@ -1802,7 +1802,7 @@ compute_sc_deconvolution_methods = function(raw_counts, normalized = TRUE, sc_ob
 }
 
 
-#' Create meta-cells from a single cell object
+#' Create meta-cells from a single cell object using the KNN algorithm. This function is adapted from the R package hdWGCNA (Morabito et al., 2023)
 #'
 #' @param sc_object A matrix with the counts from scRNAseq object (genes as rows and cells as columns)
 #' @param labels_column A character vector with the cell labels (need to be of the same order as in the sc_object)
@@ -2152,13 +2152,13 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
 #' @param sc_metadata Dataframe with metadata from the single cell object. The matrix should include the columns cell_label and sample_label.
 #' @param cells_labels A character vector with the cell labels (need to be of the same order as in the sc_object)
 #' @param sample_labels A character vector with the samples labels (need to be of the same order as in the sc_object)
-#' @param credentials.mail (Optional) Credential email for running CibersortX. If not provided, cibersortX method will not be run.
-#' @param credentials.token (Optional) Credential token for running CibersortX. If not provided, cibersortX method will not be run.
+#' @param credentials.mail (Optional) Credential email for running CIBERSORTx If not provided, CIBERSORTx method will not be run.
+#' @param credentials.token (Optional) Credential token for running CIBERSORTx. If not provided, CIBERSORTx method will not be run.
 #' @param bulk_rna A matrix of bulk data. Rows are genes, columns are samples. This is needed for MOMF method, if not given the method will not be run.
 #' @param cell_markers Named list with the genes markers names as Symbol per cell types to be used to create the signature using the BSeq-SC method. If NULL, the method will be ignored during the signature creation.
 #' @param name_signature A string indicating the signature name. This will be added as a suffix in each method (e.g. CBSX_name_signature, DWLS_name_signature)
 #'
-#' @return A list containing the cell signatures per method. Signatures are directly saved in signatures/ folders, these will be used to run deconvolution.
+#' @return A list containing the cell signatures per method. Signatures are directly saved in Results/custom_signatures folder, these will be used to run deconvolution.
 #' @export
 #'
 #' @references

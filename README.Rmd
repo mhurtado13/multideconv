@@ -3,7 +3,7 @@ title: "multideconv"
 output: github_document
 ---
 
-Integrative pipeline for cell type deconvolution from bulk RNAseq using first and second generation methods
+An integrative pipeline for combining first and second generation cell type deconvolution results
 
 <!-- badges: start -->
 
@@ -15,11 +15,9 @@ Integrative pipeline for cell type deconvolution from bulk RNAseq using first an
 
 </p>
 
-<p align="center">
-
-<i> Figure 1. A schematic overview of the `multideconv` pipeline </i>
-
-</p>
+::: {style="text-align: center;"}
+<em>Figure 1. A schematic overview of the `multideconv` pipeline</em>
+:::
 
 ## Installation
 
@@ -32,13 +30,13 @@ devtools::install_github("mhurtado13/multideconv")
 
 ## General usage
 
-These are basic examples which shows you how to use `multideconv` for different tasks. For a detailed tutorial, see the  [tutorial](https://mhurtado13.github.io/multideconv/index.html) 
+These are basic examples which shows you how to use `multideconv` for different tasks. For a detailed tutorial, see [Get started](https://mhurtado13.github.io/multideconv/articles/multideconv.html)
 
 ``` r
 library(multideconv)
 ```
 
-The function calculates cell abundance based on cell type signatures using different methods and signatures through the function `compute.deconvolution` which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts. 
+The function calculates cell abundance based on cell type signatures using different methods and signatures through the function `compute.deconvolution` which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts.
 
 ``` r
 deconv = compute.deconvolution(raw.counts, normalized = T, credentials.mail = "xxxx", credentials.token = "xxxxxx", file_name = "Tutorial") 
@@ -84,6 +82,20 @@ Users can also compute second-generation deconvolution methods using their singl
 deconv_sc = compute_sc_deconvolution_methods(raw_counts, sc_object, sc_metadata, cell_annotations, samples_ids, name_object, normalized = T, n_cores = 4, cbsx_name = "XXX", cbsx_token = "XXX")
 ```
 
+## Cell types nomenclature
+
+`multideconv` works based on established cell naming conventions (Figure 2) to simplify analysis and processing. Thus, if you would like to use your own deconvolution results or signatures, please make sure to follow these formats.
+
+<p align="center">
+
+<img src="man/figures/cell_types.png?raw=true"/>
+
+</p>
+
+::: {style="text-align: center;"}
+<em>Figure 2. Cell types nomenclature for `multideconv`</em>
+:::
+
 ## How to add cell types other than the ones present in the nomenclature?
 
 If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function `compute.deconvolution.analysis()`.
@@ -108,7 +120,7 @@ Because most of the times scRNAseq data can be big and sparse matrices, we appli
 
 ## Authors
 
-`multideconv` was developed by [Marcelo Hurtado](https://github.com/mhurtado13) in supervision of [Vera Pancaldi](https://github.com/VeraPancaldi) and is part of the [Pancaldi](https://github.com/VeraPancaldiLab) team. Currently, Marcelo is the primary maintainer of this package. 
+`multideconv` was developed by [Marcelo Hurtado](https://github.com/mhurtado13) in supervision of [Vera Pancaldi](https://github.com/VeraPancaldi) and is part of the [Pancaldi](https://github.com/VeraPancaldiLab) team. Currently, Marcelo is the primary maintainer of this package.
 
 ## Citing multideconv
 
