@@ -48,17 +48,21 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="multideconv">multideconv<a class="anchor" aria-label="anchor" href="#multideconv"></a>
 </h1></div>
-</div>
-<div class="section level1">
-<h1 id="multideconv-1">multideconv<a class="anchor" aria-label="anchor" href="#multideconv-1"></a>
-</h1>
 <p>Integrative pipeline for cell type deconvolution from bulk RNAseq using first and second generation methods</p>
 <!-- badges: start -->
 <!-- badges: end -->
+<p align="center">
+</p>
+<p><img src="reference/figures/overview.png?raw=true"></p>
+
+<p align="center">
+</p>
+<p><i> Figure 1. A schematic overview of the <code>multideconv</code> pipeline </i></p>
+
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of multideconv from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of <code>multideconv</code> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"mhurtado13/multideconv"</span><span class="op">)</span></span></code></pre></div>
@@ -66,16 +70,16 @@
 <div class="section level2">
 <h2 id="general-usage">General usage<a class="anchor" aria-label="anchor" href="#general-usage"></a>
 </h2>
-<p>These are basic examples which shows you how to use multideconv for different tasks:</p>
+<p>These are basic examples which shows you how to use <code>multideconv</code> for different tasks. For a detailed tutorial, see the <a href="https://mhurtado13.github.io/multideconv/index.html">tutorial</a></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mhurtado13.github.io/multideconv/">multideconv</a></span><span class="op">)</span></span></code></pre></div>
-<p>The function calculates cell abundance based on cell type signatures using different methods and signatures through the function <code>compute.deconvolution</code> which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts. See <code>examples/deconvolve.Rmd</code> to see a detailed explanation of the parameters inside the function.</p>
+<p>The function calculates cell abundance based on cell type signatures using different methods and signatures through the function <code>compute.deconvolution</code> which takes as input the bulk RNAseq gene expression matrix either as raw or normalized counts.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span><span class="va">raw.counts</span>, normalized <span class="op">=</span> <span class="cn">T</span>, credentials.mail <span class="op">=</span> <span class="st">"xxxx"</span>, credentials.token <span class="op">=</span> <span class="st">"xxxxxx"</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span> </span>
 <span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span><span class="va">raw.counts</span>, normalized <span class="op">=</span> <span class="cn">T</span>, credentials.mail <span class="op">=</span> <span class="st">"xxxx"</span>, credentials.token <span class="op">=</span> <span class="st">"xxxxxx"</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"MCP"</span>, <span class="st">"XCell"</span>, <span class="st">"DWLS"</span><span class="op">)</span>, file_name <span class="op">=</span> <span class="st">"Test"</span><span class="op">)</span> </span>
 <span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span><span class="va">raw.counts</span>, normalized <span class="op">=</span> <span class="cn">T</span>, credentials.mail <span class="op">=</span> <span class="st">"xxxx"</span>, credentials.token <span class="op">=</span> <span class="st">"xxxxxx"</span>, signatures_exclude <span class="op">=</span> <span class="st">"BPRNACan"</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span>
-<span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span><span class="va">raw.counts</span>, normalized <span class="op">=</span> <span class="cn">T</span>, credentials.mail <span class="op">=</span> <span class="st">"xxxx"</span>, credentials.token <span class="op">=</span> <span class="st">"xxxxxx"</span>, sc_deconv <span class="op">=</span> <span class="cn">T</span>, sc_matrix <span class="op">=</span> <span class="va">sc.object</span>, cell_annotations <span class="op">=</span> <span class="va">cell_labels</span>, cell_samples <span class="op">=</span> <span class="va">bath_ids</span>, name_sc_signature <span class="op">=</span> <span class="st">"Signature_test"</span>, file_name <span class="op">=</span> <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Note</strong>: CIBERSORTx is included in the deconvolution methods, but it’s not an open-source program. To run it, please ask for a token in <a href="https://cibersortx.stanford.edu/register.php" class="external-link">CibersortX</a> and once obtained, provided your username and password on the parameters <code>credentials.mail</code> and <code>credentials.token</code>.</p>
+<span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span><span class="va">raw.counts</span>, normalized <span class="op">=</span> <span class="cn">T</span>, credentials.mail <span class="op">=</span> <span class="st">"xxxx"</span>, credentials.token <span class="op">=</span> <span class="st">"xxxxxx"</span>, sc_deconv <span class="op">=</span> <span class="cn">T</span>, sc_matrix <span class="op">=</span> <span class="va">sc.object</span>, cell_label <span class="op">=</span> <span class="va">cell_labels</span>, sample_label <span class="op">=</span> <span class="va">bath_ids</span>, name_sc_signature <span class="op">=</span> <span class="st">"Signature_test"</span>, file_name <span class="op">=</span> <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
+<p><strong>NOTE</strong>: <code>CIBERSORTx</code> is included in the deconvolution methods, but it’s not an open-source program. To run it, please ask for a token in <a href="https://cibersortx.stanford.edu/register.php" class="external-link">CIBERSORTx</a> and once obtained, provided your username and password on the parameters <code>credentials.mail</code> and <code>credentials.token</code>.</p>
 <p>Also CIBERSORTx ask to have <a href="https://kinsta.com/blog/install-docker-ubuntu/#installing-docker-desktop-on-ubuntu" class="external-link">docker</a> install in your computer. Once installed, be sure to concede permission to manage docker as a non-root user. For verify this, go to the terminal and run:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>docker ps</span></code></pre></div>
 <p>If you don’t have any error, congrats you are go to go!</p>
@@ -84,18 +88,18 @@
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>sudo usermod <span class="sc">-</span>aG docker <span class="sc">$</span>{USER}</span></code></pre></div>
 <p>Then restart your computer and try again</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>docker ps</span></code></pre></div>
-<p>Now, you should be able to run deconvolution using CBSX without any problems :)</p>
+<p>Now, you should be able to run deconvolution using CIBERSORTx without any problems :)</p>
 <p>For processing the deconvolution features obtained from <code>compute.deconvolution</code>, you can use the <code>compute.deconvolution.analysis</code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">processed_deconvolution</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis</a></span><span class="op">(</span><span class="va">deconvolution</span>, corr <span class="op">=</span> <span class="fl">0.7</span>, seed <span class="op">=</span> <span class="fl">123</span>, return <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>Users can also compute second-generation deconvolution methods using their single cell data. For this use the function <code>compute_sc_deconvolution_methods</code>. Remember that this function is already included in <code>compute.deconvolution</code> when setting <code>sc_deconv = T</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">deconv_sc</span> <span class="op">=</span> <span class="fu"><a href="reference/compute_sc_deconvolution_methods.html">compute_sc_deconvolution_methods</a></span><span class="op">(</span><span class="va">raw.counts</span>, <span class="va">sc_matrix</span>, <span class="va">cell_annotations</span>, <span class="va">cell_samples</span>, <span class="va">name_sc_signature</span>, normalized <span class="op">=</span> <span class="cn">T</span>, n_cores <span class="op">=</span> <span class="fl">4</span>, cbsx_name <span class="op">=</span> <span class="st">"XXX"</span>, cbsx_token <span class="op">=</span> <span class="st">"XXX"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">deconv_sc</span> <span class="op">=</span> <span class="fu"><a href="reference/compute_sc_deconvolution_methods.html">compute_sc_deconvolution_methods</a></span><span class="op">(</span><span class="va">raw_counts</span>, <span class="va">sc_object</span>, <span class="va">sc_metadata</span>, <span class="va">cell_annotations</span>, <span class="va">samples_ids</span>, <span class="va">name_object</span>, normalized <span class="op">=</span> <span class="cn">T</span>, n_cores <span class="op">=</span> <span class="fl">4</span>, cbsx_name <span class="op">=</span> <span class="st">"XXX"</span>, cbsx_token <span class="op">=</span> <span class="st">"XXX"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-to-add-cell-types-other-than-the-ones-present-in-the-nomenclature">How to add cell types other than the ones present in the nomenclature?<a class="anchor" aria-label="anchor" href="#how-to-add-cell-types-other-than-the-ones-present-in-the-nomenclature"></a>
 </h2>
-<p>If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function compute.deconvolution.analysis().</p>
+<p>If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function <code><a href="reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis()</a></code>.</p>
 <p>Let’s say you want to add mesenchymal and basophils cells:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">processed_deconvolution</span> <span class="op">=</span> <span class="fu"><a href="reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis</a></span><span class="op">(</span><span class="va">deconvolution</span>, corr <span class="op">=</span> <span class="fl">0.7</span>, seed <span class="op">=</span> <span class="fl">123</span>, cells_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mesenchymal"</span>, <span class="st">"basophils"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
@@ -104,35 +108,26 @@
 <div class="section level2">
 <h2 id="how-to-add-other-signatures">How to add other signatures?<a class="anchor" aria-label="anchor" href="#how-to-add-other-signatures"></a>
 </h2>
-<p>You can include other signatures into the analysis by adding them as .txt into the folder <code>signatures</code>.</p>
+<p>You can include other signatures into the analysis by adding them as .txt into the folder <code>Results/custom_signatures</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="how-does-my-single-cell-data-is-used-for-deconvolution">How does my single cell data is used for deconvolution?<a class="anchor" aria-label="anchor" href="#how-does-my-single-cell-data-is-used-for-deconvolution"></a>
 </h2>
-<p>multideconv includes second generation methods that allows users to input single cell data and use it for constructing signatures ‘on-the-fly’ and deconvolve the bulk RNAseq data.</p>
-<p>Because most of the times scRNAseq data can be big and sparse matrices, we applied ‘preprocessing’ steps to avoid crashing the computer. For this, multideconv construct metacells per cell type and patient from the single cell data using the KNN algorithm. This is done essentially by executing different tasks per cluster in parallel for N workers and once finished, it computes deconvolution using the reduced single cell object (Figure 4).</p>
-<p align="center">
-</p>
-<p><img src="reference/figures/scRNAseq_deconvolution.png?raw=true"></p>
-
-<p align="center">
-</p>
-<p><i> Figure 4. Single cell RNAseq metacells construction </i></p>
-
+<p><code>multideconv</code> includes second generation methods that allows users to input single cell data and use it for constructing signatures ‘on-the-fly’ and deconvolve the bulk RNAseq data.</p>
+<p>Because most of the times scRNAseq data can be big and sparse matrices, we applied ‘preprocessing’ steps to avoid crashing the computer. For this, <code>multideconv</code> construct metacells per cell type and patient from the single cell data using the KNN algorithm. This is done essentially by executing different tasks per cluster in parallel for N workers and once finished, it computes deconvolution using the reduced single cell object.</p>
 </div>
 <div class="section level2">
-<h2 id="additional-notes">Additional notes<a class="anchor" aria-label="anchor" href="#additional-notes"></a>
+<h2 id="authors">Authors<a class="anchor" aria-label="anchor" href="#authors"></a>
 </h2>
-<p>multideconv is fully implemented and adapted as part of <a href="https://github.com/VeraPancaldiLab/CellTFusion" class="external-link">CellTFusion</a> R package, an integration tool for cell deconvolution couple with transcription factor activities to deconvolve cell states of the tumor microenvironment. If you would like to use it in this context we invite you to visit our github repository.</p>
+<p><code>multideconv</code> was developed by <a href="https://github.com/mhurtado13" class="external-link">Marcelo Hurtado</a> in supervision of <a href="https://github.com/VeraPancaldi" class="external-link">Vera Pancaldi</a> and is part of the <a href="https://github.com/VeraPancaldiLab" class="external-link">Pancaldi</a> team. Currently, Marcelo is the primary maintainer of this package.</p>
 </div>
 <div class="section level2">
 <h2 id="citing-multideconv">Citing multideconv<a class="anchor" aria-label="anchor" href="#citing-multideconv"></a>
 </h2>
-<p>If you use multideconv in a scientific publication, we would appreciate citation to the :</p>
+<p>If you use <code>multideconv</code> in a scientific publication, we would appreciate citation to the :</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>XXXXX</span></code></pre></div>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
