@@ -34,22 +34,35 @@ The output includes all combinations of deconvolution features, method-signature
 
 ```{r, eval = FALSE}
 bulk = multideconv::raw_counts
-deconv = compute.deconvolution(raw.counts = bulk, methods = c("Quantiseq", "Epidish", "DeconRNASeq", "DWLS","MOMF"), 
-                               normalized = TRUE, return = TRUE, file_name = "Tutorial")
+deconv = compute.deconvolution(raw.counts = bulk, 
+                               methods = c("Quantiseq", "Epidish", 
+                                           "DeconRNASeq", "DWLS","MOMF"), 
+                               normalized = TRUE, 
+                               return = TRUE, 
+                               file_name = "Tutorial")
 ```
 
 To exclude specific methods or signatures, use the methods or signatures_exclude arguments:
 
 ```{r, eval = FALSE}
-deconv = compute.deconvolution(raw.counts = bulk, methods = c("Quantiseq", "DeconRNASeq"), normalized = TRUE,
-                               signatures_exclude = c("BPRNACan", "BPRNACanProMet", "BPRNACan3DProMet"), return = TRUE, file_name = "Tutorial")
+deconv = compute.deconvolution(raw.counts = bulk, 
+                               methods = c("Quantiseq", "DeconRNASeq"), 
+                               normalized = TRUE,
+                               signatures_exclude = c("BPRNACan", "BPRNACanProMet"), 
+                               return = TRUE, 
+                               file_name = "Tutorial")
 ```
 
 To speed up computation, `multideconv` supports parallelization. Set `doParallel = TRUE` and specify the number of workers based on your system's resources:
 
 ```{r, eval = FALSE}
-deconv = compute.deconvolution(raw.counts = bulk, methods = "DWLS", normalized = TRUE, 
-                               return = TRUE, file_name = "Tutorial", doParallel = TRUE, workers = 3)
+deconv = compute.deconvolution(raw.counts = bulk, 
+                               methods = "DWLS", 
+                               normalized = TRUE, 
+                               return = TRUE, 
+                               file_name = "Tutorial", 
+                               doParallel = TRUE, 
+                               workers = 3)
 ```
 
 ## **Cell type signatures**
@@ -95,8 +108,15 @@ We adapted functions from the R package hdWGCNA (@morabito2023hdwgcna; @langfeld
 -   **min_meta**: Minimum number of metacells required for a cell type to be retained
 
 ```{r, eval=FALSE}
-metacells = create_metacells(sc_object, labels_column = cell_labels, samples_column = sample_labels, exclude_cells = NULL,
-                             min_cells = 50, k = 15, max_shared = 15, n_workers = 4, min_meta = 10)
+metacells = create_metacells(sc_object, 
+                             labels_column = cell_labels, 
+                             samples_column = sample_labels, 
+                             exclude_cells = NULL,
+                             min_cells = 50, 
+                             k = 15, 
+                             max_shared = 15, 
+                             n_workers = 4, 
+                             min_meta = 10)
 ```
 
 ## **Second-generation deconvolution methods**
@@ -125,17 +145,32 @@ head(metacell_metadata)
 This function computes cell type deconvolution using the six default methods (`quanTIseq`, `DeconRNASeq`, `EpiDISH`, `DWLS`, `MOMF`) and `CIBERSORTx` (if credentials are provided), along with second-generation deconvolution approaches. The output includes all combinations of methods and signatures.
 
 ```{r, eval=FALSE}
-deconv = compute.deconvolution(raw.counts = bulk, normalized = TRUE, return = TRUE, methods = c("Quantiseq", "Epidish", "DeconRNASeq"),
-                               file_name = "Tutorial", sc_deconv = TRUE, sc_matrix = metacell_obj, sc_metadata = metacell_metadata, 
-                               cell_label = "annotated_ct", sample_label = "sample", name_sc_signature = "Test")
+deconv = compute.deconvolution(raw.counts = bulk, 
+                               normalized = TRUE, 
+                               return = TRUE, 
+                               methods = c("Quantiseq", "Epidish", "DeconRNASeq"),
+                               file_name = "Tutorial", 
+                               sc_deconv = TRUE, 
+                               sc_matrix = metacell_obj, 
+                               sc_metadata = metacell_metadata, 
+                               cell_label = "annotated_ct", 
+                               sample_label = "sample", 
+                               name_sc_signature = "Test")
 ```
 
 To run only the second-generation deconvolution methods based on single-cell data, without using any static cell-type signatures, use the following:
 
 ```{r, eval=FALSE}
-deconv_sc = compute_sc_deconvolution_methods(raw_counts = bulk, normalized = TRUE, sc_object = metacell_obj, sc_metadata = metacell_metadata, 
-                                             cell_annotations = "annotated_ct", samples_ids = "sample", name_object = "Test", 
-                                             n_cores = 2, return = TRUE, file_name = "Tutorial")
+deconv_sc = compute_sc_deconvolution_methods(raw_counts = bulk, 
+                                             normalized = TRUE, 
+                                             sc_object = metacell_obj, 
+                                             sc_metadata = metacell_metadata, 
+                                             cell_annotations = "annotated_ct", 
+                                             samples_ids = "sample", 
+                                             name_object = "Test", 
+                                             n_cores = 2, 
+                                             return = TRUE, 
+                                             file_name = "Tutorial")
 ```
 
 ## **Pseudo-bulk profiles**
@@ -157,8 +192,13 @@ To run `BSeq-SC`, supply the `cell_markers` argument, which should contain the d
 
 ```{r, eval=FALSE}
 bulk_pseudo = multideconv::pseudobulk
-signatures = create_sc_signatures(metacell_obj, metacell_metadata, cells_labels = "annotated_ct", sample_labels = "sample", 
-                                  bulk_rna = bulk_pseudo, cell_markers = NULL, name_signature = "Test")
+signatures = create_sc_signatures(metacell_obj, 
+                                  metacell_metadata, 
+                                  cells_labels = "annotated_ct", 
+                                  sample_labels = "sample", 
+                                  bulk_rna = bulk_pseudo, 
+                                  cell_markers = NULL, 
+                                  name_signature = "Test")
 ```
 
 ## **Cell types signatures benchmark**
@@ -168,8 +208,16 @@ To validate the generated signatures, we provide a benchmarking function to comp
 ```{r}
 deconv_pseudo = multideconv::deconvolution
 cells_groundtruth = multideconv::cells_groundtruth
-benchmark = compute.benchmark(deconv_pseudo, cells_groundtruth, cells_extra = c("Mural.cells", "Myeloid.cells"), corr_type = "spearman",
-                              scatter = FALSE, plot = TRUE, pval = 0.05, file_name = "Tutorial", width = 10, height = 15)
+benchmark = compute.benchmark(deconv_pseudo, 
+                              cells_groundtruth, 
+                              cells_extra = c("Mural.cells", "Myeloid.cells"), 
+                              corr_type = "spearman",
+                              scatter = FALSE, 
+                              plot = TRUE, 
+                              pval = 0.05, 
+                              file_name = "Tutorial", 
+                              width = 10, 
+                              height = 15)
 ```
 
 ```{r hdwgcna-figure, echo=FALSE, fig.align='center', out.width='70%'}
@@ -194,7 +242,11 @@ Deconvolution analysis reduces the dimensionality and heterogeneity of the decon
 
 ```{r, message=FALSE}
 deconv_bulk = multideconv::deconv_bulk
-deconv_subgroups = compute.deconvolution.analysis(deconvolution = deconv_bulk, corr = 0.7, seed = 123, file_name = "Tutorial", return = TRUE) 
+deconv_subgroups = compute.deconvolution.analysis(deconvolution = deconv_bulk, 
+                                                  corr = 0.7, 
+                                                  seed = 123, 
+                                                  file_name = "Tutorial", 
+                                                  return = TRUE) 
 ```
 
 Subgroups composition can be extracted with:
@@ -214,8 +266,12 @@ head(subgroups[[1]][,sample(colnames(subgroups[[1]]), 10)])
 If your deconvolution matrix contains non-standard cell types (see README), specify them using `cells_extra` to ensure proper subgrouping. If not, they are going to be discarded automatically.
 
 ```{r, eval = FALSE}
-deconv_subgroups = compute.deconvolution.analysis(deconvolution = deconv_pseudo, corr = 0.7, seed = 123, return = TRUE,
-                                                  cells_extra = c("Mural.cells", "Myeloid.cells"), file_name = "Tutorial") 
+deconv_subgroups = compute.deconvolution.analysis(deconvolution = deconv_pseudo, 
+                                                  corr = 0.7, 
+                                                  seed = 123, 
+                                                  return = TRUE,
+                                                  cells_extra = c("Mural.cells", "Myeloid.cells"), 
+                                                  file_name = "Tutorial") 
 ```
 
 **NOTE:** `multideconv` is built on top of existing frameworks and makes extensive use of the R packages `immunedeconv` (@10.1093/bioinformatics/btz363) and `omnideconv` (@Dietrich2024.06.10.598226). If you use multideconv in your work, please cite our package along with these foundational packages. We also encourage you to cite the individual deconvolution algorithms you employ in your analysis.

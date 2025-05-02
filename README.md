@@ -7,16 +7,11 @@ type deconvolution results
 <!-- badges: start -->
 <!-- badges: end -->
 <p align="center">
-
 <img src="man/figures/overview.png?raw=true"/>
-
 </p>
-
-<div style="text-align: center;">
-
+<p align="center">
 <em>Figure 1. A schematic overview of the `multideconv` pipeline</em>
-
-</div>
+</p>
 
 ## Installation
 
@@ -104,16 +99,11 @@ your own deconvolution results or signatures, please make sure to follow
 these formats.
 
 <p align="center">
-
 <img src="man/figures/cell_types.png?raw=true"/>
-
 </p>
-
-<div style="text-align: center;">
-
+<p align="center">
 <em>Figure 2. Cell types nomenclature for `multideconv`</em>
-
-</div>
+</p>
 
 ## How to add cell types other than the ones present in the nomenclature?
 

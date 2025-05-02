@@ -5,7 +5,7 @@ template:
 reference:
 - title: Main
   desc: >
-    Compute deconvolution
+    Compute cell type deconvolution
   contents:
   - compute.deconvolution
   - compute.deconvolution.analysis
@@ -13,7 +13,7 @@ reference:
   - compute_methods_variable_signature
 - title: Single cell functions
   desc: >
-    Single cell manipulation for deconvolution
+    Single-cell data manipulation for deconvolution
   contents:
   - create_metacells
   - create_sc_pseudobulk

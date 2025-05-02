@@ -10,14 +10,12 @@ An integrative pipeline for combining first and second generation cell type deco
 <!-- badges: end -->
 
 <p align="center">
-
 <img src="man/figures/overview.png?raw=true"/>
-
 </p>
 
-::: {style="text-align: center;"}
-<em>Figure 1. A schematic overview of the `multideconv` pipeline</em>
-:::
+<p align="center">
+  <em>Figure 1. A schematic overview of the `multideconv` pipeline</em>
+</p>
 
 ## Installation
 
@@ -87,14 +85,12 @@ deconv_sc = compute_sc_deconvolution_methods(raw_counts, sc_object, sc_metadata,
 `multideconv` works based on established cell naming conventions (Figure 2) to simplify analysis and processing. Thus, if you would like to use your own deconvolution results or signatures, please make sure to follow these formats.
 
 <p align="center">
-
 <img src="man/figures/cell_types.png?raw=true"/>
-
 </p>
 
-::: {style="text-align: center;"}
-<em>Figure 2. Cell types nomenclature for `multideconv`</em>
-:::
+<p align="center">
+  <em>Figure 2. Cell types nomenclature for `multideconv`</em>
+</p>
 
 ## How to add cell types other than the ones present in the nomenclature?
 

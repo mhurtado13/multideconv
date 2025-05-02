@@ -1,6 +1,6 @@
 Package: multideconv
 Title: Integrative pipeline for cell type deconvolution from bulk RNAseq using first and second generation methods
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person("Marcelo", "Hurtado", , "marcelo.hurtado@inserm.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0004-6712-0864"))
