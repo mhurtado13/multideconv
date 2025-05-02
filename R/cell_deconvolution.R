@@ -1,12 +1,10 @@
 
 
 dir.create("Results", showWarnings = FALSE, recursive = TRUE)
-user_data_dir <- tools::R_user_dir("multideconv", which = "data")
-signature_dir <- file.path(user_data_dir, "custom_signatures")
 
-if (!dir.exists(signature_dir)) {
-  dir.create(signature_dir, recursive = TRUE)
-}
+# Create custom_signatures folder
+signature_dir <- file.path("Results", "custom_signatures")
+dir.create(signature_dir, showWarnings = FALSE, recursive = TRUE)
 
 utils::globalVariables(c("mcp", "xcell" ,"i", ".", "samples_ids", "multisession", ".data", "Patient", "var", "id", "value", "P", "sig_p", "r", "y", "p", "average", "Cells", "variable", "value", "pval_value"))
 

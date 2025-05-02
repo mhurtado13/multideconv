@@ -26,7 +26,7 @@ library(multideconv)
 
 ## **Deconvolution with default methods**
 
-The basic function is to perform cell type deconvolution using six default methods (`quanTIseq`, `DeconRNASeq`, `CIBERSORTx`, `EpiDISH`, `DWLS`, `MOMF`) and nine default signatures (see the `signatures/` folder). The function accepts either raw counts or TPM-normalized counts as input (with genes as SYMBOL).
+The basic function is to perform cell type deconvolution using six default methods (`quanTIseq`, `DeconRNASeq`, `CIBERSORTx`, `EpiDISH`, `DWLS`, `MOMF`) and nine default signatures (see paper). The function accepts either raw counts or TPM-normalized counts as input (with genes as SYMBOL).
 
 **NOTE:** If you plan to use `CIBERSORTx`, you must provide your credentials (see README for details). The resulting deconvolution matrix is automatically saved in the `Results/` directory.
 
@@ -50,6 +50,22 @@ To speed up computation, `multideconv` supports parallelization. Set `doParallel
 ```{r, eval = FALSE}
 deconv = compute.deconvolution(raw.counts = bulk, methods = "DWLS", normalized = TRUE, 
                                return = TRUE, file_name = "Tutorial", doParallel = TRUE, workers = 3)
+```
+
+## **Cell type signatures**
+
+In order to access the default signatures `multideconv` provides, you can do the following:
+
+To list all signatures
+```{r}
+path <- system.file("signatures/", package = "multideconv")
+list.files(path)
+```
+
+To access a specific signature
+```{r}
+signature = read.delim(paste0(path, "CBSX-Melanoma-scRNAseq.txt"))
+head(signature)
 ```
 
 ## **Single-cell metacell construction**
@@ -133,7 +149,9 @@ pseudobulk = create_sc_pseudobulk(metacells_seurat, cells_labels = "annotated_ct
  
 ## **Creating cell type signatures**
 
-To create cell type signatures, `multideconv` uses four methods: `CIBERSORTx`, `DWLS`, `MOMF`, and `BSeq-SC`. You must provide single-cell data as input. Signatures are saved in the `custom_signatures/` directory, and returned as a list. To run `BSeq-SC`, supply the `cell_markers` argument, which should contain the differential markers for each cell type (these can be obtained using `FindMarkers()` or `FindAllMarkers()` from Seurat).
+To create cell type signatures, `multideconv` uses four methods: `CIBERSORTx`, `DWLS`, `MOMF`, and `BSeq-SC`. You must provide single-cell data as input. Signatures are saved in the `Results/custom_signatures` directory, and returned as a list. From now and after `compute.deconvolution()` will use these signatures additionally to the default ones! So if you would like to have the deconvolution results based on your new files, make sure to run `compute.deconvolution()` 
+
+To run `BSeq-SC`, supply the `cell_markers` argument, which should contain the differential markers for each cell type (these can be obtained using `FindMarkers()` or `FindAllMarkers()` from Seurat).
 
 ```{r, eval=FALSE}
 bulk_pseudo = multideconv::pseudobulk
