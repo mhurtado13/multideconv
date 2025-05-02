@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">multideconv</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,7 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/multideconv.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -81,19 +82,32 @@ resulting deconvolution matrix is automatically saved in the
 method-signature-cell type.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bulk</span> <span class="op">=</span> <span class="fu">multideconv</span><span class="fu">::</span><span class="va"><a href="../reference/raw_counts.html">raw_counts</a></span></span>
-<span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"Epidish"</span>, <span class="st">"DeconRNASeq"</span>, <span class="st">"DWLS"</span>,<span class="st">"MOMF"</span><span class="op">)</span>, </span>
-<span>                               normalized <span class="op">=</span> <span class="cn">TRUE</span>, return <span class="op">=</span> <span class="cn">TRUE</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, </span>
+<span>                               methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"Epidish"</span>, </span>
+<span>                                           <span class="st">"DeconRNASeq"</span>, <span class="st">"DWLS"</span>,<span class="st">"MOMF"</span><span class="op">)</span>, </span>
+<span>                               normalized <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               return <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span></code></pre></div>
 <p>To exclude specific methods or signatures, use the methods or
 signatures_exclude arguments:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"DeconRNASeq"</span><span class="op">)</span>, normalized <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                               signatures_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BPRNACan"</span>, <span class="st">"BPRNACanProMet"</span>, <span class="st">"BPRNACan3DProMet"</span><span class="op">)</span>, return <span class="op">=</span> <span class="cn">TRUE</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, </span>
+<span>                               methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"DeconRNASeq"</span><span class="op">)</span>, </span>
+<span>                               normalized <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                               signatures_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BPRNACan"</span>, <span class="st">"BPRNACanProMet"</span><span class="op">)</span>, </span>
+<span>                               return <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span></code></pre></div>
 <p>To speed up computation, <code>multideconv</code> supports
 parallelization. Set <code>doParallel = TRUE</code> and specify the
 number of workers based on your system’s resources:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, methods <span class="op">=</span> <span class="st">"DWLS"</span>, normalized <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>                               return <span class="op">=</span> <span class="cn">TRUE</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, doParallel <span class="op">=</span> <span class="cn">TRUE</span>, workers <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, </span>
+<span>                               methods <span class="op">=</span> <span class="st">"DWLS"</span>, </span>
+<span>                               normalized <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               return <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, </span>
+<span>                               doParallel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               workers <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="cell-type-signatures">
@@ -165,8 +179,15 @@ parallelizing metacell construction</p></li>
 for a cell type to be retained</p></li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">metacells</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_metacells.html">create_metacells</a></span><span class="op">(</span><span class="va">sc_object</span>, labels_column <span class="op">=</span> <span class="va">cell_labels</span>, samples_column <span class="op">=</span> <span class="va">sample_labels</span>, exclude_cells <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                             min_cells <span class="op">=</span> <span class="fl">50</span>, k <span class="op">=</span> <span class="fl">15</span>, max_shared <span class="op">=</span> <span class="fl">15</span>, n_workers <span class="op">=</span> <span class="fl">4</span>, min_meta <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">metacells</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_metacells.html">create_metacells</a></span><span class="op">(</span><span class="va">sc_object</span>, </span>
+<span>                             labels_column <span class="op">=</span> <span class="va">cell_labels</span>, </span>
+<span>                             samples_column <span class="op">=</span> <span class="va">sample_labels</span>, </span>
+<span>                             exclude_cells <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                             min_cells <span class="op">=</span> <span class="fl">50</span>, </span>
+<span>                             k <span class="op">=</span> <span class="fl">15</span>, </span>
+<span>                             max_shared <span class="op">=</span> <span class="fl">15</span>, </span>
+<span>                             n_workers <span class="op">=</span> <span class="fl">4</span>, </span>
+<span>                             min_meta <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="second-generation-deconvolution-methods">
@@ -243,16 +264,31 @@ methods (<code>quanTIseq</code>, <code>DeconRNASeq</code>,
 second-generation deconvolution approaches. The output includes all
 combinations of methods and signatures.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, normalized <span class="op">=</span> <span class="cn">TRUE</span>, return <span class="op">=</span> <span class="cn">TRUE</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"Epidish"</span>, <span class="st">"DeconRNASeq"</span><span class="op">)</span>,</span>
-<span>                               file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, sc_deconv <span class="op">=</span> <span class="cn">TRUE</span>, sc_matrix <span class="op">=</span> <span class="va">metacell_obj</span>, sc_metadata <span class="op">=</span> <span class="va">metacell_metadata</span>, </span>
-<span>                               cell_label <span class="op">=</span> <span class="st">"annotated_ct"</span>, sample_label <span class="op">=</span> <span class="st">"sample"</span>, name_sc_signature <span class="op">=</span> <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, </span>
+<span>                               normalized <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               return <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"Epidish"</span>, <span class="st">"DeconRNASeq"</span><span class="op">)</span>,</span>
+<span>                               file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, </span>
+<span>                               sc_deconv <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                               sc_matrix <span class="op">=</span> <span class="va">metacell_obj</span>, </span>
+<span>                               sc_metadata <span class="op">=</span> <span class="va">metacell_metadata</span>, </span>
+<span>                               cell_label <span class="op">=</span> <span class="st">"annotated_ct"</span>, </span>
+<span>                               sample_label <span class="op">=</span> <span class="st">"sample"</span>, </span>
+<span>                               name_sc_signature <span class="op">=</span> <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
 <p>To run only the second-generation deconvolution methods based on
 single-cell data, without using any static cell-type signatures, use the
 following:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">deconv_sc</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute_sc_deconvolution_methods.html">compute_sc_deconvolution_methods</a></span><span class="op">(</span>raw_counts <span class="op">=</span> <span class="va">bulk</span>, normalized <span class="op">=</span> <span class="cn">TRUE</span>, sc_object <span class="op">=</span> <span class="va">metacell_obj</span>, sc_metadata <span class="op">=</span> <span class="va">metacell_metadata</span>, </span>
-<span>                                             cell_annotations <span class="op">=</span> <span class="st">"annotated_ct"</span>, samples_ids <span class="op">=</span> <span class="st">"sample"</span>, name_object <span class="op">=</span> <span class="st">"Test"</span>, </span>
-<span>                                             n_cores <span class="op">=</span> <span class="fl">2</span>, return <span class="op">=</span> <span class="cn">TRUE</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">deconv_sc</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute_sc_deconvolution_methods.html">compute_sc_deconvolution_methods</a></span><span class="op">(</span>raw_counts <span class="op">=</span> <span class="va">bulk</span>, </span>
+<span>                                             normalized <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                                             sc_object <span class="op">=</span> <span class="va">metacell_obj</span>, </span>
+<span>                                             sc_metadata <span class="op">=</span> <span class="va">metacell_metadata</span>, </span>
+<span>                                             cell_annotations <span class="op">=</span> <span class="st">"annotated_ct"</span>, </span>
+<span>                                             samples_ids <span class="op">=</span> <span class="st">"sample"</span>, </span>
+<span>                                             name_object <span class="op">=</span> <span class="st">"Test"</span>, </span>
+<span>                                             n_cores <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>                                             return <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                                             file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="pseudo-bulk-profiles">
@@ -306,8 +342,13 @@ type (these can be obtained using <code>FindMarkers()</code> or
 <code>FindAllMarkers()</code> from Seurat).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bulk_pseudo</span> <span class="op">=</span> <span class="fu">multideconv</span><span class="fu">::</span><span class="va"><a href="../reference/pseudobulk.html">pseudobulk</a></span></span>
-<span><span class="va">signatures</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_sc_signatures.html">create_sc_signatures</a></span><span class="op">(</span><span class="va">metacell_obj</span>, <span class="va">metacell_metadata</span>, cells_labels <span class="op">=</span> <span class="st">"annotated_ct"</span>, sample_labels <span class="op">=</span> <span class="st">"sample"</span>, </span>
-<span>                                  bulk_rna <span class="op">=</span> <span class="va">bulk_pseudo</span>, cell_markers <span class="op">=</span> <span class="cn">NULL</span>, name_signature <span class="op">=</span> <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">signatures</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_sc_signatures.html">create_sc_signatures</a></span><span class="op">(</span><span class="va">metacell_obj</span>, </span>
+<span>                                  <span class="va">metacell_metadata</span>, </span>
+<span>                                  cells_labels <span class="op">=</span> <span class="st">"annotated_ct"</span>, </span>
+<span>                                  sample_labels <span class="op">=</span> <span class="st">"sample"</span>, </span>
+<span>                                  bulk_rna <span class="op">=</span> <span class="va">bulk_pseudo</span>, </span>
+<span>                                  cell_markers <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>                                  name_signature <span class="op">=</span> <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="cell-types-signatures-benchmark">
@@ -323,8 +364,16 @@ convention used - see README for more information).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">deconv_pseudo</span> <span class="op">=</span> <span class="fu">multideconv</span><span class="fu">::</span><span class="va"><a href="../reference/deconvolution.html">deconvolution</a></span></span>
 <span><span class="va">cells_groundtruth</span> <span class="op">=</span> <span class="fu">multideconv</span><span class="fu">::</span><span class="va"><a href="../reference/cells_groundtruth.html">cells_groundtruth</a></span></span>
-<span><span class="va">benchmark</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.benchmark.html">compute.benchmark</a></span><span class="op">(</span><span class="va">deconv_pseudo</span>, <span class="va">cells_groundtruth</span>, cells_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mural.cells"</span>, <span class="st">"Myeloid.cells"</span><span class="op">)</span>, corr_type <span class="op">=</span> <span class="st">"spearman"</span>,</span>
-<span>                              scatter <span class="op">=</span> <span class="cn">FALSE</span>, plot <span class="op">=</span> <span class="cn">TRUE</span>, pval <span class="op">=</span> <span class="fl">0.05</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span><span class="va">benchmark</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.benchmark.html">compute.benchmark</a></span><span class="op">(</span><span class="va">deconv_pseudo</span>, </span>
+<span>                              <span class="va">cells_groundtruth</span>, </span>
+<span>                              cells_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mural.cells"</span>, <span class="st">"Myeloid.cells"</span><span class="op">)</span>, </span>
+<span>                              corr_type <span class="op">=</span> <span class="st">"spearman"</span>,</span>
+<span>                              scatter <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                              plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                              pval <span class="op">=</span> <span class="fl">0.05</span>, </span>
+<span>                              file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, </span>
+<span>                              width <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                              height <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="co">#&gt; No id variables; using all as measure variables</span></span>
 <span><span class="co">#&gt; No id variables; using all as measure variables</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
@@ -355,7 +404,11 @@ output files to the <code>Results/</code> directory</p></li>
 </ul>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">deconv_bulk</span> <span class="op">=</span> <span class="fu">multideconv</span><span class="fu">::</span><span class="va"><a href="../reference/deconv_bulk.html">deconv_bulk</a></span></span>
-<span><span class="va">deconv_subgroups</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis</a></span><span class="op">(</span>deconvolution <span class="op">=</span> <span class="va">deconv_bulk</span>, corr <span class="op">=</span> <span class="fl">0.7</span>, seed <span class="op">=</span> <span class="fl">123</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, return <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span><span class="va">deconv_subgroups</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis</a></span><span class="op">(</span>deconvolution <span class="op">=</span> <span class="va">deconv_bulk</span>, </span>
+<span>                                                  corr <span class="op">=</span> <span class="fl">0.7</span>, </span>
+<span>                                                  seed <span class="op">=</span> <span class="fl">123</span>, </span>
+<span>                                                  file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, </span>
+<span>                                                  return <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; Removing features with high zero number 90%...............................................................</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Checking distribution of variances...............................................................</span></span>
@@ -605,8 +658,12 @@ output files to the <code>Results/</code> directory</p></li>
 README), specify them using <code>cells_extra</code> to ensure proper
 subgrouping. If not, they are going to be discarded automatically.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">deconv_subgroups</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis</a></span><span class="op">(</span>deconvolution <span class="op">=</span> <span class="va">deconv_pseudo</span>, corr <span class="op">=</span> <span class="fl">0.7</span>, seed <span class="op">=</span> <span class="fl">123</span>, return <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                                  cells_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mural.cells"</span>, <span class="st">"Myeloid.cells"</span><span class="op">)</span>, file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span> </span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">deconv_subgroups</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis</a></span><span class="op">(</span>deconvolution <span class="op">=</span> <span class="va">deconv_pseudo</span>, </span>
+<span>                                                  corr <span class="op">=</span> <span class="fl">0.7</span>, </span>
+<span>                                                  seed <span class="op">=</span> <span class="fl">123</span>, </span>
+<span>                                                  return <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                                                  cells_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mural.cells"</span>, <span class="st">"Myeloid.cells"</span><span class="op">)</span>, </span>
+<span>                                                  file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span> </span></code></pre></div>
 <p><strong>NOTE:</strong> <code>multideconv</code> is built on top of
 existing frameworks and makes extensive use of the R packages
 <code>immunedeconv</code> (<span class="citation">Sturm et al. (<a href="#ref-10.1093/bioinformatics/btz363">2019</a>)</span>) and
