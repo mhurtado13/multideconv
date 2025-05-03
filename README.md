@@ -19,8 +19,8 @@ You can install the development version of `multideconv` from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("VeraPancaldiLab/multideconv")
+# install.packages("pak")
+pak::pkg_install("VeraPancaldiLab/multideconv")
 ```
 
 ## General usage

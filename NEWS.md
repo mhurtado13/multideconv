@@ -8,7 +8,7 @@ This is the first release version of multideconv! 🎉
     - `compute.deconvolution.analysis()`
     - `compute.deconvolution.preprocessing()`
     - `compute_methods_variable_signature()`
-- Support for single-cell data for cell type deconvolution`:
+- Support for single-cell data for cell type deconvolution:
     - `create_metacells()`
     - `create_sc_pseudobulk()`
     - `create_sc_signatures()`

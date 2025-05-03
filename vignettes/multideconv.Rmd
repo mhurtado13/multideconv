@@ -48,7 +48,7 @@ To exclude specific methods or signatures, use the methods or signatures_exclude
 deconv = compute.deconvolution(raw.counts = bulk, 
                                methods = c("Quantiseq", "DeconRNASeq"), 
                                normalized = TRUE,
-                               signatures_exclude = c("BPRNACan", "BPRNACanProMet"), 
+                               signatures_exclude = "BPRNACan", 
                                return = TRUE, 
                                file_name = "Tutorial")
 ```
@@ -274,7 +274,7 @@ deconv_subgroups = compute.deconvolution.analysis(deconvolution = deconv_pseudo,
                                                   file_name = "Tutorial") 
 ```
 
-**NOTE:** `multideconv` is built on top of existing frameworks and makes extensive use of the R packages `immunedeconv` (@10.1093/bioinformatics/btz363) and `omnideconv` (@Dietrich2024.06.10.598226). If you use multideconv in your work, please cite our package along with these foundational packages. We also encourage you to cite the individual deconvolution algorithms you employ in your analysis.
+**NOTE:** `multideconv` is built on top of existing frameworks and makes extensive use of the R packages `immunedeconv` (@10.1093/bioinformatics/btz363) and `omnideconv` (@Dietrich2024.06.10.598226). If you use `multideconv` in your work, please cite our package along with these foundational packages. We also encourage you to cite the individual deconvolution algorithms you employ in your analysis.
 
 | method | license | citation |
 |-----------------|-----------------|---------------------------------------|

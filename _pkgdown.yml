@@ -13,7 +13,7 @@ reference:
   - compute_methods_variable_signature
 - title: Single cell functions
   desc: >
-    Single-cell data manipulation for deconvolution
+    Single cell data manipulation for deconvolution
   contents:
   - create_metacells
   - create_sc_pseudobulk
@@ -42,6 +42,8 @@ reference:
   - removeCorrelatedFeatures
   - correlation
 - title: Package Data
+  desc: >
+    Example data
   contents:
   - raw_counts
   - deconv_bulk
