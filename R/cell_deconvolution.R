@@ -1860,7 +1860,7 @@ create_metacells = function(sc_object, labels_column, samples_column, exclude_ce
   }
 
   # Set up parallelization using the future package
-  future::plan(multisession, workers = n_workers) # Adjust the number of workers based on your system
+  future::plan(future::multisession, workers = n_workers) # Adjust the number of workers based on your system
   # Run the function in parallel
   results <- future.apply::future_lapply(subset_data, FUN = process_group, min_cells, k, max_shared, labels_column, samples_column, future.seed = TRUE)
   results <- results[!sapply(results, is.null)]
