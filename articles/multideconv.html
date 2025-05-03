@@ -95,7 +95,7 @@ signatures_exclude arguments:</p>
 <code class="sourceCode R"><span><span class="va">deconv</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.html">compute.deconvolution</a></span><span class="op">(</span>raw.counts <span class="op">=</span> <span class="va">bulk</span>, </span>
 <span>                               methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantiseq"</span>, <span class="st">"DeconRNASeq"</span><span class="op">)</span>, </span>
 <span>                               normalized <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                               signatures_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BPRNACan"</span>, <span class="st">"BPRNACanProMet"</span><span class="op">)</span>, </span>
+<span>                               signatures_exclude <span class="op">=</span> <span class="st">"BPRNACan"</span>, </span>
 <span>                               return <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                               file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span></span></code></pre></div>
 <p>To speed up computation, <code>multideconv</code> supports
@@ -667,9 +667,9 @@ subgrouping. If not, they are going to be discarded automatically.</p>
 existing frameworks and makes extensive use of the R packages
 <code>immunedeconv</code> (<span class="citation">Sturm et al. (<a href="#ref-10.1093/bioinformatics/btz363">2019</a>)</span>) and
 <code>omnideconv</code> (<span class="citation">Dietrich et al. (<a href="#ref-Dietrich2024.06.10.598226">2024</a>)</span>). If you use
-multideconv in your work, please cite our package along with these
-foundational packages. We also encourage you to cite the individual
-deconvolution algorithms you employ in your analysis.</p>
+<code>multideconv</code> in your work, please cite our package along
+with these foundational packages. We also encourage you to cite the
+individual deconvolution algorithms you employ in your analysis.</p>
 <table class="table">
 <colgroup>
 <col width="23%">
