@@ -152,4 +152,4 @@ is the primary maintainer of this package.
 If you use `multideconv` in a scientific publication, we would
 appreciate citation to the :
 
-    XXXXX
+    Hurtado, M., Essabbar, A., Khajavi, L., & Pancaldi, V. (2025). multideconv – Integrative pipeline for cell type deconvolution from bulk RNAseq using first and second generation methods. bioRxiv. https://doi.org/10.1101/2025.04.29.651220
