@@ -1134,7 +1134,7 @@ compute.deconvolution.analysis <- function(deconvolution, corr = 0.7, seed = NUL
   message("Deconvolution features subgroupped")
 
   results = list(dt, res, groups, groups_discard, zero_features, low_variance_features, cells_discarded, features_high_corr)
-  names(results) = c("Deconvolution matrix", "Deconvolution groups scores per cell types", "Deconvolution groups - Linear-based correlation",
+  names(results) = c("Deconvolution matrix", "Deconvolution subgroups per cell types", "Deconvolution subgroups composition",
                      "Discarded groups with equal method", "Discarded features with high number of zeros", "Discarded features with low variance", "Discarded cell types",
                      "High correlated deconvolution groups (>0.9) per cell type")
   return(results)
