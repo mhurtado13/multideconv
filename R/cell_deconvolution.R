@@ -1418,6 +1418,7 @@ computeDeconRNASeq = function(TPM_matrix, signature_file, name_signature){
 #'
 compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c("CBSX", "Epidish", "DeconRNASeq", "DWLS", "MOMF"), exclude = NULL, cbsx.name, cbsx.token, doParallel = FALSE, workers = NULL, sc_obj = NULL){
 
+  signature_dir = "Results/custom_signatures"
   default_sig = list.files(signatures, full.names = T, pattern = "\\.txt$")
   user_files = list.files(signature_dir, full.names = TRUE, pattern = "\\.txt$")
 
@@ -2163,6 +2164,8 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
 #' Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 #'
 create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels, credentials.mail = NULL, credentials.token = NULL, bulk_rna = NULL, cell_markers = NULL, name_signature = NULL){
+
+  signature_dir = "Results/custom_signatures/"
 
   sc_obj = as.matrix(sc_obj)
 
