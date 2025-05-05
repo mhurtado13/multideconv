@@ -583,7 +583,7 @@ removeCorrelatedFeatures <- function(data, threshold, name, n_seed) {
   features_high_corr = c()
   cell_name = c()
   # Compute correlation matrix
-  corr_matrix <- stats::cor(data)
+  corr_matrix <- stats::cor(data, method = "spearman")
   # Find highly correlated features
   contador = 1
   while(nrow(corr_matrix)>0){
@@ -677,7 +677,7 @@ compute_subgroups = function(deconvolution, thres_corr, file_name){
     warning("Deconvolution features with less than two columns for subgrouping (skipping)\n")
     return(list(data, cell_subgroups, cell_groups_discard))
   }else{
-    # #################### Proportionality-based correlation
+    # #################### Proportionality-based correlation (DEPRECATED)
     # is_similar <- function(value1, value2, threshold) {return(abs(value1 - value2) <= threshold)}
     # similarity_matrix <- matrix(FALSE, nrow = ncol(data), ncol = ncol(data), dimnames = list(names(data), names(data)))
     # for (col1 in names(data)) {
@@ -879,7 +879,7 @@ compute_subgroups = function(deconvolution, thres_corr, file_name){
 #'
 correlation <- function(data) {
 
-  M <- Hmisc::rcorr(as.matrix(data), type = "pearson")
+  M <- Hmisc::rcorr(as.matrix(data), type = "spearman")
   Mdf <- purrr::map(M[c("r", "P", "n")], ~data.frame(.x))
 
   corr_df = Mdf %>%
@@ -1914,7 +1914,7 @@ create_metacells = function(sc_object, labels_column, samples_column, exclude_ce
 #' data("cells_groundtruth")
 #'
 #' corr_matrix = compute.benchmark(deconvolution, cells_groundtruth, cells_extra = "Myeloid.cells",
-#'                                 corr_type = "pearson", scatter = FALSE)
+#'                                 corr_type = "spearman", scatter = FALSE)
 #'
 compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, corr_type = "spearman", scatter = TRUE, plot = FALSE, pval = 0.05, file_name = NULL, width = 16, height = 8){
 
@@ -1932,7 +1932,7 @@ compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, cor
   deconvolution_combinations = gsub("(BPRNACan3DProMet|BPRNACanProMet|BPRNACan)", "\\1_", deconvolution_combinations)
 
   ###Correlation function
-  corr_bench <- function(data, corr = "pearson", pval = 0.05) {
+  corr_bench <- function(data, corr = "spearman", pval = 0.05) {
     M <- Hmisc::rcorr(as.matrix(data), type = corr)
 
     # Only keep the three matrix elements: r, P, n
