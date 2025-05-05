@@ -15,6 +15,16 @@ type deconvolution results
 
 ## Installation
 
+To avoid GitHub API rate limit issues during installation, we recommend
+setting up GitHub authentication by creating and storing a Personal
+Access Token (PAT). You can do this with the following steps:
+
+``` r
+# install.packages(c("usethis", "gitcreds"))
+usethis::create_github_token() #Create a Personal Access Token (if you don't have)
+gitcreds::gitcreds_set() #Add the token
+```
+
 You can install the development version of `multideconv` from
 [GitHub](https://github.com/) with:
 
@@ -107,7 +117,7 @@ these formats.
 
 ## How to add cell types other than the ones present in the nomenclature?
 
-If you want multideconv to consider other cells, it is pretty simple!
+If you want `multideconv` to consider other cells, it is pretty simple!
 Just use the argument cells_extra in the function
 `compute.deconvolution.analysis()`.
 
@@ -147,7 +157,7 @@ Pancaldi](https://github.com/VeraPancaldi) and is part of the
 [Pancaldi](https://github.com/VeraPancaldiLab) team. Currently, Marcelo
 is the primary maintainer of this package.
 
-## Citing multideconv
+## Citing `multideconv`
 
 If you use `multideconv` in a scientific publication, we would
 appreciate citation to the :
