@@ -169,7 +169,238 @@ Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Fin
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * Epidish</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * DeconRNASeq</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in compute_methods_variable_signature(TPM_matrix, signatures = path_signatures,     algos = methods, exclude = signatures_exclude, cbsx.name = credentials.mail,     cbsx.token = credentials.token, doParallel, workers, sc_matrix):</span> object 'signature_dir' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The following method-signature combinations are going to be calculated...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Methods</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * Epidish</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * DeconRNASeq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Signatures</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * BPRNACan</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * BPRNACan3DProMet</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * BPRNACanProMet</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * CBSX-HNSCC-scRNAseq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * CBSX-Melanoma-scRNAseq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * CBSX-NSCLC-PBMCs-scRNAseq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * CCLE-TIL10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * LM22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * TIL10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Biobase</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocGenerics</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: generics</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘generics’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     setequal, union</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘BiocGenerics’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     IQR, mad, sd, var, xtabs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     as.data.frame, basename, cbind, colnames, dirname, do.call,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     duplicated, eval, evalq, get, grep, grepl, is.unsorted, lapply,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     mapply, match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     rank, rbind, rownames, sapply, saveRDS, table, tapply, unique,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     unsplit, which.max, which.min</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Welcome to Bioconductor</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Vignettes contain introductory material; view with</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'browseVignettes()'. To cite Bioconductor, see</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'citation("Biobase")', and for packages 'citation("pkgname")'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘pcaMethods’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     loadings</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   PC9    PC10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.00393 0.00282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.97802 0.98084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 10  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   PC9    PC10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.00393 0.00282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.97802 0.98084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 10  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   PC9    PC10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.00393 0.00282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.97802 0.98084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 10  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   PC9    PC10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.00393 0.00282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.97802 0.98084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 10  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 8  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 6  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   PC9    PC10    PC11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.00393 0.00282 0.00234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.97802 0.98084 0.98318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 11  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   PC9    PC10    PC11    PC12    PC13    PC14   PC15    PC16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.00393 0.00282 0.00234 0.00183 0.00178 0.00162 0.0014 0.00123</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.97802 0.98084 0.98318 0.98501 0.98679 0.98841 0.9898 0.99104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 PC17    PC18    PC19    PC20    PC21    PC22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.0011 0.00105 0.00098 0.00083 0.00075 0.00069</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.9921 0.99319 0.99417 0.99500 0.99575 0.99644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 22  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running DeconRNASeq...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> svd calculated PCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importance of component(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  PC1    PC2     PC3     PC4     PC5    PC6     PC7     PC8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.6788 0.1242 0.08553 0.05229 0.01417 0.0082 0.00602 0.00494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.6788 0.8029 0.88847 0.94076 0.95493 0.9631 0.96915 0.97409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   PC9    PC10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R2            0.00393 0.00282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cumulative R2 0.97802 0.98084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Attention: the number of pure cell types = 10  defined in the signature matrix;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCA results indicate that the number of cell types in the mixtures = 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running Epidish...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Preprocessing deconvolution features...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking consistency in deconvolution cell fractions across patients...............................................................</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_BPRNACan_ is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_BPRNACanProMet is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_BPRNACan3DProMet is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_CBSX.HNSCC.scRNAseq is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_CBSX.Melanoma.scRNAseq is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_CBSX.NSCLC.PBMCs.scRNAseq is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_CCLE.TIL10 is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_TIL10 is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_LM22 is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_BPRNACan_ is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_BPRNACanProMet is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_BPRNACan3DProMet is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_CBSX.HNSCC.scRNAseq is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_CBSX.Melanoma.scRNAseq is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_CBSX.NSCLC.PBMCs.scRNAseq is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_CCLE.TIL10 is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_TIL10 is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination DeconRNASeq_LM22 is 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total sum across samples of combination Epidish_CBSX.Melanoma.scRNAseq is 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
