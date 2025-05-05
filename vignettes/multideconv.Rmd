@@ -26,7 +26,7 @@ library(multideconv)
 
 ## **Deconvolution with default methods**
 
-The basic function is to perform cell type deconvolution using six default methods (`quanTIseq`, `DeconRNASeq`, `CIBERSORTx`, `EpiDISH`, `DWLS`, `MOMF`) and nine default signatures (see paper). The function accepts either raw counts or TPM-normalized counts as input (with genes as SYMBOL).
+The basic function is to perform cell type deconvolution using six default methods (`quanTIseq`, `DeconRNASeq`, `CIBERSORTx`, `EpiDISH`, `DWLS`, `MOMF`) and nine default signatures (see paper [Hurtado et al., 2025](https://www.biorxiv.org/content/10.1101/2025.04.29.651220v2.article-info)). The function accepts either raw counts or TPM-normalized counts as input (with genes as SYMBOL).
 
 **NOTE:** If you plan to use `CIBERSORTx`, you must provide your credentials (see README for details). The resulting deconvolution matrix is automatically saved in the `Results/` directory.
 
@@ -230,7 +230,7 @@ knitr::include_graphics("Results/Benchmark.png")
 
 ## **Cell type processing**
 
-Deconvolution analysis reduces the dimensionality and heterogeneity of the deconvolution results. It uses the cell type processing algorithm described in the paper. It returns the cell type subgroups composition and the reduced deconvolution matrix, saved in the `Results/` directory.
+Deconvolution analysis reduces the dimensionality and heterogeneity of the deconvolution results. It uses the cell type processing algorithm described in the paper [Hurtado et al., 2025](https://www.biorxiv.org/content/10.1101/2025.04.29.651220v2.article-info). It returns the cell type subgroups composition and the reduced deconvolution matrix, saved in the `Results/` directory.
 
 -   **deconvolution**: Matrix of raw deconvolution results (output of `compute.deconvolution()`)
 
