@@ -49,7 +49,6 @@ Remotes:
     omnideconv/immunedeconv,
     omnideconv/omnideconv,
     omnideconv/DWLS,
-    omnideconv/bseqsc,
     omnideconv/BayesPrism,
     omnideconv/MOMF,
     smorabit/hdWGCNA,
@@ -57,7 +56,6 @@ Remotes:
 Suggests: 
     testthat (>= 3.0.0),
     WGCNA,
-    bseqsc,
     UCell,
     Seurat (>= 4.4.0),
     GenomicRanges,
