@@ -2132,7 +2132,7 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
   }
 
   #Save pseudobulk matrix
-  utils::write.table(pseudo_counts, file = paste0("Results/", file_name, ".csv"), quote = F, sep = "\t", row.names = F)
+  utils::write.table(pseudo_counts, file = paste0("Results/", file_name, ".csv"), quote = F, sep = "\t", row.names = T)
 
   return(pseudo_counts)
 
