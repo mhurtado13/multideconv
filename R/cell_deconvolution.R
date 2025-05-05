@@ -2166,6 +2166,7 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
 create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels, credentials.mail = NULL, credentials.token = NULL, bulk_rna = NULL, cell_markers = NULL, name_signature = NULL){
 
   signature_dir = "Results/custom_signatures/"
+  library(bseqsc)
 
   sc_obj = as.matrix(sc_obj)
 
