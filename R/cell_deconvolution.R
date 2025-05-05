@@ -1,12 +1,6 @@
 
 
-dir.create("Results", showWarnings = FALSE, recursive = TRUE)
-
-# Create custom_signatures folder
-signature_dir <- file.path("Results", "custom_signatures")
-dir.create(signature_dir, showWarnings = FALSE, recursive = TRUE)
-
-utils::globalVariables(c("mcp", "xcell" ,"i", ".", "samples_ids", "multisession", ".data", "Patient", "var", "id", "value", "P", "sig_p", "r", "y", "p", "average", "Cells", "variable", "value", "pval_value"))
+utils::globalVariables(c("mcp", "xcell" ,"i", ".", "samples_ids", "multisession", ".data", "Patient", "var", "id", "P", "sig_p", "r", "y", "p", "average", "Cells", "variable", "value", "pval_value"))
 
 #' Compute deconvolution preprocessing
 #'
