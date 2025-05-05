@@ -94,7 +94,7 @@ deconv_sc = compute_sc_deconvolution_methods(raw_counts, sc_object, sc_metadata,
 
 ## How to add cell types other than the ones present in the nomenclature?
 
-If you want multideconv to consider other cells, it is pretty simple! Just use the argument cells_extra in the function `compute.deconvolution.analysis()`.
+If you want `multideconv` to consider other cells, it is pretty simple! Just use the argument cells_extra in the function `compute.deconvolution.analysis()`.
 
 Let's say you want to add mesenchymal and basophils cells:
 
@@ -118,7 +118,7 @@ Because most of the times scRNAseq data can be big and sparse matrices, we appli
 
 `multideconv` was developed by [Marcelo Hurtado](https://github.com/mhurtado13) in supervision of [Vera Pancaldi](https://github.com/VeraPancaldi) and is part of the [Pancaldi](https://github.com/VeraPancaldiLab) team. Currently, Marcelo is the primary maintainer of this package.
 
-## Citing multideconv
+## Citing `multideconv`
 
 If you use `multideconv` in a scientific publication, we would appreciate citation to the :
 
