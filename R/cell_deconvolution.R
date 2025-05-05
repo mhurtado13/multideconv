@@ -1100,7 +1100,7 @@ compute.deconvolution.analysis <- function(deconvolution, corr = 0.7, seed = NUL
   # }
   #
   #Save data to export
-  if(return){
+  if(return == TRUE){
     data.output = data.groups
     utils::write.csv(dt, paste0('Results/Deconvolution_after_subgrouping_', file_name,'.csv'))
     utils::write.csv(data.output, paste0('Results/Cell_subgroups_', file_name,'.csv'), row.names = F)
@@ -1685,7 +1685,7 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
 
   deconvolution = compute.deconvolution.preprocessing(data.frame(all_deconvolution_table))
 
-  if(return){
+  if(return == TRUE){
     utils::write.csv(deconvolution, paste0("Results/Deconvolution_", file_name, ".csv"))
   }
 
@@ -1769,7 +1769,7 @@ compute_sc_deconvolution_methods = function(raw_counts, normalized = TRUE, sc_ob
 
   results = do.call(cbind, results)
 
-  if(return){
+  if(return == TRUE){
     utils::write.csv(results, paste0("Results/Deconvolution_sc_", file_name, ".csv"))
   }
 
@@ -2126,7 +2126,7 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
   aggr_counts <- glmGamPoi::pseudobulk(sce, group_by = glmGamPoi::vars(Patient), aggregation_functions = list(counts = "rowMeans2", .default = "rowMeans2"))
   pseudo_counts = data.frame(aggr_counts@assays@data$counts)
 
-  if(normalized){
+  if(normalized == TRUE){
     pseudo_counts = ADImpute::NormalizeTPM(pseudo_counts, log=F) %>%
       data.frame()
   }
