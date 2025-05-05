@@ -50,7 +50,7 @@ Remotes:
     omnideconv/immunedeconv,
     omnideconv/omnideconv,
     omnideconv/DWLS,
-    omnideconv/bseqsc,
+    shenorrlab/bseq-sc,
     omnideconv/BayesPrism,
     omnideconv/MOMF,
     smorabit/hdWGCNA,
