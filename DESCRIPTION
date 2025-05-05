@@ -36,7 +36,6 @@ Imports:
     purrr (>= 1.0.2),
     hdWGCNA (>= 0.4.0),
     DWLS (>= 0.4),
-    bseqsc,
     MOMF (>= 0.2),
     BayesPrism (>= 0.2),
     stats,
@@ -58,6 +57,7 @@ Remotes:
 Suggests: 
     testthat (>= 3.0.0),
     WGCNA,
+    bseqsc,
     UCell,
     Seurat (>= 4.4.0),
     GenomicRanges,
