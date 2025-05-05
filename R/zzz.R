@@ -1,4 +1,4 @@
-.onAttach <- function(libname, pkgname) {
+.onLoad <- function(libname, pkgname) {
   results_dir <- file.path("Results")
   signature_dir <- file.path(results_dir, "custom_signatures")
 
