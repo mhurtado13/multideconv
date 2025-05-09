@@ -38,7 +38,9 @@ pak::pkg_install("VeraPancaldiLab/multideconv")
 
 These are basic examples which shows you how to use `multideconv` for different tasks. For a detailed tutorial, see [Get started](https://VeraPancaldiLab.github.io/multideconv/articles/multideconv.html)
 
+Before running `multideconv`, make sure to set your working directory. The `Results/` folder, where outputs will be saved, will be created in this directory.
 ``` r
+setwd('~/path/to/directory')
 library(multideconv)
 ```
 
