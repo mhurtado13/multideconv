@@ -2333,8 +2333,16 @@ process_group <- function(data, min_cells = 50, k = 15, max_shared = 15, labels_
 
   meta = hdWGCNA::GetMetacellObject(seurat_obj)
 
+  if (inherits(meta[["RNA"]], "Assay5")) {
+    # For Seurat v5
+    counts = LayerData(meta, layer = "counts")
+  } else {
+    # For Seurat v3/v4
+    counts = as.matrix(meta@assays[["RNA"]]@counts)
+  }
+
   result <- list(
-    counts = as.matrix(meta@assays[["RNA"]]@counts),
+    counts = counts,
     metadata = meta@meta.data
   )
 
