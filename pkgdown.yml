@@ -3,7 +3,7 @@ pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   multideconv: multideconv.html
-last_built: 2025-05-15T14:00Z
+last_built: 2025-05-15T21:31Z
 urls:
   reference: https://mhurtado13.github.io/multideconv/reference
   article: https://mhurtado13.github.io/multideconv/articles
