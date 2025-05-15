@@ -1603,7 +1603,7 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
 #' Benchmarking second-generation methods for cell-type deconvolution of transcriptomic data. Dietrich, Alexander and Merotto, Lorenzo and Pelz, Konstantin and Eder, Bernhard and Zackl, Constantin and Reinisch, Katharina and
 #' Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 #'
-compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS","MOMF"), signatures_exclude = NULL, normalized = TRUE, doParallel = FALSE, workers = NULL, return = TRUE, create_signature = FALSE,
+compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS"), signatures_exclude = NULL, normalized = TRUE, doParallel = FALSE, workers = NULL, return = TRUE, create_signature = FALSE,
                                   credentials.mail = NULL, credentials.token = NULL, sc_deconv = FALSE, sc_matrix = NULL, sc_metadata = NULL, cell_label = NULL, sample_label = NULL, cell_markers = NULL, name_sc_signature = NULL, file_name = NULL){
 
   path_signatures = system.file("signatures", package = "multideconv")
@@ -1700,8 +1700,8 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
 #' @param normalized Boolean value to specify if raw_counts need to be normalized (If no raw_counts are available and argument corresponds to already normalized counts this arguments needs to be set to False)
 #' @param sc_object A matrix with the counts from scRNAseq object (genes as rows and cells as columns)
 #' @param sc_metadata Dataframe with metadata from the single cell object. The matrix should include the columns cell_label and sample_label.
-#' @param cell_annotations A character vector with the cell labels (need to be of the same order as in the sc_object)
-#' @param samples_ids A character vector with the samples labels (need to be of the same order as in the sc_object)
+#' @param cell_annotations A string with the column name with the cell labels (column should be of the same order as in the sc_object)
+#' @param samples_ids A string with the column name with the samples labels (column should be of the same order as in the sc_object)
 #' @param name_object Signature name to use in the generated single cell signature for deconvolving the bulk RNAseq data
 #' @param n_cores Number of cores to use for paralellization. If no number is set, detectCores() - 1 will be set as the number.
 #' @param return Whether to save or not the csv file with the deconvolution features.
@@ -1743,8 +1743,10 @@ compute_sc_deconvolution_methods = function(raw_counts, normalized = TRUE, sc_ob
                                           cell_type_annotations = as.character(sc_metadata[,cell_annotations]), batch_ids = as.character(sc_metadata[,samples_ids]), verbose = T)$bulk_props
 
   message("\nRunning CPM...............................................................\n")
-  cpm = omnideconv::deconvolute_cpm(bulk_gene_expression = data.frame(raw_counts), single_cell_object = as.matrix(sc_object), no_cores = 4, #raw counts
-                                    cell_type_annotations = as.character(sc_metadata[,cell_annotations]), verbose = T)$cellTypePredictions
+  sampled_SCData <- stratified_sample_cells(as.matrix(sc_object), sc_metadata, cell_annotations, n_cells_per_type = 500)
+  set.seed(123) ## CPM is not deterministic, seed is set for reproducibility
+  cpm = omnideconv::deconvolute_cpm(bulk_gene_expression = data.frame(raw_counts), single_cell_object = as.matrix(sampled_SCData$Counts), no_cores = n_cores, #raw counts
+                                    cell_type_annotations = as.character(sampled_SCData$Metadata[, cell_annotations]), verbose = T)$cellTypePredictions
 
   message("\nRunning MuSiC...............................................................\n")
   music = omnideconv::deconvolute_music(bulk_gene_expression = as.matrix(bulk_counts), single_cell_object = as.matrix(sc_object),
@@ -2271,5 +2273,33 @@ process_group <- function(data, min_cells = 50, k = 15, max_shared = 15, labels_
   return(result)
 
 }
+
+stratified_sample_cells <- function(SCData, SCData_metadata, cell_label, n_cells_per_type = 500, seed = 123) {
+  set.seed(seed)
+
+  # Add cell name as a column for tracking
+  SCData_metadata <- SCData_metadata %>%
+    tibble::rownames_to_column("cell_name")
+
+  # Split by cell type
+  sampled_cells_df <- SCData_metadata %>%
+    dplyr::group_split(.data[[cell_label]]) %>%
+    purrr::map_dfr(~ {
+      n_sample <- min(n_cells_per_type, nrow(.x))
+      .x %>% dplyr::slice_sample(n = n_sample)
+    })
+
+  # Extract sampled cell names
+  sampled_cell_names <- sampled_cells_df$cell_name
+
+  # Subset counts and metadata
+  metadata <- sampled_cells_df %>%
+    tibble::column_to_rownames("cell_name")
+
+  counts <- SCData[, sampled_cell_names]
+
+  return(list(Counts = counts, Metadata = metadata))
+}
+
 
 
