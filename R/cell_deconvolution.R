@@ -1570,9 +1570,11 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
 #' @param sc_deconv Whether to run or not deconvolution methods based on single cell.
 #' @param sc_matrix If sc_deconv = T, the matrix of counts across cells from the scRNAseq object is provided.
 #' @param sc_metadata Dataframe with metadata from the single cell object. The matrix should include the columns cell_label and sample_label.
+#' @param methods_sc A character vector with the sc-deconvolution methods to run. Default are "Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"
 #' @param cell_label If sc_deconv = T, a character vector indicating the cell labels (same order as the count matrix)
 #' @param sample_label If sc_deconv = T, a character vector indicating the cell samples IDs (same order as the count matrix)
 #' @param cell_markers Named list with the genes markers names as Symbol per cell types to be used to create the signature using the BSeq-SC method. If NULL, the method will be ignored during the signature creation.
+#' @param methods_sig A character vector specifying which methods to run. Options are "DWLS", "CIBERSORTx", "MOMF", and "BSeqsc". Default runs all available methods.
 #' @param name_sc_signature If sc_deconv = T, the name you want to give to the signature generated
 #' @param file_name File name for the csv files and plots saved in the Results/ directory
 #'
@@ -1604,7 +1606,8 @@ compute_methods_variable_signature = function(TPM_matrix, signatures, algos = c(
 #' Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 #'
 compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS"), signatures_exclude = NULL, normalized = TRUE, doParallel = FALSE, workers = NULL, return = TRUE, create_signature = FALSE,
-                                  credentials.mail = NULL, credentials.token = NULL, sc_deconv = FALSE, sc_matrix = NULL, sc_metadata = NULL, cell_label = NULL, sample_label = NULL, cell_markers = NULL, name_sc_signature = NULL, file_name = NULL){
+                                  credentials.mail = NULL, credentials.token = NULL, sc_deconv = FALSE, sc_matrix = NULL, sc_metadata = NULL, methods_sc = c("Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"), cell_label = NULL,
+                                  sample_label = NULL, cell_markers = NULL, methods_sig = c("DWLS", "CIBERSORTx", "MOMF", "BSeqsc"), name_sc_signature = NULL, file_name = NULL){
 
   path_signatures = system.file("signatures", package = "multideconv")
 
@@ -1642,7 +1645,7 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
       stop("No single cell object or metadata has been provided for creating signature.")
     }else{
       signatures = create_sc_signatures(sc_matrix, sc_metadata, cell_label, sample_label, credentials.mail = credentials.mail, credentials.token = credentials.token,
-                                        bulk_rna = raw.counts, cell_markers, name_signature = name_sc_signature)
+                                        bulk_rna = raw.counts, cell_markers, name_signature = name_sc_signature, methods_sig = methods_sig)
     }
   }
 
@@ -1678,8 +1681,8 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
     if(is.null(sc_matrix)==T){
       stop("No single cell object has been provided for deconvolution.")
     }else{
-      deconv_sc = compute_sc_deconvolution_methods(raw.counts, normalized = normalized, sc_matrix, sc_metadata, cell_label,
-                                                   sample_label, name_sc_signature, n_cores = workers)
+      deconv_sc = compute_sc_deconvolution_methods(raw.counts, normalized = normalized, methods_sc = methods_sc, sc_matrix,
+                                                   sc_metadata, cell_label, sample_label, name_sc_signature, n_cores = workers)
       all_deconvolution_table = cbind(data.frame(all_deconvolution_table), deconv_sc)
     }
   }
@@ -1698,6 +1701,7 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
 #'
 #' @param raw_counts A matrix with raw counts (samples as columns and genes symbols as rows)
 #' @param normalized Boolean value to specify if raw_counts need to be normalized (If no raw_counts are available and argument corresponds to already normalized counts this arguments needs to be set to False)
+#' @param methods_sc A character vector with the sc-deconvolution methods to run. Default are "Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"
 #' @param sc_object A matrix with the counts from scRNAseq object (genes as rows and cells as columns)
 #' @param sc_metadata Dataframe with metadata from the single cell object. The matrix should include the columns cell_label and sample_label.
 #' @param cell_annotations A string with the column name with the cell labels (column should be of the same order as in the sc_object)
@@ -1717,56 +1721,98 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
 #' Benchmarking second-generation methods for cell-type deconvolution of transcriptomic data. Dietrich, Alexander and Merotto, Lorenzo and Pelz, Konstantin and Eder, Bernhard and Zackl, Constantin and Reinisch, Katharina and
 #' Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 #'
-compute_sc_deconvolution_methods = function(raw_counts, normalized = TRUE, sc_object, sc_metadata, cell_annotations, samples_ids, name_object, n_cores = NULL, return = FALSE, file_name = NULL){
+compute_sc_deconvolution_methods = function(raw_counts, normalized = TRUE, methods_sc = c("Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"), sc_object, sc_metadata, cell_annotations, samples_ids, name_object, n_cores = NULL, return = FALSE, file_name = NULL){
 
   if(normalized){
     bulk_counts = ADImpute::NormalizeTPM(raw_counts)
-  }else{
+  } else {
     bulk_counts = raw_counts
   }
 
   if(is.null(n_cores)){
     n_cores = parallel::detectCores() - 1
-    message("\nUsing ",n_cores, " cores available for running.........................................................\n")
+    message("\nUsing ", n_cores, " cores available for running...\n")
   }
 
-  message("\nRunning AutogeneS...............................................................\n")
-  autogenes = omnideconv::deconvolute_autogenes(bulk_gene_expression = bulk_counts, single_cell_object = as.matrix(sc_object),
-                                                cell_type_annotations = as.character(sc_metadata[,cell_annotations]), verbose = T)$proportions
+  results = list()
 
-  message("\nRunning BayesPrism...............................................................\n")
-  bayesprism = omnideconv::deconvolute_bayesprism(bulk_gene_expression = raw_counts, single_cell_object = as.matrix(sc_object),
-                                                  cell_type_annotations = as.character(sc_metadata[,cell_annotations]), n_cores = n_cores)$theta
+  if("Autogenes" %in% methods_sc){
+    message("\nRunning AutogeneS...\n")
+    autogenes = omnideconv::deconvolute_autogenes(
+      bulk_gene_expression = bulk_counts,
+      single_cell_object = as.matrix(sc_object),
+      cell_type_annotations = as.character(sc_metadata[,cell_annotations]),
+      verbose = TRUE
+    )$proportions
+    results$AutogeneS = autogenes
+  }
 
-  message("\nRunning Bisque...............................................................\n")
-  bisque = omnideconv::deconvolute_bisque(bulk_gene_expression = as.matrix(raw_counts), single_cell_object = as.matrix(sc_object),
-                                          cell_type_annotations = as.character(sc_metadata[,cell_annotations]), batch_ids = as.character(sc_metadata[,samples_ids]), verbose = T)$bulk_props
+  if("BayesPrism" %in% methods_sc){
+    message("\nRunning BayesPrism...\n")
+    bayesprism = omnideconv::deconvolute_bayesprism(
+      bulk_gene_expression = raw_counts,
+      single_cell_object = as.matrix(sc_object),
+      cell_type_annotations = as.character(sc_metadata[,cell_annotations]),
+      n_cores = n_cores
+    )$theta
+    results$BayesPrism = bayesprism
+  }
 
-  message("\nRunning CPM...............................................................\n")
-  sampled_SCData <- stratified_sample_cells(as.matrix(sc_object), sc_metadata, cell_annotations, n_cells_per_type = 500)
-  set.seed(123) ## CPM is not deterministic, seed is set for reproducibility
-  cpm = omnideconv::deconvolute_cpm(bulk_gene_expression = data.frame(raw_counts), single_cell_object = as.matrix(sampled_SCData$Counts), no_cores = n_cores, #raw counts
-                                    cell_type_annotations = as.character(sampled_SCData$Metadata[, cell_annotations]), verbose = T)$cellTypePredictions
+  if("Bisque" %in% methods_sc){
+    message("\nRunning Bisque...\n")
+    bisque = omnideconv::deconvolute_bisque(
+      bulk_gene_expression = as.matrix(raw_counts),
+      single_cell_object = as.matrix(sc_object),
+      cell_type_annotations = as.character(sc_metadata[,cell_annotations]),
+      batch_ids = as.character(sc_metadata[,samples_ids]),
+      verbose = TRUE
+    )$bulk_props
+    results$Bisque = bisque
+  }
 
-  message("\nRunning MuSiC...............................................................\n")
-  music = omnideconv::deconvolute_music(bulk_gene_expression = as.matrix(bulk_counts), single_cell_object = as.matrix(sc_object),
-                                        cell_type_annotations = as.character(sc_metadata[,cell_annotations]),  batch_ids = as.character(sc_metadata[,samples_ids]), verbose = T)$Est.prop.weighted
+  if("CPM" %in% methods_sc){
+    message("\nRunning CPM...\n")
+    sampled_SCData <- stratified_sample_cells(as.matrix(sc_object), sc_metadata, cell_annotations, n_cells_per_type = 500) #Sample cells to a max of 500 per cell type
+    set.seed(123) #Stochastic method (CPM is not deterministic)
+    cpm = omnideconv::deconvolute_cpm(
+      bulk_gene_expression = data.frame(raw_counts),
+      single_cell_object = as.matrix(sampled_SCData$Counts),
+      no_cores = n_cores,
+      cell_type_annotations = as.character(sampled_SCData$Metadata[, cell_annotations]),
+      verbose = TRUE
+    )$cellTypePredictions
+    results$CPM = cpm
+  }
 
-  message("\nRunning SCDC...............................................................\n")
-  scdc = omnideconv::deconvolute_scdc(bulk_gene_expression = as.matrix(bulk_counts), single_cell_object = as.matrix(sc_object),
-                                      cell_type_annotations = as.character(sc_metadata[,cell_annotations]), batch_ids = as.character(sc_metadata[,samples_ids]), verbose = T)$prop.est.mvw
+  if("MuSic" %in% methods_sc){
+    message("\nRunning MuSiC...\n")
+    music = omnideconv::deconvolute_music(
+      bulk_gene_expression = as.matrix(bulk_counts),
+      single_cell_object = as.matrix(sc_object),
+      cell_type_annotations = as.character(sc_metadata[,cell_annotations]),
+      batch_ids = as.character(sc_metadata[,samples_ids]),
+      verbose = TRUE
+    )$Est.prop.weighted
+    results$MuSic = music
+  }
 
+  if("SCDC" %in% methods_sc){
+    message("\nRunning SCDC...\n")
+    scdc = omnideconv::deconvolute_scdc(
+      bulk_gene_expression = as.matrix(bulk_counts),
+      single_cell_object = as.matrix(sc_object),
+      cell_type_annotations = as.character(sc_metadata[,cell_annotations]),
+      batch_ids = as.character(sc_metadata[,samples_ids]),
+      verbose = TRUE
+    )$prop.est.mvw
+    results$SCDC = scdc
+  }
 
-  results = list(AutogeneS = autogenes, BayesPrism = bayesprism, Bisque = bisque,
-                 CPM = cpm, MuSic = music, SCDC = scdc)
-
-
+  # Format and combine results
   results <- lapply(names(results), function(method) {
     deconv_method <- results[[method]]
-
     colnames(deconv_method) <- paste0(method, "_", name_object, "_", colnames(deconv_method))
     colnames(deconv_method) <- stringr::str_replace_all(colnames(deconv_method), " ", "_")
-
     return(deconv_method)
   })
 
@@ -2154,6 +2200,7 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
 #' @param bulk_rna A matrix of bulk data. Rows are genes, columns are samples. This is needed for MOMF method, if not given the method will not be run.
 #' @param cell_markers Named list with the genes markers names as Symbol per cell types to be used to create the signature using the BSeq-SC method. If NULL, the method will be ignored during the signature creation.
 #' @param name_signature A string indicating the signature name. This will be added as a suffix in each method (e.g. CBSX_name_signature, DWLS_name_signature)
+#' @param methods_sig A character vector specifying which methods to run. Options are "DWLS", "CIBERSORTx", "MOMF", and "BSeqsc". Default runs all available methods.
 #'
 #' @return A list containing the cell signatures per method. Signatures are directly saved in Results/custom_signatures folder, these will be used to run deconvolution.
 #' @export
@@ -2165,73 +2212,98 @@ create_sc_pseudobulk = function(sc_obj, cells_labels, sample_labels, normalized 
 #' Benchmarking second-generation methods for cell-type deconvolution of transcriptomic data. Dietrich, Alexander and Merotto, Lorenzo and Pelz, Konstantin and Eder, Bernhard and Zackl, Constantin and Reinisch, Katharina and
 #' Edenhofer, Frank and Marini, Federico and Sturm, Gregor and List, Markus and Finotello, Francesca. (2024) https://doi.org/10.1101/2024.06.10.598226
 #'
-create_sc_signatures = function(sc_obj, sc_metadata, cells_labels, sample_labels, credentials.mail = NULL, credentials.token = NULL, bulk_rna = NULL, cell_markers = NULL, name_signature = NULL){
+create_sc_signatures = function(sc_obj,
+                                sc_metadata,
+                                cells_labels,
+                                sample_labels,
+                                credentials.mail = NULL,
+                                credentials.token = NULL,
+                                bulk_rna = NULL,
+                                cell_markers = NULL,
+                                name_signature = NULL,
+                                methods_sig = c("DWLS", "CIBERSORTx", "MOMF", "BSeqsc")) {
 
   signature_dir = "Results/custom_signatures/"
+  dir.create(signature_dir, showWarnings = FALSE, recursive = TRUE)
+
   library(bseqsc)
-
   sc_obj = as.matrix(sc_obj)
+  signatures = list()
 
-  cat("\nRunning DWLS...............................................................\n")
-  model_dwls <- omnideconv::build_model_dwls(sc_obj, as.character(sc_metadata[,cells_labels]),
-                                             dwls_method = "mast_optimized", ncores = 1) %>%
-    data.frame() %>%
-    tibble::rownames_to_column("NAME")
-
-  utils::write.table(model_dwls, paste0(signature_dir, "DWLS-", name_signature,"-scRNAseq.txt"), row.names = F, quote = F, sep = "\t")
-
-  signatures = list(DWLS = model_dwls)
-
-  cat("\nRunning CIBERSORTx...............................................................\n")
-
-  if(is.null(credentials.mail)==T || is.null(credentials.token)==T){
-    warning("\nNo credentials were found\n")
-    cat("\nPlease set your credentials in the function for running CIBERSORTx")
-    cat("\nSkipping...............")
-  }else{
-    omnideconv::set_cibersortx_credentials(credentials.mail, credentials.token)
-    model_cbsx = omnideconv::build_model(sc_obj, as.character(sc_metadata[,cells_labels]),
-                                         batch_ids = as.character(sc_metadata[,sample_labels]), method = "cibersortx") %>%
+  # DWLS
+  if ("DWLS" %in% methods_sig) {
+    cat("\nRunning DWLS...............................................................\n")
+    model_dwls <- omnideconv::build_model_dwls(
+      sc_obj, as.character(sc_metadata[,cells_labels]),
+      dwls_method = "mast_optimized", ncores = 1
+    ) %>%
       data.frame() %>%
       tibble::rownames_to_column("NAME")
 
-    utils::write.table(model_cbsx, paste0(signature_dir, "CBSX-", name_signature,"-scRNAseq.txt"), row.names = F, quote = F, sep = "\t")
-    signatures[[length(signatures) + 1]] = model_cbsx
-    names(signatures)[length(signatures)] = "CBSX"
+    utils::write.table(model_dwls, paste0(signature_dir, "DWLS-", name_signature,"-scRNAseq.txt"), row.names = FALSE, quote = FALSE, sep = "\t")
+    signatures[["DWLS"]] = model_dwls
   }
 
-  if(is.null(bulk_rna) == F){
-    cat("\nRunning MOMF...............................................................\n")
-    model_momf <- omnideconv::build_model_momf(sc_obj, as.character(sc_metadata[,cells_labels]),
-                                               bulk_gene_expression = bulk_rna) %>%
-      data.frame() %>%
-      tibble::rownames_to_column("NAME")
+  # CIBERSORTx
+  if ("CIBERSORTx" %in% methods_sig) {
+    cat("\nRunning CIBERSORTx...............................................................\n")
 
-    utils::write.table(model_momf, paste0(signature_dir, "MOMF-", name_signature,"-scRNAseq.txt"), row.names = F, quote = F, sep = "\t")
+    if (is.null(credentials.mail) || is.null(credentials.token)) {
+      warning("Skipping CIBERSORTx: Credentials not provided.")
+      cat("Please provide credentials.mail and credentials.token to run CIBERSORTx.\n")
+    } else {
+      omnideconv::set_cibersortx_credentials(credentials.mail, credentials.token)
+      model_cbsx <- omnideconv::build_model(
+        sc_obj, as.character(sc_metadata[,cells_labels]),
+        batch_ids = as.character(sc_metadata[,sample_labels]),
+        method = "cibersortx"
+      ) %>%
+        data.frame() %>%
+        tibble::rownames_to_column("NAME")
 
-    signatures[[length(signatures) + 1]] = model_momf
-    names(signatures)[length(signatures)] = "MOMF"
-  }else{
-    warning("\nMOMF requires the matrix of bulk data to deconvolve. As no bulk data has been provided, MOMF is skipped.")
+      utils::write.table(model_cbsx, paste0(signature_dir, "CBSX-", name_signature,"-scRNAseq.txt"), row.names = FALSE, quote = FALSE, sep = "\t")
+      signatures[["CBSX"]] = model_cbsx
+    }
   }
 
-  if(is.null(cell_markers) == F){
-    cat("\nRunning BSeq-sc...............................................................\n")
-    model_bseq <- omnideconv::build_model_bseqsc(sc_obj, as.character(sc_metadata[,cells_labels]),
-                                                 markers = cell_markers, batch_ids = as.character(sc_metadata[,sample_labels])) %>%
-      data.frame() %>%
-      tibble::rownames_to_column("NAME")
+  # MOMF
+  if ("MOMF" %in% methods_sig) {
+    if (is.null(bulk_rna)) {
+      warning("Skipping MOMF: bulk_rna not provided.")
+    } else {
+      cat("\nRunning MOMF...............................................................\n")
+      model_momf <- omnideconv::build_model_momf(
+        sc_obj, as.character(sc_metadata[,cells_labels]),
+        bulk_gene_expression = bulk_rna
+      ) %>%
+        data.frame() %>%
+        tibble::rownames_to_column("NAME")
 
-    utils::write.table(model_bseq, paste0(signature_dir, "BSeqSC-", name_signature,"-scRNAseq.txt"), row.names = F, quote = F, sep = "\t")
+      utils::write.table(model_momf, paste0(signature_dir, "MOMF-", name_signature,"-scRNAseq.txt"), row.names = FALSE, quote = FALSE, sep = "\t")
+      signatures[["MOMF"]] = model_momf
+    }
+  }
 
-    signatures[[length(signatures) + 1]] = model_bseq
-    names(signatures)[length(signatures)] = "BSeqsc"
-  }else{
-    warning("\nBSeq-sc requires cell type marker genes. As no cell_markers have been provided, BSeq-sc is skipped")
+  # BSeqsc
+  if ("BSeqsc" %in% methods_sig) {
+    if (is.null(cell_markers)) {
+      warning("Skipping BSeqsc: cell_markers not provided.")
+    } else {
+      cat("\nRunning BSeq-sc...............................................................\n")
+      model_bseq <- omnideconv::build_model_bseqsc(
+        sc_obj, as.character(sc_metadata[,cells_labels]),
+        markers = cell_markers,
+        batch_ids = as.character(sc_metadata[,sample_labels])
+      ) %>%
+        data.frame() %>%
+        tibble::rownames_to_column("NAME")
+
+      utils::write.table(model_bseq, paste0(signature_dir, "BSeqSC-", name_signature,"-scRNAseq.txt"), row.names = FALSE, quote = FALSE, sep = "\t")
+      signatures[["BSeqsc"]] = model_bseq
+    }
   }
 
   return(signatures)
-
 }
 
 unregister_dopar <- function() {

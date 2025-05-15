@@ -107,6 +107,7 @@ We adapted functions from the R package hdWGCNA (@morabito2023hdwgcna; @langfeld
 
 -   **min_meta**: Minimum number of metacells required for a cell type to be retained
 
+Because of space limitations, we have not included a complete single-cell object in this tutorial. However, users are expected to provide their own single-cell data and supply it to the `sc_object` parameter in the function call.
 ```{r, eval=FALSE}
 metacells = create_metacells(sc_object, 
                              labels_column = cell_labels, 
@@ -153,6 +154,8 @@ deconv = compute.deconvolution(raw.counts = bulk,
                                sc_deconv = TRUE, 
                                sc_matrix = metacell_obj, 
                                sc_metadata = metacell_metadata, 
+                               methods_sc = c("Autogenes", "BayesPrism", 
+                                              "Bisque", "CPM", "MuSic", "SCDC"),
                                cell_label = "annotated_ct", 
                                sample_label = "sample", 
                                name_sc_signature = "Test")
@@ -163,6 +166,8 @@ To run only the second-generation deconvolution methods based on single-cell dat
 ```{r, eval=FALSE}
 deconv_sc = compute_sc_deconvolution_methods(raw_counts = bulk, 
                                              normalized = TRUE, 
+                                             methods_sc = c("Autogenes", "BayesPrism", 
+                                                            "Bisque", "CPM", "MuSic", "SCDC"),
                                              sc_object = metacell_obj, 
                                              sc_metadata = metacell_metadata, 
                                              cell_annotations = "annotated_ct", 
@@ -198,7 +203,8 @@ signatures = create_sc_signatures(metacell_obj,
                                   sample_labels = "sample", 
                                   bulk_rna = bulk_pseudo, 
                                   cell_markers = NULL, 
-                                  name_signature = "Test")
+                                  name_signature = "Test",
+                                  methods_sig = c("DWLS", "CIBERSORTx", "MOMF", "BSeqsc"))
 ```
 
 ## **Cell types signatures benchmark**
