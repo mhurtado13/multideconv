@@ -1723,6 +1723,8 @@ compute.deconvolution <- function(raw.counts, methods = c("Quantiseq", "CBSX", "
 #'
 compute_sc_deconvolution_methods = function(raw_counts, normalized = TRUE, methods_sc = c("Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"), sc_object, sc_metadata, cell_annotations, samples_ids, name_object, n_cores = NULL, return = FALSE, file_name = NULL){
   library(MuSiC)
+  library(SCDC)
+
   if(normalized){
     bulk_counts = ADImpute::NormalizeTPM(raw_counts)
   } else {

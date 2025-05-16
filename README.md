@@ -154,6 +154,23 @@ by executing different tasks per cluster in parallel for N workers and
 once finished, it computes deconvolution using the reduced single cell
 object.
 
+**NOTE**: If you encounter missing packages for certain deconvolution
+methods (e.g., `MuSiC`, `SCDC`) during the pipeline, make sure to
+install the versions maintained by the `omnideconv` team. These versions
+are patched to work seamlessly with `omnideconv` functions:
+
+``` r
+devtools::install_github("omnideconv/MuSiC")
+devtools::install_github("omnideconv/SCDC")
+```
+
+## Issues
+
+If you encounter any problems or have questions about the package, we
+encourage you to open an issue
+[here](https://github.com/VeraPancaldiLab/multideconv/issues). We’ll do
+our best to assist you!
+
 ## Authors
 
 `multideconv` was developed by [Marcelo
