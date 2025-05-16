@@ -131,6 +131,15 @@
 </h2>
 <p><code>multideconv</code> includes second generation methods that allows users to input single cell data and use it for constructing signatures ‘on-the-fly’ and deconvolve the bulk RNAseq data.</p>
 <p>Because most of the times scRNAseq data can be big and sparse matrices, we applied ‘preprocessing’ steps to avoid crashing the computer. For this, <code>multideconv</code> construct metacells per cell type and patient from the single cell data using the KNN algorithm. This is done essentially by executing different tasks per cluster in parallel for N workers and once finished, it computes deconvolution using the reduced single cell object.</p>
+<p><strong>NOTE</strong>: If you encounter missing packages for certain deconvolution methods (e.g., <code>MuSiC</code>, <code>SCDC</code>) during the pipeline, make sure to install the versions maintained by the <code>omnideconv</code> team. These versions are patched to work seamlessly with <code>omnideconv</code> functions:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"omnideconv/MuSiC"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"omnideconv/SCDC"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="issues">Issues<a class="anchor" aria-label="anchor" href="#issues"></a>
+</h2>
+<p>If you encounter any problems or have questions about the package, we encourage you to open an issue <a href="https://github.com/VeraPancaldiLab/multideconv/issues" class="external-link">here</a>. We’ll do our best to assist you!</p>
 </div>
 <div class="section level2">
 <h2 id="authors">Authors<a class="anchor" aria-label="anchor" href="#authors"></a>
