@@ -431,10 +431,10 @@ compute.cell.types = function(data, cells_extra = NULL){
   B = grep("B.cells", colnames(data))
   B = data[, B, drop = FALSE]
   ##### B naive
-  B.naive = grep("B.naive", colnames(data))
+  B.naive = grep("B.naive.cells", colnames(data))
   B.naive = data[, B.naive, drop = FALSE]
   ##### B memory
-  B.memory = grep("B.memory", colnames(data))
+  B.memory = grep("B.memory.cells", colnames(data))
   B.memory = data[, B.memory, drop = FALSE]
   ##### Macrophages (M0, M1, M2)
   Macrophages = grep("Macrophages.cells", colnames(data))
@@ -496,9 +496,9 @@ compute.cell.types = function(data, cells_extra = NULL){
   ##### Dendritic cells (activated, resting)
   Dendritic = grep("Dendritic.cells", colnames(data))
   Dendritic = data[, Dendritic, drop = FALSE]
-  Dendritic.activated = grep("Dendritic.activated", colnames(data))
+  Dendritic.activated = grep("Dendritic.activated.cells", colnames(data))
   Dendritic.activated = data[, Dendritic.activated, drop = FALSE]
-  Dendritic.resting = grep("Dendritic.resting", colnames(data))
+  Dendritic.resting = grep("Dendritic.resting.cells", colnames(data))
   Dendritic.resting = data[, Dendritic.resting, drop = FALSE]
   ##### Cancer cells
   Cancer = grep("Cancer", colnames(data))
@@ -510,7 +510,7 @@ compute.cell.types = function(data, cells_extra = NULL){
   Eosinophils = grep("Eosinophils", colnames(data))
   Eosinophils = data[, Eosinophils, drop = FALSE]
   ##### Plasma cells
-  Plasma = grep("Plasma.cells", colnames(data))
+  Plasma = grep("Plasma", colnames(data))
   Plasma = data[, Plasma, drop = FALSE]
   ##### Myocytes cells
   Myocytes = grep("Myocytes", colnames(data))
@@ -521,9 +521,9 @@ compute.cell.types = function(data, cells_extra = NULL){
   ##### Mast cells
   Mast = grep("Mast.cells", colnames(data))
   Mast = data[, Mast, drop = FALSE]
-  Mast.activated = grep("Mast.activated", colnames(data))
+  Mast.activated = grep("Mast.activated.cells", colnames(data))
   Mast.activated = data[, Mast.activated, drop = FALSE]
-  Mast.resting = grep("Mast.resting", colnames(data))
+  Mast.resting = grep("Mast.resting.cells", colnames(data))
   Mast.resting = data[, Mast.resting, drop = FALSE]
   ##### CAF cells
   CAF = grep("CAF", colnames(data))
@@ -534,9 +534,9 @@ compute.cell.types = function(data, cells_extra = NULL){
                     CD8, Tregs, T.non.regs, Thelper, Tgamma, Dendritic, Dendritic.activated, Dendritic.resting, Cancer, Endothelial, Eosinophils, Plasma, Myocytes, Fibroblasts, Mast, Mast.activated,
                     Mast.resting, CAF)
 
-  names(cell_types) = c("B.cells", "B.naive", "B.memory", "Macrophages.cells", "Macrophages.M0", "Macrophages.M1", "Macrophages.M2", "Monocytes", "Neutrophils", "NK.cells", "NK.activated", "NK.resting", "NKT.cells", "CD4.cells", "CD4.memory.activated",
-                        "CD4.memory.resting", "CD4.naive", "CD8.cells", "T.cells.regulatory", "T.cells.non.regulatory","T.cells.helper", "T.cells.gamma.delta", "Dendritic.cells", "Dendritic.activated", "Dendritic.resting", "Cancer", "Endothelial",
-                        "Eosinophils", "Plasma", "Myocytes", "Fibroblasts", "Mast.cells", "Mast.activated", "Mast.resting", "CAF")
+  names(cell_types) = c("B.cells", "B.naive.cells", "B.memory.cells", "Macrophages.cells", "Macrophages.M0", "Macrophages.M1", "Macrophages.M2", "Monocytes", "Neutrophils", "NK.cells", "NK.activated", "NK.resting", "NKT.cells", "CD4.cells", "CD4.memory.activated",
+                        "CD4.memory.resting", "CD4.naive", "CD8.cells", "T.cells.regulatory", "T.cells.non.regulatory","T.cells.helper", "T.cells.gamma.delta", "Dendritic.cells", "Dendritic.activated.cells", "Dendritic.resting.cells", "Cancer", "Endothelial",
+                        "Eosinophils", "Plasma", "Myocytes", "Fibroblasts", "Mast.cells", "Mast.activated.cells", "Mast.resting.cells", "CAF")
 
   cell_types_matrix = cbind(B, B.naive, B.memory, Macrophages, M0, M1, M2, Monocytes, Neutrophils, NK, NK.activated, NK.resting, NKT, CD4, CD4.memory.activated, CD4.memory.resting, CD4.naive,
                             CD8, Tregs, T.non.regs, Thelper, Tgamma, Dendritic, Dendritic.activated, Dendritic.resting, Cancer, Endothelial, Eosinophils, Plasma, Myocytes, Fibroblasts, Mast, Mast.activated,
@@ -2006,9 +2006,8 @@ compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, cor
 
   #####Scatter plot function
   scatter_plots = function(deconv, ground, method){
-    plots <- list()
     for (i in 1:ncol(deconv)) {
-      data = cbind(ground, deconv[,i])
+      data = cbind(deconv[,i], ground)
       colnames(data) = c("x", "y")
       cor_test <- stats::cor.test(data$x, data$y)
       cor_value <- cor_test$estimate  # Correlation coefficient
@@ -2036,9 +2035,8 @@ compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, cor
           vjust = -1     # Adjust the vertical position of the text
         )
 
-      plots[[i]] <- p
+      print(p)
     }
-    return(plots)
   }
 
   cell_clusters = colnames(groundtruth)
@@ -2067,21 +2065,9 @@ compute.benchmark = function(deconvolution, groundtruth, cells_extra = NULL, cor
     ###Scatter plots
     if(scatter == T){
       if(ncol(deconv)!=0){
-        # Edit deconv to match with reference and have the same number of scatter plots per cell type
-        deconv_sub = deconv
-        colnames(deconv_sub) <- gsub(paste0("_", cell_clusters[i], "$"), "", colnames(deconv_sub))
-        colnames(deconv_sub) = gsub("(BPRNACan3DProMet|BPRNACanProMet|BPRNACan)", "\\1_", colnames(deconv_sub))
-        missing_cols <- setdiff(colnames(corr_matrix), colnames(deconv_sub)) #Find which columns are missing from reference
-
-        # Fill with 0 no-existing columns (missing from reference)
-        for (col in missing_cols) {
-          deconv_sub[[col]] <- 0
-        }
-        deconv_sub <- deconv_sub[, names(corr_matrix)] #reorder columns matching the reference
-
-        plots = scatter_plots(deconv_sub, ground, corr_type)
-
-        plots_all[[i]] = plots
+        pdf(paste0("Scatter_plots_", colnames(ground), "_", file_name))
+        scatter_plots(deconv, ground, corr_type)
+        dev.off()
       }
     }
 
