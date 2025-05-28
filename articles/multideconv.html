@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>multideconv • multideconv</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -50,8 +55,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>multideconv</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>multideconv</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/VeraPancaldiLab/multideconv/blob/main/vignettes/multideconv.Rmd" class="external-link"><code>vignettes/multideconv.Rmd</code></a></small>
@@ -662,6 +666,151 @@ subgrouping. If not, they are going to be discarded automatically.</p>
 <span>                                                  return <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                                                  cells_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mural.cells"</span>, <span class="st">"Myeloid.cells"</span><span class="op">)</span>, </span>
 <span>                                                  file_name <span class="op">=</span> <span class="st">"Tutorial"</span><span class="op">)</span> </span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="replicate-deconvolution-subgroups-in-an-independent-set">
+<strong>Replicate deconvolution subgroups in an independent
+set</strong><a class="anchor" aria-label="anchor" href="#replicate-deconvolution-subgroups-in-an-independent-set"></a>
+</h3>
+<p>Cell subgroup identification through deconvolution is
+cohort-specific, as it relies on correlation patterns across samples.
+This means that subgroup definitions may vary across different splits or
+datasets. If you aim to replicate the same subgroups identified in one
+dataset onto another (e.g., for model validation), you can use the
+following function.</p>
+<p>The function below reconstructs and applies the subgroup signatures
+derived from a previous deconvolution, making it especially useful when
+transferring learned patterns across datasets—such as when training and
+evaluating machine learning models.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">deconv_1</span> <span class="op">=</span> <span class="va">deconv_bulk</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span></span>
+<span><span class="va">deconv_2</span> <span class="op">=</span> <span class="va">deconv_bulk</span><span class="op">[</span><span class="fl">101</span><span class="op">:</span><span class="fl">192</span>,<span class="op">]</span></span>
+<span></span>
+<span><span class="va">deconv_subgroups</span> <span class="op">=</span> <span class="fu"><a href="../reference/compute.deconvolution.analysis.html">compute.deconvolution.analysis</a></span><span class="op">(</span>deconvolution <span class="op">=</span> <span class="va">deconv_1</span>, </span>
+<span>                                                  corr <span class="op">=</span> <span class="fl">0.7</span>, </span>
+<span>                                                  seed <span class="op">=</span> <span class="fl">123</span>, </span>
+<span>                                                  file_name <span class="op">=</span> <span class="st">"Tutorial"</span>, </span>
+<span>                                                  return <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; Removing features with high zero number 90%...............................................................</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Checking distribution of variances...............................................................</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Chosen threshold is: 0.000192634 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Saving variance distribution plot in Results/ folder</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Removing 89 features with variance across samples below this threshold...............................................................</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Splitting deconvolution features per cell type...............................................................</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Finding group of features with high correlation between each other...............................................................</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_BPRNACan_B.cells, DeconRNASeq_BPRNACan3DProMet_B.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_BPRNACan_B.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_BPRNACan_B.cells, Epidish_BPRNACan3DProMet_B.cells, Epidish_BPRNACanProMet_B.cells, DWLS_BPRNACan_B.cells, DWLS_BPRNACan3DProMet_B.cells, DWLS_BPRNACanProMet_B.cells, CBSX_BPRNACan_B.cells, CBSX_BPRNACan3DProMet_B.cells, CBSX_BPRNACanProMet_B.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_BPRNACanProMet_B.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.HNSCC.scRNAseq_B.cells, DWLS_CBSX.HNSCC.scRNAseq_B.cells, CBSX_CBSX.HNSCC.scRNAseq_B.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.HNSCC.scRNAseq_B.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.Melanoma.scRNAseq_B.cells, DWLS_CBSX.Melanoma.scRNAseq_B.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_CBSX.Melanoma.scRNAseq_B.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.HNSCC.scRNAseq_Macrophages.cells, DWLS_CBSX.HNSCC.scRNAseq_Macrophages.cells, CBSX_CBSX.HNSCC.scRNAseq_Macrophages.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.HNSCC.scRNAseq_Macrophages.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.Melanoma.scRNAseq_Macrophages.cells, DWLS_CBSX.Melanoma.scRNAseq_Macrophages.cells, CBSX_CBSX.Melanoma.scRNAseq_Macrophages.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.Melanoma.scRNAseq_Macrophages.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_BPRNACan3DProMet_Macrophages.M0, DeconRNASeq_BPRNACanProMet_Macrophages.M0"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_BPRNACan3DProMet_Macrophages.M0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_LM22_Macrophages.M0, DWLS_LM22_Macrophages.M0, CBSX_LM22_Macrophages.M0"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_LM22_Macrophages.M0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_BPRNACan_Macrophages.M1, DeconRNASeq_BPRNACanProMet_Macrophages.M1"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_BPRNACan_Macrophages.M1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_CCLE.TIL10_Macrophages.M1, DeconRNASeq_TIL10_Macrophages.M1"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_CCLE.TIL10_Macrophages.M1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CCLE.TIL10_Macrophages.M1, DWLS_CCLE.TIL10_Macrophages.M1"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_CCLE.TIL10_Macrophages.M1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_LM22_Macrophages.M1, DWLS_LM22_Macrophages.M1, CBSX_LM22_Macrophages.M1"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_LM22_Macrophages.M1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DWLS_BPRNACan_Macrophages.M1, DWLS_BPRNACan3DProMet_Macrophages.M1, DWLS_BPRNACanProMet_Macrophages.M1"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DWLS_BPRNACanProMet_Macrophages.M1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_BPRNACan_Macrophages.M2, DeconRNASeq_BPRNACan3DProMet_Macrophages.M2, DeconRNASeq_BPRNACanProMet_Macrophages.M2"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_BPRNACanProMet_Macrophages.M2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_CCLE.TIL10_Macrophages.M2, DeconRNASeq_TIL10_Macrophages.M2"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_CCLE.TIL10_Macrophages.M2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.NSCLC.PBMCs.scRNAseq_Monocytes, DWLS_CBSX.NSCLC.PBMCs.scRNAseq_Monocytes, CBSX_CBSX.NSCLC.PBMCs.scRNAseq_Monocytes"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.NSCLC.PBMCs.scRNAseq_Monocytes</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_CCLE.TIL10_Monocytes, DeconRNASeq_TIL10_Monocytes"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_CCLE.TIL10_Monocytes</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DWLS_BPRNACan_Monocytes, DWLS_BPRNACan3DProMet_Monocytes"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DWLS_BPRNACan_Monocytes</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_BPRNACan_Neutrophils, DeconRNASeq_BPRNACan3DProMet_Neutrophils, DeconRNASeq_BPRNACanProMet_Neutrophils"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_BPRNACanProMet_Neutrophils</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CCLE.TIL10_Neutrophils, DWLS_CCLE.TIL10_Neutrophils"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_CCLE.TIL10_Neutrophils</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_BPRNACan3DProMet_NK.cells, DeconRNASeq_BPRNACanProMet_NK.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_BPRNACan3DProMet_NK.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_BPRNACanProMet_CD4.cells, DWLS_BPRNACanProMet_CD4.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_BPRNACanProMet_CD4.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.HNSCC.scRNAseq_CD4.cells, DWLS_CBSX.HNSCC.scRNAseq_CD4.cells, CBSX_CBSX.HNSCC.scRNAseq_CD4.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.HNSCC.scRNAseq_CD4.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DWLS_CBSX.Melanoma.scRNAseq_CD4.cells, CBSX_CBSX.Melanoma.scRNAseq_CD4.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DWLS_CBSX.Melanoma.scRNAseq_CD4.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_LM22_T.cells.CD4.memory.resting, DWLS_LM22_T.cells.CD4.memory.resting"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_LM22_T.cells.CD4.memory.resting</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_LM22_Dendritic.activated.cells, DWLS_LM22_Dendritic.activated.cells"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_LM22_Dendritic.activated.cells</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DeconRNASeq_BPRNACan_Cancer, DeconRNASeq_BPRNACan3DProMet_Cancer, DeconRNASeq_BPRNACanProMet_Cancer"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DeconRNASeq_BPRNACanProMet_Cancer</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_BPRNACan_Cancer, Epidish_BPRNACan3DProMet_Cancer, CBSX_BPRNACan_Cancer, CBSX_BPRNACan3DProMet_Cancer, CBSX_BPRNACanProMet_Cancer"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_BPRNACan_Cancer</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CCLE.TIL10_Cancer, DWLS_CCLE.TIL10_Cancer"</span></span>
+<span><span class="co">#&gt; Keeping only feature: Epidish_CCLE.TIL10_Cancer</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): DWLS_BPRNACan_Cancer, DWLS_BPRNACan3DProMet_Cancer"</span></span>
+<span><span class="co">#&gt; Keeping only feature: DWLS_BPRNACan_Cancer</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.HNSCC.scRNAseq_Cancer, DWLS_CBSX.HNSCC.scRNAseq_Cancer, CBSX_CBSX.HNSCC.scRNAseq_Cancer"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.HNSCC.scRNAseq_Cancer</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.HNSCC.scRNAseq_CAF, DWLS_CBSX.HNSCC.scRNAseq_CAF, CBSX_CBSX.HNSCC.scRNAseq_CAF"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.HNSCC.scRNAseq_CAF</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [1] "Highly correlated features (r&gt;0.9): Epidish_CBSX.Melanoma.scRNAseq_CAF, DWLS_CBSX.Melanoma.scRNAseq_CAF, CBSX_CBSX.Melanoma.scRNAseq_CAF"</span></span>
+<span><span class="co">#&gt; Keeping only feature: CBSX_CBSX.Melanoma.scRNAseq_CAF</span></span>
+<span><span class="co">#&gt; Warning in compute_subgroups(cells[[i]], file_name = names(cells)[i], thres_corr = corr): Deconvolution features with less than two columns for subgrouping (skipping)</span></span>
+<span><span class="co">#&gt; Warning in compute_subgroups(cells[[i]], file_name = names(cells)[i], thres_corr = corr): Deconvolution features with less than two columns for subgrouping (skipping)</span></span>
+<span><span class="co">#&gt; Warning in compute_subgroups(cells[[i]], file_name = names(cells)[i], thres_corr = corr): Deconvolution features with less than two columns for subgrouping (skipping)</span></span>
+<span><span class="co">#&gt; Warning in compute_subgroups(cells[[i]], file_name = names(cells)[i], thres_corr = corr): Deconvolution features with less than two columns for subgrouping (skipping)</span></span>
+<span><span class="co">#&gt; Warning in compute_subgroups(cells[[i]], file_name = names(cells)[i], thres_corr = corr): Deconvolution features with less than two columns for subgrouping (skipping)</span></span>
+<span><span class="co">#&gt; Deconvolution features subgroupped</span></span>
+<span></span>
+<span><span class="va">deconv_subgroups_replicate</span> <span class="op">=</span> <span class="fu"><a href="../reference/replicate_deconvolution_subgroups.html">replicate_deconvolution_subgroups</a></span><span class="op">(</span><span class="va">deconv_subgroups</span>, <span class="va">deconv_2</span><span class="op">)</span></span></code></pre></div>
 <p><strong>NOTE:</strong> <code>multideconv</code> is built on top of
 existing frameworks and makes extensive use of the R packages
 <code>immunedeconv</code> (<span class="citation">Sturm et al. (<a href="#ref-10.1093/bioinformatics/btz363">2019</a>)</span>) and
@@ -847,7 +996,7 @@ Quantification Methods for Immuno-Oncology.”</span>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

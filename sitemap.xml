@@ -34,6 +34,7 @@
 <url><loc>https://mhurtado13.github.io/multideconv/reference/create_sc_signatures.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/deconv_bulk.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/deconvolution.html</loc></url>
+<url><loc>https://mhurtado13.github.io/multideconv/reference/find.maximum.iteration.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/index.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/metacells_data.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/metacells_metadata.html</loc></url>
@@ -43,6 +44,7 @@
 <url><loc>https://mhurtado13.github.io/multideconv/reference/removeCorrelatedFeatures.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/remove_low_variance.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/remove_subgroups.html</loc></url>
+<url><loc>https://mhurtado13.github.io/multideconv/reference/replicate_deconvolution_subgroups.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/sample_labels.html</loc></url>
 <url><loc>https://mhurtado13.github.io/multideconv/reference/subgroups.html</loc></url>
 </urlset>
