@@ -1994,6 +1994,7 @@ replicate_deconvolution_subgroups = function(deconv_res, deconvolution_test){
 #'
 #' @return Maximum subgroupping iteration
 #'
+#' @keywords internal
 find.maximum.iteration = function(cells.groups){
   max_iteration = c()
   for (i in 1:length(cells.groups)){

@@ -11,6 +11,7 @@ reference:
   - compute.deconvolution.analysis
   - compute.deconvolution.preprocessing
   - compute_methods_variable_signature
+  - replicate_deconvolution_subgroups
 - title: Single cell functions
   desc: >
     Single cell data manipulation for deconvolution
@@ -39,6 +40,7 @@ reference:
   - compute.cell.types
   - remove_subgroups
   - remove_low_variance
+  - find.maximum.iteration
   - removeCorrelatedFeatures
   - correlation
 - title: Package Data
