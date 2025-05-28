@@ -11,7 +11,7 @@ R package that reduces dimensionality and eliminates redundancy through unsuperv
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://mhurtado13.github.io/multideconv/}
+  \item \url{https://github.com/VeraPancaldiLab/multideconv}
 }
 
 }

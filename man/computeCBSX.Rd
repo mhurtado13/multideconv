@@ -2,7 +2,7 @@
 % Please edit documentation in R/cell_deconvolution.R
 \name{computeCBSX}
 \alias{computeCBSX}
-\title{Computes CibersortX (CBSX) using one signature}
+\title{Computes CIBERSORTx (CBSX) using one signature}
 \usage{
 computeCBSX(TPM_matrix, signature_file, name, password, name_signature)
 }
@@ -11,9 +11,9 @@ computeCBSX(TPM_matrix, signature_file, name, password, name_signature)
 
 \item{signature_file}{The signature file to use.}
 
-\item{name}{Credential email for running CibersortX.}
+\item{name}{Credential email for running CIBERSORTx.}
 
-\item{password}{Credential token for running CibersortX.}
+\item{password}{Credential token for running CIBERSORTx.}
 
 \item{name_signature}{Signature name to set for the deconvolution results.}
 }
@@ -21,5 +21,5 @@ computeCBSX(TPM_matrix, signature_file, name, password, name_signature)
 A matrix with cell abundance deconvolve with CBSX
 }
 \description{
-Computes CibersortX (CBSX) using one signature
+Computes CIBERSORTx (CBSX) using one signature
 }

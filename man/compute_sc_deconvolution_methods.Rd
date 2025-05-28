@@ -7,6 +7,7 @@
 compute_sc_deconvolution_methods(
   raw_counts,
   normalized = TRUE,
+  methods_sc = c("Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"),
   sc_object,
   sc_metadata,
   cell_annotations,
@@ -22,13 +23,15 @@ compute_sc_deconvolution_methods(
 
 \item{normalized}{Boolean value to specify if raw_counts need to be normalized (If no raw_counts are available and argument corresponds to already normalized counts this arguments needs to be set to False)}
 
+\item{methods_sc}{A character vector with the sc-deconvolution methods to run. Default are "Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"}
+
 \item{sc_object}{A matrix with the counts from scRNAseq object (genes as rows and cells as columns)}
 
 \item{sc_metadata}{Dataframe with metadata from the single cell object. The matrix should include the columns cell_label and sample_label.}
 
-\item{cell_annotations}{A character vector with the cell labels (need to be of the same order as in the sc_object)}
+\item{cell_annotations}{A string with the column name with the cell labels (column should be of the same order as in the sc_object)}
 
-\item{samples_ids}{A character vector with the samples labels (need to be of the same order as in the sc_object)}
+\item{samples_ids}{A string with the column name with the samples labels (column should be of the same order as in the sc_object)}
 
 \item{name_object}{Signature name to use in the generated single cell signature for deconvolving the bulk RNAseq data}
 

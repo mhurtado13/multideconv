@@ -50,6 +50,6 @@ data("deconvolution")
 data("cells_groundtruth")
 
 corr_matrix = compute.benchmark(deconvolution, cells_groundtruth, cells_extra = "Myeloid.cells",
-                                corr_type = "pearson", scatter = FALSE)
+                                corr_type = "spearman", scatter = FALSE)
 
 }

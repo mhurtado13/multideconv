@@ -280,6 +280,24 @@ deconv_subgroups = compute.deconvolution.analysis(deconvolution = deconv_pseudo,
                                                   file_name = "Tutorial") 
 ```
 
+## **Replicate deconvolution subgroups in an independent set**
+
+Cell subgroup identification through deconvolution is cohort-specific, as it relies on correlation patterns across samples. This means that subgroup definitions may vary across different splits or datasets. If you aim to replicate the same subgroups identified in one dataset onto another (e.g., for model validation), you can use the following function.
+
+The function below reconstructs and applies the subgroup signatures derived from a previous deconvolution, making it especially useful when transferring learned patterns across datasets—such as when training and evaluating machine learning models. 
+```{r}
+deconv_1 = deconv_bulk[1:100,]
+deconv_2 = deconv_bulk[101:192,]
+
+deconv_subgroups = compute.deconvolution.analysis(deconvolution = deconv_1, 
+                                                  corr = 0.7, 
+                                                  seed = 123, 
+                                                  file_name = "Tutorial", 
+                                                  return = FALSE) 
+
+deconv_subgroups_replicate = replicate_deconvolution_subgroups(deconv_subgroups, deconv_2)
+```
+
 **NOTE:** `multideconv` is built on top of existing frameworks and makes extensive use of the R packages `immunedeconv` (@10.1093/bioinformatics/btz363) and `omnideconv` (@Dietrich2024.06.10.598226). If you use `multideconv` in your work, please cite our package along with these foundational packages. We also encourage you to cite the individual deconvolution algorithms you employ in your analysis.
 
 | method | license | citation |

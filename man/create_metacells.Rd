@@ -2,7 +2,7 @@
 % Please edit documentation in R/cell_deconvolution.R
 \name{create_metacells}
 \alias{create_metacells}
-\title{Create meta-cells from a single cell object}
+\title{Create meta-cells from a single cell object using the KNN algorithm. This function is adapted from the R package hdWGCNA (Morabito et al., 2023)}
 \usage{
 create_metacells(
   sc_object,
@@ -43,7 +43,7 @@ A list with two elements:
 }
 }
 \description{
-Create meta-cells from a single cell object
+Create meta-cells from a single cell object using the KNN algorithm. This function is adapted from the R package hdWGCNA (Morabito et al., 2023)
 }
 \references{
 Langfelder, P., Horvath, S. WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics 9, 559 (2008). https://doi.org/10.1186/1471-2105-9-559

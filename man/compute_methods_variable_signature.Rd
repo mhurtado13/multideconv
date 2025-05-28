@@ -25,9 +25,9 @@ compute_methods_variable_signature(
 
 \item{exclude}{(Optional) A character vector with the signature to exclude}
 
-\item{cbsx.name}{Cibersortx credential mail if CBSX will be run}
+\item{cbsx.name}{CIBERSORTx credential mail if CBSX will be run}
 
-\item{cbsx.token}{Cibersortx credential token if CBSX will be run}
+\item{cbsx.token}{CIBERSORTx credential token if CBSX will be run}
 
 \item{doParallel}{Boolean value to specify if DWLS and CBSX should run in parallel (default is False)}
 

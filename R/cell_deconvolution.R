@@ -1942,6 +1942,73 @@ create_metacells = function(sc_object, labels_column, samples_column, exclude_ce
 
 }
 
+#' Replicate deconvolution subgroups in a new dataset
+#'
+#' Reconstructs and applies deconvolution subgroup signatures based on a previous decomposition.
+#'
+#' @param deconv_res A list containing results from the deconvolution process, including:
+#'   \itemize{
+#'     \item{\code{Deconvolution subgroups composition}: a list of subgroup feature names per iteration}
+#'     \item{\code{Deconvolution matrix}: the original deconvolution result used to determine relevant features}
+#'   }
+#' @param deconvolution_test A data.frame or matrix of deconvolution results (e.g., from another cohort)
+#'
+#' @return A data.frame with the projected subgroup features proportions
+#' @export
+#'
+replicate_deconvolution_subgroups = function(deconv_res, deconvolution_test){
+
+  #deconv_subgroups <- mapply(c, deconv_res[[3]], deconv_res[[4]], SIMPLIFY = FALSE) #Join cell groups
+  deconv_subgroups = deconv_res[["Deconvolution subgroups composition"]]
+  iterations = find.maximum.iteration(deconv_subgroups)
+
+  # Create same groups composition
+  for (m in 1:iterations) {
+    base_groups = list()
+    for (i in 1:length(deconv_subgroups)){
+      if(length(deconv_subgroups[[i]])!=0){
+        idy = grep(paste0("Iteration.",m), names(deconv_subgroups[[i]]))
+        if(length(idy)!=0){
+          base_groups = append(base_groups, deconv_subgroups[[i]][idy])
+        }
+      }
+    }
+
+    deconv_subgroups_values = c()
+    for (i in 1:length(base_groups)) {
+      deconv_subgroups_values = cbind(deconv_subgroups_values, matrixStats::rowMedians(as.matrix(deconvolution_test[,base_groups[[i]]]))) #Compute median using base groups
+    }
+    colnames(deconv_subgroups_values) = names(base_groups)
+    deconvolution_test = cbind(deconv_subgroups_values, deconvolution_test) # Join cell subgroups and deconv features
+
+  }
+
+  deconvolution_test = deconvolution_test[,colnames(deconvolution_test)%in%colnames(deconv_res[["Deconvolution matrix"]])]
+
+  return(data.frame(deconvolution_test))
+}
+
+#' Find maximum iteration from subgroups
+#'
+#' @param cells.groups Cell groups corresponding to a specific cell type.
+#'
+#' @return Maximum subgroupping iteration
+#'
+find.maximum.iteration = function(cells.groups){
+  max_iteration = c()
+  for (i in 1:length(cells.groups)){
+    if(is.null(names(cells.groups[[i]]))==F){
+      iterations <- sapply(names(cells.groups[[i]]), function(x) {
+        as.numeric(sub(".*\\.Iteration\\.(\\d+)", "\\1", x))
+      })
+      local_max = max(unlist(iterations))
+      max_iteration = c(max_iteration, local_max)
+    }
+  }
+
+  return(max(max_iteration))
+}
+
 #' Compute deconvolution benchmark
 #'
 #' @param deconvolution The deconvolution matrix output from compute.deconvolution()

@@ -6,7 +6,7 @@
 \usage{
 compute.deconvolution(
   raw.counts,
-  methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS", "MOMF"),
+  methods = c("Quantiseq", "CBSX", "Epidish", "DeconRNASeq", "DWLS"),
   signatures_exclude = NULL,
   normalized = TRUE,
   doParallel = FALSE,
@@ -18,9 +18,11 @@ compute.deconvolution(
   sc_deconv = FALSE,
   sc_matrix = NULL,
   sc_metadata = NULL,
+  methods_sc = c("Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"),
   cell_label = NULL,
   sample_label = NULL,
   cell_markers = NULL,
+  methods_sig = c("DWLS", "CIBERSORTx", "MOMF", "BSeqsc"),
   name_sc_signature = NULL,
   file_name = NULL
 )
@@ -42,9 +44,9 @@ compute.deconvolution(
 
 \item{create_signature}{Whether to create or not the signatures using the methods MOMF, CBSX, DWLS and BSeq-SC. If TRUE, sc_matrix shuld be provide.}
 
-\item{credentials.mail}{(Optional) Credential email for running CibersortX. If not provided, cibersortX method will not be run.}
+\item{credentials.mail}{(Optional) Credential email for running CIBERSORTx. If not provided, CIBERSORTx method will not be run.}
 
-\item{credentials.token}{(Optional) Credential token for running CibersortX. If not provided, cibersortX method will not be run.}
+\item{credentials.token}{(Optional) Credential token for running CIBERSORTx. If not provided, CIBERSORTx method will not be run.}
 
 \item{sc_deconv}{Whether to run or not deconvolution methods based on single cell.}
 
@@ -52,11 +54,15 @@ compute.deconvolution(
 
 \item{sc_metadata}{Dataframe with metadata from the single cell object. The matrix should include the columns cell_label and sample_label.}
 
+\item{methods_sc}{A character vector with the sc-deconvolution methods to run. Default are "Autogenes", "BayesPrism", "Bisque", "CPM", "MuSic", "SCDC"}
+
 \item{cell_label}{If sc_deconv = T, a character vector indicating the cell labels (same order as the count matrix)}
 
 \item{sample_label}{If sc_deconv = T, a character vector indicating the cell samples IDs (same order as the count matrix)}
 
 \item{cell_markers}{Named list with the genes markers names as Symbol per cell types to be used to create the signature using the BSeq-SC method. If NULL, the method will be ignored during the signature creation.}
+
+\item{methods_sig}{A character vector specifying which methods to run. Options are "DWLS", "CIBERSORTx", "MOMF", and "BSeqsc". Default runs all available methods.}
 
 \item{name_sc_signature}{If sc_deconv = T, the name you want to give to the signature generated}
 
@@ -66,7 +72,7 @@ compute.deconvolution(
 A matrix of cell type deconvolution features across samples
 }
 \description{
-The function calculates cell abundance based on cell type signatures using different methods and signatures. Methods available are Quantiseq, MCP, XCell, CibersortX, EpiDISH, DWLS and DeconRNASeq. Provided signatures included signatures based on bulk and methylation data (7 methods and 10 signature in total). Signatures are present in the src/signatures directory, user can add its own signatures by adding the .txt files in this same folder. Second generation methods to perform deconvolution based on single cell data are also available if scRNAseq object is provided.
+The function calculates cell abundance based on cell type signatures using different methods and signatures. Methods available are Quantiseq, MCP, XCell, CIBERSORTx, EpiDISH, DWLS and DeconRNASeq. Provided signatures included signatures based on bulk and methylation data (7 methods and 10 signature in total). Signatures are present in the src/signatures directory, user can add its own signatures by adding the .txt files in this same folder. Second generation methods to perform deconvolution based on single cell data are also available if scRNAseq object is provided.
 }
 \examples{
 
