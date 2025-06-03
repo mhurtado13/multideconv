@@ -6,6 +6,8 @@
 \alias{multideconv-package}
 \title{multideconv: Integrative pipeline for cell type deconvolution from bulk RNAseq using first and second generation methods}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 R package that reduces dimensionality and eliminates redundancy through unsupervised filtering and iterative correlation analyses. Built on top of existing frameworks like immunedeconv (Sturm et al. 2019) and omnideconv (Dietrich et al. 2024), multideconv harmonizes outputs across methods to identify robust cell subgroups and mitigate signature-driven heterogeneity.
 }
 \seealso{

@@ -15,3 +15,4 @@ Maximum subgroupping iteration
 \description{
 Find maximum iteration from subgroups
 }
+\keyword{internal}

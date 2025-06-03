@@ -2437,5 +2437,99 @@ stratified_sample_cells <- function(SCData, SCData_metadata, cell_label, n_cells
   return(list(Counts = counts, Metadata = metadata))
 }
 
+#' Prepare folds for multideconv cross-validation with processed training and test data
+#'
+#' This function processes a dataset for k-fold cross-validation using the multideconv framework.
+#' For each fold, it generates training and test datasets by computing deconvolution subgroups features from the deconvolution matrix.
+#' It also processes the entire dataset once to provide a final processed training set.
+#'
+#' @param data A matrix or data frame of deconvolution features (samples x features) and a column named `target` indicating class labels.
+#' @param folds A list of integer vectors indicating row indices for the training set in each fold. The test set is implicitly defined as the complement.
+#' @param coldata A data frame with metadata (e.g., sample annotations), must match the number and order of samples in `data`.
+#'
+#' @return A list of two elements:
+#' \itemize{
+#'   \item \code{processed_folds}: A list of folds, where each fold contains:
+#'     \itemize{
+#'       \item \code{train_data}: Processed training data with cell group features and `target` column.
+#'       \item \code{test_data}: Test data projected into the learned cell group feature space.
+#'       \item \code{obs_test}: True class labels for the test set.
+#'       \item \code{rowIndex}: Row indices corresponding to the test set.
+#'       \item \code{fold_name}: Optional fold name if provided in the `folds` list.
+#'     }
+#'   \item \code{train_cell_data_final}: Final cell group feature matrix for the full dataset, including the `target` column.
+#' }
+#'
+#' @details The function runs the `compute.deconvolution.analysis()` function on each fold's training set and uses the trained projection
+#' to compute the test set representation. It also runs multideconv on the full dataset to return the complete processed training set.
+#'
+#' @importFrom dplyr mutate
+#' @importFrom stats setNames
+#' @export
+#'
+prepare_multideconv_folds <- function(deconv, folds, coldata) {
+
+  processed_folds <- list()
+
+  for (i in seq_along(folds)) {
+    cat("Preprocessing fold", i, "\n")
+
+    train_idx <- folds[[i]]
+    test_idx <- setdiff(seq_len(nrow(deconv)), train_idx)
+
+    ## Subset data
+    train_deconv <- deconv[train_idx, , drop = FALSE]
+    train_coldata <- coldata[train_idx, , drop = FALSE]
+    obs_train <- train_deconv$target
+    train_deconv$target <- NULL
+
+    ## Run multideconv once
+    deconv_subgroups <- compute.deconvolution.analysis(
+      deconv = train_deconv,
+      corr = 0.7,
+      seed = 123,
+      cells_extra = cells_extra,
+      return = FALSE
+    )
+
+    train_cell_data <- deconv_subgroups[[1]] %>%
+      dplyr::mutate(target = obs_train)
+
+    ## Prepare test data using trained info
+    test_deconv <- deconv[test_idx, , drop = FALSE]
+    obs_test <- deconv$target[test_idx]
+    test_deconv$target = NULL
+
+    test_data = replicate_deconvolution_subgroups(deconv_subgroups, test_deconv)
+
+    processed_folds[[i]] <- list(
+      train_data = train_cell_data,
+      test_data = test_data,
+      obs_test = obs_test,
+      rowIndex = test_idx,
+      fold_name = names(folds)[i]
+    )
+  }
+
+  # Run multideconv on the full training set
+  obs_train = deconv$target
+  deconv$target = NULL
+
+  deconv_subgroups_final <- compute.deconvolution.analysis(
+    deconv = deconv,
+    corr = 0.7,
+    seed = 123,
+    cells_extra = cells_extra,
+    return = FALSE
+  )
+
+  # Get cell group features
+  train_cell_data_final <- deconv_subgroups_final[[1]] %>%
+    dplyr::mutate(target = obs_train)
+
+  custom_output = deconv_subgroups_final
+
+  return(list(processed_folds, train_cell_data_final, custom_output))
+}
 
 
