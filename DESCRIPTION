@@ -17,6 +17,7 @@ Imports:
     doParallel,
     dplyr,
     EpiDISH,
+    limSolve,
     foreach,
     ggplot2,
     graphics,
@@ -54,6 +55,7 @@ Remotes:
     omnideconv/MOMF,
     smorabit/hdWGCNA,
     grst/MCPcounter,
+    cran/limSolve,
     cozygene/bisque
 Suggests: 
     testthat (>= 3.0.0),
