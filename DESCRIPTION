@@ -32,7 +32,7 @@ Imports:
     glmGamPoi,
     future.apply,
     ggtext,
-    BisqueRNA,
+    bisque,
     future,
     purrr (>= 1.0.2),
     hdWGCNA (>= 0.4.0),
@@ -54,6 +54,7 @@ Remotes:
     omnideconv/MOMF,
     smorabit/hdWGCNA,
     grst/MCPcounter,
+    cozygene/bisque
 Suggests: 
     testthat (>= 3.0.0),
     WGCNA,
