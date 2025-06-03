@@ -12,6 +12,7 @@ reference:
   - compute.deconvolution.preprocessing
   - compute_methods_variable_signature
   - replicate_deconvolution_subgroups
+  - prepare_multideconv_folds
 - title: Single cell functions
   desc: >
     Single cell data manipulation for deconvolution
