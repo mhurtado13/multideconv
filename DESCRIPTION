@@ -56,7 +56,7 @@ Remotes:
     smorabit/hdWGCNA,
     grst/MCPcounter,
     cran/limSolve,
-    cozygene/bisque
+    cran/bisque
 Suggests: 
     testthat (>= 3.0.0),
     WGCNA,
