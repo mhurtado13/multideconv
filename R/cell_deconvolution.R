@@ -598,9 +598,6 @@ removeCorrelatedFeatures <- function(data, threshold, name, n_seed) {
     if(ncol(feature)>1){
       keep = colnames(feature)[sample(ncol(feature), size = 1)] #From high corr group, keep only one feature
 
-      print(paste0("Highly correlated features (r>", threshold,"): ", paste(colnames(feature), collapse = ', ')))
-      cat(paste0("Keeping only feature: ", keep, "\n\n"))
-
       if(length(features_high_corr)>0){
         features_high_corr = c(features_high_corr, colnames(feature))
       }else{
@@ -674,7 +671,6 @@ compute_subgroups = function(deconvolution, thres_corr, file_name){
   #cell_groups_similarity = list()
   cell_groups_discard = list()
   if (ncol(data) < 2) {
-    warning("Deconvolution features with less than two columns for subgrouping (skipping)\n")
     return(list(data, cell_subgroups, cell_groups_discard))
   }else{
     # #################### Proportionality-based correlation (DEPRECATED)
@@ -915,11 +911,7 @@ correlation <- function(data) {
 remove_low_variance <- function(data, plot = FALSE) {
   vars <- apply(data, 2, var)
   threshold = summary(vars)[[2]]
-  cat("Checking distribution of variances...............................................................\n\n")
-  cat("Chosen threshold is:", threshold, "\n\n")
-  cat("Saving variance distribution plot in Results/ folder\n\n")
   low_variance <- which(vars < threshold)
-  cat("Removing", length(low_variance), "features with variance across samples below this threshold...............................................................\n\n")
 
   if(plot){
     grDevices::pdf("Results/Distribution_variances_deconvolution.pdf")
@@ -951,6 +943,7 @@ remove_low_variance <- function(data, plot = FALSE) {
 #' @param cells_extra A string specifying the cells names to consider and that are not including in the nomenclature of multideconv (see Readme)
 #' @param file_name A string specifying the file name of the .csv file with the deconvolution subgroups
 #' @param return Boolean value to whether return and saved the plot and csv files of deconvolution generated during the run inside the Results/ directory.
+#' @param verbose Boolen value to whether print or no the function messages
 #'
 #' @return A list containing
 #'
@@ -973,18 +966,25 @@ remove_low_variance <- function(data, plot = FALSE) {
 #'
 #' processed_deconvolution = compute.deconvolution.analysis(deconvolution, cells_extra = "mesenchymal")
 #'
-compute.deconvolution.analysis <- function(deconvolution, corr = 0.7, seed = NULL, cells_extra = NULL, file_name = NULL, return = FALSE){
+compute.deconvolution.analysis <- function(deconvolution, corr = 0.7, seed = NULL, cells_extra = NULL, file_name = NULL, return = FALSE, verbose = FALSE){
   deconvolution.mat = deconvolution
 
   #####Unsupervised filtering
 
   #Remove high zero number features
-  cat(paste0("Removing features with high zero number 90%...............................................................\n\n"))
+  if(verbose){
+    cat(paste0("Removing features with high zero number 90%...............................................................\n\n"))
+  }
+
   deconvolution.mat = deconvolution.mat[, colSums(deconvolution.mat == 0, na.rm=TRUE) < round(0.9*nrow(deconvolution.mat)) , drop=FALSE]
   diff_colnames <- setdiff(colnames(deconvolution), colnames(deconvolution.mat))
   zero_features <- deconvolution[, diff_colnames]
 
   #Remove low_variance features
+  if(verbose){
+    cat(paste0("Removing low variance features...............................................................\n\n"))
+  }
+
   variance = remove_low_variance(deconvolution.mat, plot = return)
   deconvolution.mat = variance[[1]]
   low_variance_features = variance[[2]]
@@ -996,13 +996,19 @@ compute.deconvolution.analysis <- function(deconvolution, corr = 0.7, seed = NUL
   # }
 
   #####Cell types split
-  cat("Splitting deconvolution features per cell type...............................................................\n\n")
+  if(verbose){
+    cat("Splitting deconvolution features per cell type...............................................................\n\n")
+  }
+
   cells_types = compute.cell.types(deconvolution.mat, cells_extra)
   cells = cells_types[[1]]
   cells_discarded = cells_types[[2]]
 
   ######Pairwise correlation filtering (Highly correlated variables >0.9) within cell types
-  cat("Finding group of features with high correlation between each other...............................................................\n\n")
+  if(verbose){
+    cat("Finding group of features with high correlation between each other...............................................................\n\n")
+  }
+
   features_high_corr = list()
   j = 1
   for (i in 1:length(cells)) {
